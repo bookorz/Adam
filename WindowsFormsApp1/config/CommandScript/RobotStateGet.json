@@ -1,0 +1,91 @@
+[
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "",
+    "Method": "GetStatus",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index":"1",
+    "Flag":"Start"
+  },
+  {
+    "ExcuteMethod": "GetStatus",
+    "FinishMethod": "",
+    "Method": "GetSpeed",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index":"2",
+    "Flag":""
+  }
+  ,
+  {
+    "ExcuteMethod": "GetSpeed",
+    "FinishMethod": "",
+    "Method": "GetMode",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index":"3",
+    "Flag":""
+  },
+  {
+    "ExcuteMethod": "GetMode",
+    "FinishMethod": "",
+    "Method": "GetError",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "00",
+    "Index":"4",
+    "Flag":""
+  },
+  {
+    "ExcuteMethod": "GetError",
+    "FinishMethod": "",
+    "Method": "GetRIO",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "4",
+    "Index":"5",
+    "Flag":""
+  },
+  {
+    "ExcuteMethod": "GetRIO",
+    "FinishMethod": "",
+    "Method": "GetRIO",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "5",
+    "Index":"6",
+    "Flag":""
+  },
+  {
+    "ExcuteMethod": "GetRIO",
+    "FinishMethod": "",
+    "Method": "GetSV",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "1",
+    "Index":"7",
+    "Flag":""
+  },
+  {
+    "ExcuteMethod": "GetSV",
+    "FinishMethod": "",
+    "Method": "GetSV",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "2",
+    "Index":"8",
+    "Flag":"End"
+  }
+]

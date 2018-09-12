@@ -1,0 +1,24 @@
+[
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "",
+    "Method": "Put",
+    "Arm": "@cbRA1Arm",
+    "Slot": "@cbRA1Slot",
+    "Position": "@cbRA1Point",
+    "Value": "",
+    "Index":"1",
+    "Flag":"Start"
+  },
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "Put",
+    "Method": "Get",
+    "Arm": "@cbRA2Arm",
+    "Slot": "@cbRA2Slot",
+    "Position": "@cbRA2Point",
+    "Value": "",
+    "Index":"2",
+    "Flag":"End"
+  }
+]

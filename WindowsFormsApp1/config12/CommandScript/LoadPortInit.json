@@ -1,0 +1,24 @@
+[
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "",
+    "Method": "Reset",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index":"1",
+    "Flag":"Start"
+  },
+  {
+    "ExcuteMethod": "Reset",
+    "FinishMethod": "",
+    "Method": "ForceInitialPos",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index":"2",
+    "Flag":"End"
+  }
+]

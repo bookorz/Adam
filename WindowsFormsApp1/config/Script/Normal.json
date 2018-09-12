@@ -1,0 +1,250 @@
+[
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_PROCESS",
+    "ExcuteMethod": "",
+    "FinishMethod": "",
+    "ChangeToStatus": "WAIT_WHLD",
+    "TodoList": [
+      {
+        "EqpType": "Robot",
+        "Method": "WaitBeforePut",
+        "Position": "Aligner",
+        "Param": null,
+        "Force": false
+      },
+      {
+        "EqpType": "NextRobot",
+        "Method": "GetWait",
+        "Position": "Aligner",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "",
+    "ExcuteMethod": "",
+    "FinishMethod": "WaitBeforePut",
+    "ChangeToStatus": "",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "WaferHold",
+        "Position": "",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_WHLD",
+    "ExcuteMethod": "WaferHold",
+    "FinishMethod": "",
+    "ChangeToStatus": "WAIT_PUT",
+    "TodoList": [
+      {
+        "EqpType": "Robot",
+        "Method": "PutWithoutBack",
+        "Position": "Aligner",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "[Job.AlignerFlag] == true",
+    "JobStatus": "WAIT_PUT",
+    "ExcuteMethod": "",
+    "FinishMethod": "PutWithoutBack",
+    "ChangeToStatus": "WAIT_ALIGN",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "Align",
+        "Position": "",
+        "Param": "190",
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "",
+    "ExcuteMethod": "PutBack",
+    "FinishMethod": "",
+    "ChangeToStatus": "",
+    "TodoList": [
+      {
+        "EqpType": "NextRobot",
+        "Method": "WaitBeforeGet",
+        "Position": "Job.Position",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "[Job.AlignerFlag] == false",
+    "JobStatus": "WAIT_PUT",
+    "ExcuteMethod": "",
+    "FinishMethod": "PutWithoutBack",
+    "ChangeToStatus": "WAIT_OFFSET",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "Align",
+        "Position": "",
+        "Param": "BySetting",
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "[Job.OCRFlag] == true",
+    "JobStatus": "WAIT_ALIGN",
+    "ExcuteMethod": "",
+    "FinishMethod": "Align",
+    "ChangeToStatus": "WAIT_OCR",
+    "TodoList": [
+      {
+        "EqpType": "OCR",
+        "Method": "Read",
+        "Position": "",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_OCR",
+    "ExcuteMethod": "",
+    "FinishMethod": "Read",
+    "ChangeToStatus": "WAIT_RET",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "Retract",
+        "Position": "",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "[Job.OCRFlag] == false",
+    "JobStatus": "WAIT_ALIGN",
+    "ExcuteMethod": "",
+    "FinishMethod": "Align",
+    "ChangeToStatus": "WAIT_RET",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "Retract",
+        "Position": "",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_RET",
+    "ExcuteMethod": "",
+    "FinishMethod": "Retract",
+    "ChangeToStatus": "WAIT_OFFSET",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "Align",
+        "Position": "",
+        "Param": "BySetting",
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_OFFSET",
+    "ExcuteMethod": "",
+    "FinishMethod": "Align",
+    "ChangeToStatus": "WAIT_WRLS",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "WaferRelease",
+        "Position": "",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+
+
+
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_WRLS",
+    "ExcuteMethod": "",
+    "FinishMethod": "WaferRelease",
+    "ChangeToStatus": "WAIT_GET",
+    "TodoList": [
+      {
+        "EqpType": "NextRobot",
+        "Method": "Get",
+        "Position": "Job.Position",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_GET",
+    "ExcuteMethod": "",
+    "FinishMethod": "Get",
+    "ChangeToStatus": "WAIT_UNLOAD",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "Retract",
+        "Position": "",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  },
+  {
+    "ID": "",
+    "Expression": "",
+    "JobStatus": "WAIT_GET",
+    "ExcuteMethod": "",
+    "FinishMethod": "GetAfterWait",
+    "ChangeToStatus": "WAIT_UNLOAD",
+    "TodoList": [
+      {
+        "EqpType": "Aligner",
+        "Method": "Retract",
+        "Position": "",
+        "Param": null,
+        "Force": false
+      }
+    ]
+  }
+]

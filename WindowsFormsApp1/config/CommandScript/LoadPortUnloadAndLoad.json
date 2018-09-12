@@ -1,0 +1,57 @@
+﻿[
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "",
+    "Method": "Unload",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index": "1",
+    "Flag": "Start"
+  },
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "Unload",
+    "Method": "SetLoad",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "0",
+    "Index": "2",
+    "Flag": ""
+  },
+  {
+    "ExcuteMethod": "SetLoad",
+    "FinishMethod": "",
+    "Method": "MappingLoad",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index": "3",
+    "Flag": ""
+  },
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "MappingLoad",
+    "Method": "GetMapping",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index": "4",
+    "Flag": ""
+  },
+  {
+    "ExcuteMethod": "GetMapping",
+    "FinishMethod": "",
+    "Method": "SetLoad",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "1",
+    "Index": "5",
+    "Flag": "End"
+  }
+]

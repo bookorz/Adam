@@ -1,0 +1,10 @@
+[
+{
+    "DeviceName": "RobotController01",
+    "DeviceType": "KAWASAKI",
+    "IPAdress": "192.168.0.2",
+    "Port": 12800,
+    "ConnectionType": "Socket",
+    "Enable": true
+}
+]

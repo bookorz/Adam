@@ -1,0 +1,10 @@
+{
+  "SystemMode": "SORTER_2R2A8L",
+  "DBConnectionString": "server=192.168.0.36;port=3307;user id=sanwa;password=sanwa_adam;database=adam",
+  "OCR2ImgSourcePath": "C:/ProgramData/e-Reader0/e-Reader/AllImage",
+  "OCR2ImgToJpgPath": "C:/ProgramData/e-Reader0/e-Reader/JPG",
+  "OCR2ExePath": "C:/Program Files (x86)/HST Vision/e-Reader8000/VB9BReaderForm.exe",
+  "OCR1ImgSourcePath": "ftp://admin@192.168.0.5",
+  "OCR1ImgToJpgPath": "D:/OCR01/JPG",
+  "OCR1ExePath": "C:/Program Files (x86)/Cognex/In-Sight/In-Sight Explorer Wafer 4.5.0/WaferID.exe"
+}

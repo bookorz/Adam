@@ -1,0 +1,47 @@
+﻿[
+  {
+    "ExcuteMethod": "",
+    "FinishMethod": "",
+    "Method": "GetCombineStatus",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index": "1",
+    "Flag": "Start"
+  },
+  {
+    "ExcuteMethod": "GetCombineStatus",
+    "FinishMethod": "",
+    "Method": "GetSpeed",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index": "2",
+    "Flag": ""
+  }
+  ,
+  {
+    "ExcuteMethod": "GetSpeed",
+    "FinishMethod": "",
+    "Method": "GetMode",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "",
+    "Index":"3",
+    "Flag":""
+  },
+  {
+    "ExcuteMethod": "GetMode",
+    "FinishMethod": "",
+    "Method": "GetError",
+    "Arm": "",
+    "Slot": "",
+    "Position": "",
+    "Value": "00",
+    "Index": "4",
+    "Flag": "End"
+  }
+]

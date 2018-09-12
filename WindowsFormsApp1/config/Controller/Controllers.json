@@ -1,0 +1,129 @@
+[
+  {
+    DeviceName: "RobotController01",
+    DeviceType: "Sanwa",
+    PortName: "COM5",
+    BaudRate: "38400",
+    ParityBit: "None",
+    DataBits: 8,
+    StopBit: "One",
+    ConnectionType: "ComPort",
+    Enable: false
+  },
+  {
+    DeviceName: "RobotController02",
+    DeviceType: "Sanwa",
+    IPAdress: "192.168.0.128",
+    Port: 23,
+    ConnectionType: "Socket",
+    Enable: true
+  },
+  {
+    "DeviceName": "AlignerController01",
+    "DeviceType": "Sanwa",
+    "IPAdress": "192.168.0.1",
+    "Port": 23,
+    "ConnectionType": "Socket",
+    "Enable": false
+  },
+  {
+    DeviceName: "AlignerController02",
+    DeviceType: "Sanwa",
+    IPAdress: "192.168.0.2",
+    Port: 23,
+    ConnectionType: "Socket",
+    Enable: false
+  },
+  {
+    DeviceName: "OCRController01",
+    DeviceType: "Cognex",
+    IPAdress: "192.168.0.5",
+    Port: 2000,
+    ConnectionType: "Socket",
+    Enable: true
+  },
+  {
+    DeviceName: "OCRController02",
+    DeviceType: "HST",
+    IPAdress: "127.0.0.1",
+    Port: 33,
+    ConnectionType: "Socket",
+    Enable: true
+  },
+  {
+    DeviceName: "LoadPortController01",
+    DeviceType: "TDK",
+    PortName: "COM1",
+    BaudRate: "9600",
+    ParityBit: "None",
+    DataBits: 8,
+    StopBit: "One",
+    ConnectionType: "ComPort",
+    Enable: true
+  },
+  {
+    DeviceName: "LoadPortController02",
+    DeviceType: "TDK",
+    PortName: "COM2",
+    BaudRate: "9600",
+    ParityBit: "None",
+    DataBits: 8,
+    StopBit: "One",
+    ConnectionType: "ComPort",
+    Enable: true
+  },
+  {
+    DeviceName: "LoadPortController03",
+    DeviceType: "TDK",
+    PortName: "COM3",
+    BaudRate: "9600",
+    ParityBit: "None",
+    DataBits: 8,
+    StopBit: "One",
+    ConnectionType: "ComPort",
+    Enable: true
+  },
+  {
+    DeviceName: "LoadPortController04",
+    DeviceType: "TDK",
+    PortName: "COM4",
+    BaudRate: "9600",
+    ParityBit: "None",
+    DataBits: 8,
+    StopBit: "One",
+    ConnectionType: "ComPort",
+    Enable: true
+  },
+  {
+    DeviceName: "LoadPortController05",
+    DeviceType: "TDK",
+    IPAdress: "127.0.0.1",
+    Port: 23,
+    ConnectionType: "Socket",
+    Enable: false
+  },
+  {
+    DeviceName: "LoadPortController06",
+    DeviceType: "TDK",
+    IPAdress: "127.0.0.1",
+    Port: 23,
+    ConnectionType: "Socket",
+    Enable: false
+  },
+  {
+    DeviceName: "LoadPortController07",
+    DeviceType: "TDK",
+    IPAdress: "127.0.0.1",
+    Port: 23,
+    ConnectionType: "Socket",
+    Enable: false
+  },
+  {
+    DeviceName: "LoadPortController08",
+    DeviceType: "TDK",
+    IPAdress: "127.0.0.1",
+    Port: 23,
+    ConnectionType: "Socket",
+    Enable: false
+  }
+]
