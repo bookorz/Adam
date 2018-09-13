@@ -514,7 +514,7 @@ namespace Adam
             try
             {
 
-                AlarmMessage Detail = AlmMapping.Get(Node.Brand, Node.Type, CurrentAlarm.AlarmCode);
+                AlarmMessage Detail = AlmMapping.Get(Node.Brand, Node.Type, Node.AdrNo, CurrentAlarm.AlarmCode);
 
                 CurrentAlarm.SystemAlarmCode = Detail.CodeID;
                 CurrentAlarm.Desc = Detail.Code_Cause;
@@ -599,7 +599,7 @@ namespace Adam
             try
             {
 
-                AlarmMessage Detail = AlmMapping.Get("SANWA", Node.Type, CurrentAlarm.AlarmCode);
+                AlarmMessage Detail = AlmMapping.Get("SANWA", Node.Type, Node.AdrNo, CurrentAlarm.AlarmCode);
 
                 CurrentAlarm.SystemAlarmCode = Detail.CodeID;
                 CurrentAlarm.Desc = Detail.Code_Cause;
@@ -963,7 +963,7 @@ namespace Adam
             try
             {
 
-                AlarmMessage Detail = AlmMapping.Get("SANWA", "SYSTEM", CurrentAlarm.AlarmCode);
+                AlarmMessage Detail = AlmMapping.Get("SANWA", "SYSTEM", "0", CurrentAlarm.AlarmCode);
 
                 CurrentAlarm.SystemAlarmCode = Detail.CodeID;
                 CurrentAlarm.Desc = Detail.Code_Cause;
@@ -997,7 +997,7 @@ namespace Adam
             try
             {
 
-                AlarmMessage Detail = AlmMapping.Get("SANWA", "DIO", CurrentAlarm.AlarmCode);
+                AlarmMessage Detail = AlmMapping.Get("SANWA", "DIO", "0", CurrentAlarm.AlarmCode);
 
                 CurrentAlarm.SystemAlarmCode = Detail.CodeID;
                 CurrentAlarm.Desc = Detail.Code_Cause;
