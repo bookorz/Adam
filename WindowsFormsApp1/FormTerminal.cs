@@ -14,7 +14,6 @@ using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using log4net;
 
 
 namespace Adam
@@ -29,8 +28,6 @@ namespace Adam
         private Thread trRun;
 
         private List<TerminalJob> Jobs = new List<TerminalJob>();
-
-        private static readonly ILog logger = LogManager.GetLogger(typeof(FormTerminal));
 
         string strSql = string.Empty;
         bool JobLock = true;
@@ -86,7 +83,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -138,7 +134,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -189,7 +184,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -236,7 +230,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -371,7 +364,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -438,7 +430,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -525,7 +516,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
             finally
@@ -586,7 +576,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -613,7 +602,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -673,7 +661,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -697,7 +684,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -770,8 +756,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
-                throw new Exception(ex.ToString());
+                //throw new Exception(ex.ToString());
             }
         }
 
@@ -809,7 +794,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -859,7 +843,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -911,7 +894,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -923,11 +905,11 @@ namespace Adam
                 return;
             }
 
-            SaveFileDialog saveFileDialog1 = null;
-            StreamWriter sw = null;
+            SaveFileDialog saveFileDialog1;
+            StreamWriter sw;
 
             try
-            {
+            { 
                 saveFileDialog1 = new SaveFileDialog();
                 saveFileDialog1.Title = "Save file";
                 saveFileDialog1.InitialDirectory = ".\\";
@@ -945,19 +927,13 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 MessageBox.Show(ex.ToString(), "Exception Message", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-            }
-            finally
-            {
-                saveFileDialog1 = null;
-                sw = null;
             }
         }
 
         private void btnImport_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = null;
+            OpenFileDialog openFileDialog1;
             StreamReader myStream = null;
 
             try
@@ -984,13 +960,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 MessageBox.Show(ex.ToString(), "Exception Message", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-            }
-            finally
-            {
-                openFileDialog1 = null;
-                myStream = null;
             }
         }
 
@@ -1008,7 +978,6 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
