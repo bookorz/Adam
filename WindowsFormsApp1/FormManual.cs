@@ -862,8 +862,6 @@ namespace GUI
         private void cbRA1Point_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-        }
-
         private void tableLayoutPanel23_Paint(object sender, PaintEventArgs e)
         {
 
