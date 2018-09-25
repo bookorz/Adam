@@ -861,10 +861,16 @@ namespace GUI
 
         private void cbRA1Point_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+        }
         private void tableLayoutPanel23_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            TransferJob job = new TransferJob("LOADPORT02","");
+            job.doTransfer();
         }
     }
 }

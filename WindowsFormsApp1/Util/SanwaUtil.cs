@@ -15,6 +15,9 @@ namespace Adam.Util
         static public string GetArmID(string arm)
         {
             Dictionary<string, string> armMap = new Dictionary<string, string>();
+            armMap["ARM1"] = "1";
+            armMap["ARM2"] = "2";
+            armMap["ARM3"] = "3";
             armMap["Upper"] = "1";
             armMap["Lower"] = "2";
             armMap["Both"] = "3";

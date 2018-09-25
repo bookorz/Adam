@@ -317,6 +317,7 @@
             this.btnPause = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.pnlMotionStop = new System.Windows.Forms.Panel();
+            this.btnTest = new System.Windows.Forms.Button();
             this.tbcManual.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox20.SuspendLayout();
@@ -489,7 +490,10 @@
             this.cbRA1Point.Items.AddRange(new object[] {
             "LOADPORT01",
             "LOADPORT02",
-            "ALIGNER01"});
+            "LOADPORT03",
+            "LOADPORT04",
+            "ALIGNER01",
+            "ALIGNER02"});
             this.cbRA1Point.Location = new System.Drawing.Point(129, 60);
             this.cbRA1Point.Name = "cbRA1Point";
             this.cbRA1Point.Size = new System.Drawing.Size(208, 38);
@@ -684,7 +688,10 @@
             this.cbRA2Point.Items.AddRange(new object[] {
             "LOADPORT01",
             "LOADPORT02",
-            "ALIGNER01"});
+            "LOADPORT03",
+            "LOADPORT04",
+            "ALIGNER01",
+            "ALIGNER02"});
             this.cbRA2Point.Location = new System.Drawing.Point(130, 60);
             this.cbRA2Point.Name = "cbRA2Point";
             this.cbRA2Point.Size = new System.Drawing.Size(208, 38);
@@ -918,11 +925,11 @@
             // EightInch_rb
             // 
             this.EightInch_rb.AutoSize = true;
+            this.EightInch_rb.Enabled = false;
             this.EightInch_rb.Location = new System.Drawing.Point(510, 6);
             this.EightInch_rb.Name = "EightInch_rb";
             this.EightInch_rb.Size = new System.Drawing.Size(119, 34);
             this.EightInch_rb.TabIndex = 1;
-            this.EightInch_rb.TabStop = true;
             this.EightInch_rb.Text = "200MM";
             this.EightInch_rb.UseVisualStyleBackColor = true;
             // 
@@ -946,6 +953,7 @@
             // TwelveInch_rb
             // 
             this.TwelveInch_rb.AutoSize = true;
+            this.TwelveInch_rb.Checked = true;
             this.TwelveInch_rb.Location = new System.Drawing.Point(628, 6);
             this.TwelveInch_rb.Name = "TwelveInch_rb";
             this.TwelveInch_rb.Size = new System.Drawing.Size(119, 34);
@@ -2120,6 +2128,7 @@
             // panel16
             // 
             this.panel16.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel16.Controls.Add(this.btnTest);
             this.panel16.Controls.Add(this.nudA1Speed);
             this.panel16.Controls.Add(this.udA1AngleOffset);
             this.panel16.Controls.Add(this.btnA1ChgMode);
@@ -4522,6 +4531,16 @@
             this.pnlMotionStop.Size = new System.Drawing.Size(755, 50);
             this.pnlMotionStop.TabIndex = 1;
             // 
+            // btnTest
+            // 
+            this.btnTest.Location = new System.Drawing.Point(513, 652);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(117, 38);
+            this.btnTest.TabIndex = 109;
+            this.btnTest.Text = "test";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
             // FormManual
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
@@ -4884,5 +4903,6 @@
         private System.Windows.Forms.RadioButton EightInch_rb;
         private System.Windows.Forms.RadioButton TwelveInch_rb;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnTest;
     }
 }
