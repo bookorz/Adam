@@ -489,7 +489,7 @@ namespace Adam
                     }
                     break;
                 default:
-
+                    TransferState.setState(Txn.FormName + "_ACK", true); //2018 Add by Steven for Transfer Job check rule
                     break;
             }
         }
@@ -587,6 +587,7 @@ namespace Adam
                             }
                             break;
                     }
+                    TransferState.setState(Txn.FormName + "_FIN", true); //2018 Add by Steven for Transfer Job check rule
                     break;
             }
         }
@@ -1096,27 +1097,33 @@ namespace Adam
 
         private void Conn_gv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            switch (e.ColumnIndex)
+            try
             {
-                case 1:
-                    switch (e.Value)
-                    {
-                        case "Connecting":
-                            e.CellStyle.BackColor = Color.Yellow;
-                            e.CellStyle.ForeColor = Color.Black;
-                            break;
-                        case "Connected":
-                            e.CellStyle.BackColor = Color.Green;
-                            e.CellStyle.ForeColor = Color.White;
-                            break;
-                        default:
-                            e.CellStyle.BackColor = Color.Red;
-                            e.CellStyle.ForeColor = Color.White;
-                            break;
+                switch (e.ColumnIndex)
+                {
+                    case 1:
+                        switch (e.Value)
+                        {
+                            case "Connecting":
+                                e.CellStyle.BackColor = Color.Yellow;
+                                e.CellStyle.ForeColor = Color.Black;
+                                break;
+                            case "Connected":
+                                e.CellStyle.BackColor = Color.Green;
+                                e.CellStyle.ForeColor = Color.White;
+                                break;
+                            default:
+                                e.CellStyle.BackColor = Color.Red;
+                                e.CellStyle.ForeColor = Color.White;
+                                break;
 
-                    }
-                    break;
+                        }
+                        break;
 
+                }
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.StackTrace);
             }
         }
 
@@ -1236,7 +1243,6 @@ namespace Adam
 
         private void Conn_gv_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-
         }
     }
 }

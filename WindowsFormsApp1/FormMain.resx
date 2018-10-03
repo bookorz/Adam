@@ -199,7 +199,7 @@
     <value>0, 84</value>
   </data>
   <data name="groupBox54.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 128</value>
+    <value>0, 340</value>
   </data>
   <data name="groupBox54.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -2240,7 +2240,7 @@
     <value>0</value>
   </data>
   <data name="tableLayoutPanel1.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="btnTeach" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="btnHelp" Row="0" RowSpan="1" Column="6" ColumnSpan="1" /&gt;&lt;Control Name="btnVersion" Row="0" RowSpan="1" Column="5" ColumnSpan="1" /&gt;&lt;Control Name="btnSysLog" Row="0" RowSpan="1" Column="4" ColumnSpan="1" /&gt;&lt;Control Name="btnMessage" Row="0" RowSpan="1" Column="3" ColumnSpan="1" /&gt;&lt;Control Name="btnAlarm" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="btnMaintence" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28082" /&gt;&lt;Rows Styles="Percent,100,Absolute,0" /&gt;&lt;/TableLayoutSettings&gt;</value>
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="btnTeach" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="btnHelp" Row="0" RowSpan="1" Column="6" ColumnSpan="1" /&gt;&lt;Control Name="btnVersion" Row="0" RowSpan="1" Column="5" ColumnSpan="1" /&gt;&lt;Control Name="btnSysLog" Row="0" RowSpan="1" Column="4" ColumnSpan="1" /&gt;&lt;Control Name="btnMessage" Row="0" RowSpan="1" Column="3" ColumnSpan="1" /&gt;&lt;Control Name="btnAlarm" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="btnMaintence" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28653,Percent,14.28082" /&gt;&lt;Rows Styles="Percent,100,Absolute,1" /&gt;&lt;/TableLayoutSettings&gt;</value>
   </data>
   <data name="panel4.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>

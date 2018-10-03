@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -243,9 +244,11 @@ namespace Adam.UI_Update.Monitoring
                 {
                     if (Conn_gv.DataSource == null)
                     {
-                        Conn_gv.DataSource = new List<ConnectState>();
+                        //Conn_gv.DataSource = new List<ConnectState>();
+                        Conn_gv.DataSource = new BindingList<ConnectState>();
                     }
-                    List<ConnectState> connList = (List<ConnectState>)Conn_gv.DataSource;
+                    //List<ConnectState> connList = (List<ConnectState>)Conn_gv.DataSource;
+                    BindingList<ConnectState> connList = (BindingList<ConnectState>)Conn_gv.DataSource;
 
                     var find = from Ctrl in connList
                                where Ctrl.Device_ID.Equals(Device_ID)
@@ -262,12 +265,13 @@ namespace Adam.UI_Update.Monitoring
                     {
                         find.First().Connection_Status = Status;
                     }
-                    connList.Sort((x, y) => { return x.Device_ID.CompareTo(y.Device_ID); });
+                    //connList.Sort((x, y) => { return x.Device_ID.CompareTo(y.Device_ID); });
+                    connList = new BindingList<ConnectState>(connList.OrderBy(x => x.Device_ID).ToList());// fix System.IndexOutOfRangeException
                     Conn_gv.DataSource = null;
                     Conn_gv.DataSource = connList;
                     //Conn_gv.Refresh();
-                   // Conn_gv.ClearSelection();
-                  
+                    // Conn_gv.ClearSelection();
+
                 }
 
 

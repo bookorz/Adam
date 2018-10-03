@@ -14,6 +14,7 @@ using System.Collections;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using log4net;
 
 
 namespace Adam
@@ -26,6 +27,7 @@ namespace Adam
         private DataTable dtCommandParameter = new DataTable();
         private DataTable dtCommandAssembly = new DataTable();
         private Thread trRun;
+        private static readonly ILog logger = LogManager.GetLogger(typeof(FormTerminal));
 
         private List<TerminalJob> Jobs = new List<TerminalJob>();
 
@@ -83,6 +85,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -134,6 +137,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -184,6 +188,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -230,6 +235,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -364,6 +370,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -430,6 +437,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -516,6 +524,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
             finally
@@ -576,6 +585,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -602,6 +612,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -661,6 +672,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -684,6 +696,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -756,7 +769,8 @@ namespace Adam
             }
             catch (Exception ex)
             {
-                //throw new Exception(ex.ToString());
+                logger.Error(ex.ToString());
+                throw new Exception(ex.ToString());
             }
         }
 
@@ -794,6 +808,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -843,6 +858,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -894,6 +910,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
@@ -927,6 +944,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 MessageBox.Show(ex.ToString(), "Exception Message", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             }
         }
@@ -960,6 +978,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 MessageBox.Show(ex.ToString(), "Exception Message", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             }
         }
@@ -978,6 +997,7 @@ namespace Adam
             }
             catch (Exception ex)
             {
+                logger.Error(ex.ToString());
                 throw new Exception(ex.ToString());
             }
         }
