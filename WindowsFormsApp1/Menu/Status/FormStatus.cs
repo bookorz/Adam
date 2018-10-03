@@ -240,6 +240,7 @@ namespace Adam.Menu.Status
             {
                 try
                 {
+                    string Message = "";
                     IController Ctrl = ControllerManagement.Get(each.Controller);
                     //string ctrl_status = ControllerManagement.Get(each.Controller).Status;
                     string ctrl_status = ControllerManagement.Get(each.Controller) != null ? ControllerManagement.Get(each.Controller).Status : "";
@@ -272,7 +273,7 @@ namespace Adam.Menu.Status
                         txn.Seq = seq;
                         if (!txn.Method.Equals(""))
                         {
-                            each.SendCommand(txn);
+                            each.SendCommand(txn, out Message);
                         }
                     }
                 }
