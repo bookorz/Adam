@@ -330,8 +330,11 @@
     <Compile Include="Util\SanwaUtil.cs" />
     <Compile Include="Util\StateUtil.cs" />
     <Compile Include="Util\Tools.cs" />
+    <Compile Include="Util\XfeCrossZone.cs" />
     <Compile Include="Util\TransferJob.cs" />
     <Compile Include="Util\TransferState.cs" />
+    <Compile Include="Util\XfeExchangeZone.cs" />
+    <Compile Include="Util\XfeSingleZone.cs" />
     <EmbeddedResource Include="FormAlarm.resx">
       <DependentUpon>FormAlarm.cs</DependentUpon>
     </EmbeddedResource>

@@ -10,7 +10,8 @@ namespace Adam.Util
     class TransferState
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(TransferJob));
-        public static int processCnt { get; set; } = 0;
+        public static int processCntR1 { get; set; } = 0;
+        public static int processCntR2 { get; set; } = 0;
         public static Boolean isCmdFin = true;
         public static Boolean isR1JobFin = false;
         public static Boolean isR2JobFin = false;
@@ -43,6 +44,13 @@ namespace Adam.Util
                 logger.Error("TransferState set rule:" + rule + " fail!!"); 
             }
         }
+        public static void addProcCnt(string robot)
+        {
+            if (robot.Equals("ROBOT1"))
+                processCntR1++;
+            else if (robot.Equals("ROBOT2"))
+                processCntR2++;
+    } 
         public static Dictionary<string, Boolean> checkRule = new Dictionary<string, Boolean>()
         {
           {"A1_ALIGN1_FIN", false},
@@ -59,43 +67,91 @@ namespace Adam.Util
           {"OCR1_READ_FIN", false},
           {"OCR2_READ_FIN", false},
 
-          {"R1_PUT_OPT0_ACK", false},
-          {"R1_PUT_OPT1_ACK", false},
-          {"R1_PUT_OPT2_ACK", false},
-          {"R1_PUT_OPT3_ACK", false},
-          {"R1_GET_OPT0_ACK", false},
-          {"R1_GET_OPT1_ACK", false},
-          {"R1_GET_OPT2_ACK", false},
-          {"R1_GET_OPT3_ACK", false},
-          {"R1_GET_WAIT_ACK", false},
-          {"R1_PUT_OPT0_FIN", false},
-          {"R1_PUT_OPT1_FIN", false},
-          {"R1_PUT_OPT2_FIN", false},
-          {"R1_PUT_OPT3_FIN", false},
-          {"R1_GET_OPT0_FIN", false},
-          {"R1_GET_OPT1_FIN", false},
-          {"R1_GET_OPT2_FIN", false},
-          {"R1_GET_OPT3_FIN", false},
-          {"R1_GET_WAIT_FIN", false},
+          {"R1_PUT_OPT0_A1_ACK", false},
+          {"R1_PUT_OPT1_A1_ACK", false},
+          {"R1_PUT_OPT2_A1_ACK", false},
+          {"R1_PUT_OPT3_A1_ACK", false},
+          {"R1_GET_OPT0_A1_ACK", false},
+          {"R1_GET_OPT1_A1_ACK", false},
+          {"R1_GET_OPT2_A1_ACK", false},
+          {"R1_GET_OPT3_A1_ACK", false},
+          {"R1_GET_WAIT_A1_ACK", false},
+          {"R1_PUT_OPT0_A1_FIN", false},
+          {"R1_PUT_OPT1_A1_FIN", false},
+          {"R1_PUT_OPT2_A1_FIN", false},
+          {"R1_PUT_OPT3_A1_FIN", false},
+          {"R1_GET_OPT0_A1_FIN", false},
+          {"R1_GET_OPT1_A1_FIN", false},
+          {"R1_GET_OPT2_A1_FIN", false},
+          {"R1_GET_OPT3_A1_FIN", false},
+          {"R1_GET_WAIT_A1_FIN", false},
 
-          {"R2_PUT_OPT0_ACK", false},
-          {"R2_PUT_OPT1_ACK", false},
-          {"R2_PUT_OPT2_ACK", false},
-          {"R2_PUT_OPT3_ACK", false},
+          {"R1_PUT_OPT0_A2_ACK", false},
+          {"R1_PUT_OPT1_A2_ACK", false},
+          {"R1_PUT_OPT2_A2_ACK", false},
+          {"R1_PUT_OPT3_A2_ACK", false},
+          {"R1_GET_OPT0_A2_ACK", false},
+          {"R1_GET_OPT1_A2_ACK", false},
+          {"R1_GET_OPT2_A2_ACK", false},
+          {"R1_GET_OPT3_A2_ACK", false},
+          {"R1_GET_WAIT_A2_ACK", false},
+          {"R1_PUT_OPT0_A2_FIN", false},
+          {"R1_PUT_OPT1_A2_FIN", false},
+          {"R1_PUT_OPT2_A2_FIN", false},
+          {"R1_PUT_OPT3_A2_FIN", false},
+          {"R1_GET_OPT0_A2_FIN", false},
+          {"R1_GET_OPT1_A2_FIN", false},
+          {"R1_GET_OPT2_A2_FIN", false},
+          {"R1_GET_OPT3_A2_FIN", false},
+          {"R1_GET_WAIT_A2_FIN", false},
+
+          {"R1_GET_OPT0_PORT_ACK", false},
+          {"R1_PUT_OPT0_PORT_ACK", false},
+          {"R1_GET_OPT0_PORT_FIN", false},
+          {"R1_PUT_OPT0_PORT_FIN", false},
+
+          {"R2_PUT_OPT0_A1_ACK", false},
+          {"R2_PUT_OPT1_A1_ACK", false},
+          {"R2_PUT_OPT2_A1_ACK", false},
+          {"R2_PUT_OPT3_A1_ACK", false},
+          {"R2_GET_OPT0_A1_ACK", false},
+          {"R2_GET_OPT1_A1_ACK", false},
+          {"R2_GET_OPT2_A1_ACK", false},
+          {"R2_GET_OPT3_A1_ACK", false},
+          {"R2_GET_WAIT_A1_ACK", false},
+          {"R2_PUT_OPT0_A1_FIN", false},
+          {"R2_PUT_OPT1_A1_FIN", false},
+          {"R2_PUT_OPT2_A1_FIN", false},
+          {"R2_PUT_OPT3_A1_FIN", false},
+          {"R2_GET_OPT0_A1_FIN", false},
+          {"R2_GET_OPT1_A1_FIN", false},
+          {"R2_GET_OPT2_A1_FIN", false},
+          {"R2_GET_OPT3_A1_FIN", false},
+          {"R2_GET_WAIT_A1_FIN", false},
+
+          {"R2_PUT_OPT0_A2_ACK", false},
+          {"R2_PUT_OPT1_A2_ACK", false},
+          {"R2_PUT_OPT2_A2_ACK", false},
+          {"R2_PUT_OPT3_A2_ACK", false},
+          {"R2_GET_OPT0_A2_ACK", false},
+          {"R2_GET_OPT1_A2_ACK", false},
+          {"R2_GET_OPT2_A2_ACK", false},
+          {"R2_GET_OPT3_A2_ACK", false},
+          {"R2_GET_WAIT_A2_ACK", false},
+          {"R2_PUT_OPT0_A2_FIN", false},
+          {"R2_PUT_OPT1_A2_FIN", false},
+          {"R2_PUT_OPT2_A2_FIN", false},
+          {"R2_PUT_OPT3_A2_FIN", false},
+          {"R2_GET_OPT0_A2_FIN", false},
+          {"R2_GET_OPT1_A2_FIN", false},
+          {"R2_GET_OPT2_A2_FIN", false},
+          {"R2_GET_OPT3_A2_FIN", false},
+          {"R2_GET_WAIT_A2_FIN", false},
+
           {"R2_GET_OPT0_ACK", false},
-          {"R2_GET_OPT1_ACK", false},
-          {"R2_GET_OPT2_ACK", false},
-          {"R2_GET_OPT3_ACK", false},
-          {"R2_GET_WAIT_ACK", false},
-          {"R2_PUT_OPT0_FIN", false},
-          {"R2_PUT_OPT1_FIN", false},
-          {"R2_PUT_OPT2_FIN", false},
-          {"R2_PUT_OPT3_FIN", false},
+          {"R2_PUT_OPT0_ACK", false},
           {"R2_GET_OPT0_FIN", false},
-          {"R2_GET_OPT1_FIN", false},
-          {"R2_GET_OPT2_FIN", false},
-          {"R2_GET_OPT3_FIN", false},
-          {"R2_GET_WAIT_FIN", false},
+          {"R2_PUT_OPT0_FIN", false}
         };        
     }
 }
