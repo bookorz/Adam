@@ -85,13 +85,14 @@ namespace Adam.Menu.RunningScreen
             }
             foreach (Node node in NodeManagement.GetList())
             {
+                string Message = "";
                 if (node.Type.Equals("ROBOT"))
                 {
                     Transaction txn = new Transaction();
                     txn.Method = Transaction.Command.RobotType.RobotSpeed;
                     txn.Value = sp;
                     txn.FormName = "Running";
-                    node.SendCommand(txn);
+                    node.SendCommand(txn, out Message);
                 }
                 else
                 if (node.Type.Equals("ALIGNER"))
@@ -100,7 +101,7 @@ namespace Adam.Menu.RunningScreen
                     txn.Method = Transaction.Command.AlignerType.AlignerSpeed;
                     txn.Value = sp;
                     txn.FormName = "Running";
-                    node.SendCommand(txn);
+                    node.SendCommand(txn, out Message);
                 }
             }
         }

@@ -43,11 +43,12 @@ namespace Adam
             var NodeList = AlarmManagement.GetAll().GroupBy(t => t.NodeName);
             foreach (var group in NodeList)
             {
+                string Message = "";
                 Txn = new Transaction();
                 Txn.Method = Transaction.Command.RobotType.Reset;
                 Txn.FormName = "";
                 //NodeManagement.Get(group.First().NodeName).State = "Alarm";
-                NodeManagement.Get(group.First().NodeName).SendCommand(Txn);
+                NodeManagement.Get(group.First().NodeName).SendCommand(Txn, out Message);
                 AlarmManagement.Remove(group.First().NodeName);
             }
             //NodeStatusUpdate.UpdateCurrentState("Idle");

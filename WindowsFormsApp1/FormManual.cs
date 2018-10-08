@@ -48,6 +48,7 @@ namespace GUI
 
         private void PortFunction_Click(object sender, EventArgs e)
         {
+            string Message = "";
             Node port = NodeManagement.Get(Cb_LoadPortSelect.Text);
             Transaction txn = new Transaction();
             txn.FormName = "FormManual";
@@ -155,7 +156,7 @@ namespace GUI
             if (!txn.Method.Equals(""))
             {
                 ManualPortStatusUpdate.LockUI(true);
-                port.SendCommand(txn);
+                port.SendCommand(txn, out Message);
             }
             else
             {
@@ -192,6 +193,7 @@ namespace GUI
 
         private void AlignerFunction_Click(object sender, EventArgs e)
         {
+            string Message = "";
             Button btn = (Button)sender;
             String nodeName = "NA";
             String angle = "0";
@@ -336,7 +338,7 @@ namespace GUI
             }
             if (!txns[0].Method.Equals(""))
             {
-                aligner.SendCommand(txns[0]);
+                aligner.SendCommand(txns[0], out Message);
             }
             else
             {
@@ -362,6 +364,8 @@ namespace GUI
 
         private void MotionFunction_Click(object sender, EventArgs e)
         {
+            string Message = "";
+
             Boolean isRobotActive = false;
             Button btn = (Button)sender;
             String nodeName = null ;
@@ -401,7 +405,7 @@ namespace GUI
             }
             if (!txn.Method.Equals(""))
             {
-                node.SendCommand(txn);
+                node.SendCommand(txn, out Message);
             }
             else
             {
@@ -410,7 +414,7 @@ namespace GUI
         }
         private void RobotFunction_Click(object sender, EventArgs e)
         {
-
+            string Message = "";
             Button btn = (Button)sender;
             if (!btn.Name.Equals("btnRConn") && !btn.Name.Equals("btnRConn"))
             {
@@ -624,7 +628,7 @@ namespace GUI
                     }
                     else
                     {
-                        robot.ExcuteScript("RobotManualPutPut", "FormManual-Script", GetScriptVar(), WaferSize);
+                        robot.ExcuteScript("RobotManualPutPut", "FormManual-Script", GetScriptVar(), out Message, WaferSize);
                         return;
                     }
                 case "btnRGetGet":
@@ -635,7 +639,7 @@ namespace GUI
                     }
                     else
                     {
-                        robot.ExcuteScript("RobotManualGetGet", "FormManual-Script", GetScriptVar(), WaferSize);
+                        robot.ExcuteScript("RobotManualGetGet", "FormManual-Script", GetScriptVar(), out Message, WaferSize);
                         return;
                     }
                 case "btnRGetPut":
@@ -647,7 +651,7 @@ namespace GUI
                     }
                     else
                     {
-                        robot.ExcuteScript("RobotManualGetPut", "FormManual-Script", GetScriptVar(), WaferSize);
+                        robot.ExcuteScript("RobotManualGetPut", "FormManual-Script", GetScriptVar(), out Message, WaferSize);
                         return;
                     }
                 case "btnRPutGet":
@@ -659,7 +663,7 @@ namespace GUI
                     }
                     else
                     {
-                        robot.ExcuteScript("RobotManualPutGet", "FormManual-Script", GetScriptVar(), WaferSize);
+                        robot.ExcuteScript("RobotManualPutGet", "FormManual-Script", GetScriptVar(), out Message, WaferSize);
                         return;
                     }
                 case "btnRReset":
@@ -677,7 +681,7 @@ namespace GUI
             if (!txns[0].Method.Equals(""))
             {
                 txns[0].RecipeID = WaferSize;
-                robot.SendCommand(txns[0]);
+                robot.SendCommand(txns[0], out Message);
             }
             else
             {
@@ -710,6 +714,7 @@ namespace GUI
 
         private void setRobotStatus()
         {
+            string Message = "";
             Control[] controls = new Control[] { tbRError, tbRLVacuSolenoid, tbRLwaferSensor, tbRRVacuSolenoid, tbRRwaferSensor, nudRSpeed, tbRStatus };
             foreach (Control control in controls)
             {
@@ -725,13 +730,14 @@ namespace GUI
             //向Robot 詢問狀態
             Node robot = NodeManagement.Get(nodeName);
             String script_name = robot.Brand.ToUpper().Equals("SANWA") ? "RobotStateGet" : "RobotStateGet(Kawasaki)";
-            robot.ExcuteScript(script_name, "FormManual");
+            robot.ExcuteScript(script_name, "FormManual", out Message);
 
         }
 
 
         private void setAlignerStatus()
         {
+            string Message = "";
             Control[] controls = new Control[] { tbA1Error, tbA1Status, tbA1VacSolenoid, tbA1WaferSensor, tbA1WaferSensor, tbA2Error, tbA2Status, tbA2VacSolenoid, tbA2WaferSensor, tbA2WaferSensor, nudA1Speed, nudA2Speed };
             foreach (Control control in controls)
             {
@@ -747,12 +753,12 @@ namespace GUI
             if (!tbA1Status.Text.Equals("N/A") && !tbA1Status.Text.Equals("Disconnected") && !tbA1Status.Text.Equals(""))
             {
                 String script_name = aligner1.Brand.ToUpper().Equals("SANWA")?"AlignerStateGet":"AlignerStateGet(Kawasaki)";
-                aligner1.ExcuteScript(script_name, "FormManual"); ;//連線狀態下才執行
+                aligner1.ExcuteScript(script_name, "FormManual", out Message); ;//連線狀態下才執行
             }
             if (!tbA2Status.Text.Equals("N/A") && !tbA2Status.Text.Equals("Disconnected") && !tbA2Status.Text.Equals(""))
             {
                 String script_name = aligner2.Brand.ToUpper().Equals("SANWA") ? "AlignerStateGet" : "AlignerStateGet(Kawasaki)";
-                aligner2.ExcuteScript(script_name, "FormManual"); ;//連線狀態下才執行
+                aligner2.ExcuteScript(script_name, "FormManual", out Message); ;//連線狀態下才執行
             }
         }
 

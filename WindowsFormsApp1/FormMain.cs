@@ -178,17 +178,18 @@ namespace Adam
 
                 foreach (Node each in NodeManagement.GetList())
                 {
+                    string Message = "";
                     each.InitialComplete = false;
                     switch (each.Type.ToUpper())
                     {
                         case "ROBOT":
-                            each.ExcuteScript("RobotInit", "Initialize");
+                            each.ExcuteScript("RobotInit", "Initialize",out Message);
                             break;
                         case "ALIGNER":
-                            each.ExcuteScript("AlignerInit", "Initialize");
+                            each.ExcuteScript("AlignerInit", "Initialize", out Message);
                             break;
                         case "LOADPORT":
-                            each.ExcuteScript("LoadPortInit", "Initialize");
+                            each.ExcuteScript("LoadPortInit", "Initialize", out Message);
                             break;
                     }
                 }
@@ -198,14 +199,15 @@ namespace Adam
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
             string strMsg = "Move to Home position. OK?";
+            string Message = "";
             if (MessageBox.Show(strMsg, "Org.Back", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
                 Transaction txn = new Transaction();
                 txn.Method = Transaction.Command.RobotType.RobotHome;
-                NodeManagement.Get("Robot01").SendCommand(txn);
+                NodeManagement.Get("Robot01").SendCommand(txn, out Message);
                 txn = new Transaction();
                 txn.Method = Transaction.Command.RobotType.RobotHome;
-                NodeManagement.Get("Robot02").SendCommand(txn);
+                NodeManagement.Get("Robot02").SendCommand(txn, out Message);
             }
         }
 
@@ -291,7 +293,7 @@ namespace Adam
         public void On_Command_Excuted(Node Node, Transaction Txn, ReturnMessage Msg)
         {
             logger.Debug("On_Command_Excuted");
-
+            string Message = "";
             Transaction txn = new Transaction();
 
             if (Txn.Method == Transaction.Command.LoadPortType.Reset)
@@ -376,7 +378,7 @@ namespace Adam
                                     //向Robot 詢問狀態
                                     Node robot = NodeManagement.Get(Node.Name);
                                     String script_name = robot.Brand.ToUpper().Equals("SANWA") ? "RobotStateGet" : "RobotStateGet(Kawasaki)";
-                                    robot.ExcuteScript(script_name, "FormManual");
+                                    robot.ExcuteScript(script_name, "FormManual", out Message);
                                     ManualRobotStatusUpdate.UpdateGUI(Txn, Node.Name, Msg.Value);//update 手動功能畫面 
                                     break;
                                 case Transaction.Command.RobotType.GetSpeed:
@@ -403,7 +405,7 @@ namespace Adam
                                     //向Aligner 詢問狀態
                                     Node aligner = NodeManagement.Get(Node.Name);
                                     String script_name = aligner.Brand.ToUpper().Equals("SANWA") ? "AlignerStateGet" : "AlignerStateGet(Kawasaki)";
-                                    aligner.ExcuteScript(script_name, "FormManual");
+                                    aligner.ExcuteScript(script_name, "FormManual", out Message);
                                     ManualAlignerStatusUpdate.UpdateGUI(Txn, Node.Name, Msg.Value);//update 
                                     break;
                                 case Transaction.Command.AlignerType.GetMode:
@@ -472,13 +474,13 @@ namespace Adam
                                     if (CheckResult)
                                     {
                                         Node.FoupReady = true;
-                                        Node.ExcuteScript("LoadPortFoupIn", "LoadPortFoup","", true);
+                                        Node.ExcuteScript("LoadPortFoupIn", "LoadPortFoup", out Message, "", true);
 
                                     }
                                     else
                                     {
                                         Node.FoupReady = false;
-                                        Node.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", "", true);
+                                        Node.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", out Message, "", true);
                                         On_Node_State_Changed(Node, "Ready To Load");
                                     }
                                     break;
@@ -626,7 +628,7 @@ namespace Adam
         public void On_Event_Trigger(Node Node, ReturnMessage Msg)
         {
             logger.Debug("On_Event_Trigger");
-
+            string Message = "";
 
             Transaction txn = new Transaction();
             switch (Node.Type)
@@ -638,19 +640,19 @@ namespace Adam
                         case "MANSW":
                             if (Node.FoupReady)
                             {
-                                Node.ExcuteScript("LoadPortMapping", "MANSW", "", true);
+                                Node.ExcuteScript("LoadPortMapping", "MANSW", out Message, "", true);
                             }
                             break;
                         case "PODON":
                             //檢查LoadPort狀態
                             txn.Method = Transaction.Command.LoadPortType.ReadStatus;
                             txn.FormName = "";
-                            Node.SendCommand(txn);
+                            Node.SendCommand(txn, out Message);
 
                             break;
                         case "PODOF":
                             Node.FoupReady = false;
-                            Node.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", "", true);
+                            Node.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", out Message, "", true);
                             On_Node_State_Changed(Node, "Ready To Load");
                             break;
                     }
@@ -684,7 +686,7 @@ namespace Adam
 
         public void On_Controller_State_Changed(string Device_ID, string Status)
         {
-
+            string Message = "";
             ConnectionStatusUpdate.UpdateControllerStatus(Device_ID, Status);
 
             if (Status.Equals("Connected"))
@@ -696,7 +698,7 @@ namespace Adam
 
                 foreach (Node port in findPort)
                 {
-                    port.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", "", true);
+                    port.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", out Message, "", true);
                 }
                 CommunicationsUpdate.UpdateConnection(Device_ID, true);
             }
@@ -737,7 +739,7 @@ namespace Adam
             logger.Debug("On_Port_Finished");
             try
             {
-
+                string Message = "";
                 WaferAssignUpdate.RefreshMapping(PortName);
                 WaferAssignUpdate.RefreshMapping(NodeManagement.Get(PortName).DestPort);
                 Node Port = NodeManagement.Get(PortName);
@@ -750,8 +752,8 @@ namespace Adam
                         WaferAssignUpdate.UpdateUseState(PortName, false);
                         if (!Port.ByPass)
                         {
-                            Port.ExcuteScript("LoadPortUnloadAndLoad", "Running_Port_Finished");
-                            DestPort.ExcuteScript("LoadPortUnloadAndLoad", "Running_Port_Finished");
+                            Port.ExcuteScript("LoadPortUnloadAndLoad", "Running_Port_Finished", out Message);
+                            DestPort.ExcuteScript("LoadPortUnloadAndLoad", "Running_Port_Finished", out Message);
                         }
                         else
                         {
@@ -761,7 +763,7 @@ namespace Adam
 
                         break;
                     default:
-                        Port.ExcuteScript("LoadPortUnload", "Port_Finished");
+                        Port.ExcuteScript("LoadPortUnload", "Port_Finished", out Message);
                         break;
                 }
             }
@@ -829,6 +831,7 @@ namespace Adam
         public void On_Script_Finished(Node Node, string ScriptName, string FormName)
         {
             logger.Debug("On_Script_Finished: " + Node.Name + " Script:" + ScriptName + " Finished, Form name:" + FormName);
+            string Message = "";
             switch (FormName)
             {
                 case "Initialize":
@@ -856,7 +859,7 @@ namespace Adam
                                 Transaction txn = new Transaction();
                                 txn.Method = Transaction.Command.LoadPortType.ReadStatus;
                                 txn.FormName = "InitialFinish";
-                                port.SendCommand(txn);
+                                port.SendCommand(txn, out Message);
                             }
                         }
                     }
