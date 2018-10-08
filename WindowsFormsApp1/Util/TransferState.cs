@@ -21,10 +21,10 @@ namespace Adam.Util
         {
             Boolean result = false;
             try
-
-//          {"OCR1_READ_FIN", false},
-//          {"OCR2_READ_FIN", false},
-
+            {
+                //          {"OCR1_READ_FIN", false},
+                //          {"OCR2_READ_FIN", false},
+            }
             catch (Exception)
             {
                 result = false;

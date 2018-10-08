@@ -236,7 +236,7 @@ namespace Adam.Util
             {
                 return;//do nothing
             }
-            TransferState.checkRule[ preRobot + "_GET_WAIT_" + + "_FIN"] = false;
+            TransferState.checkRule[ preRobot + "_GET_WAIT_" + "_FIN"] = false;
             TransferState.checkRule[ preRobot + "_GET_OPT0_FIN"] = false;
             TransferState.checkRule[ preRobot + "_GET_OPT3_FIN"] = false;
             TransferState.checkRule[ tagAligner + "_HOME_FIN"] = false;
@@ -333,7 +333,7 @@ namespace Adam.Util
         {
             //TransferState.isJobFin = false;
             CommandJob[] cmds = (CommandJob[])data;
-
+            string Message = "";
             foreach (CommandJob cmd in cmds)
             {
                 if (cmd.nodeName.StartsWith("OCR") || cmd.nodeName.ToUpper().Equals("ALIGNER01"))
@@ -364,7 +364,7 @@ namespace Adam.Util
                 string msg = cmd.methodName + " Form:" + cmd.txn.FormName + " Method: " + cmd.txn.Method + " Position:" + cmd.txn.Position + " Arm:" + cmd.txn.Arm + " Slot:" + cmd.txn.Slot + " Node:" + cmd.nodeName;
                 addLog(msg + "\n");
                 logger.Error(msg);
-                node.SendCommand(cmd.txn);
+                node.SendCommand(cmd.txn,out Message);
                 //post check
                 if (needChkPostRule)
                 {

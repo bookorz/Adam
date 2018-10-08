@@ -504,7 +504,7 @@ namespace Adam.Util
         {
             //TransferState.isJobFin = false;
             CommandJob[] cmds = (CommandJob[])data;
-
+            string Message = "";
             foreach (CommandJob cmd in cmds)
             {
                 if (cmd.nodeName.StartsWith("OCR") || cmd.nodeName.ToUpper().Equals("ALIGNER01"))
@@ -535,7 +535,7 @@ namespace Adam.Util
                 cmd.txn.RecipeID = "300MM"; //hard code
                 string msg = DateTime.Now.TimeOfDay + "" + cmd.methodName + " Form:" + cmd.txn.FormName + " Method: " + cmd.txn.Method + " Position:" + cmd.txn.Position + " Arm:" + cmd.txn.Arm + " Slot:" + cmd.txn.Slot + " Node:" + cmd.nodeName;
                 addLog(msg + "\n");
-                node.SendCommand(cmd.txn);
+                node.SendCommand(cmd.txn,out Message);
                 //post check
                 if (needChkPostRule)
                 {
