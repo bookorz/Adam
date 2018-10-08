@@ -151,6 +151,7 @@
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.panel15 = new System.Windows.Forms.Panel();
             this.panel16 = new System.Windows.Forms.Panel();
+            this.btnTest = new System.Windows.Forms.Button();
             this.nudA1Speed = new System.Windows.Forms.NumericUpDown();
             this.udA1AngleOffset = new System.Windows.Forms.NumericUpDown();
             this.btnA1ChgMode = new System.Windows.Forms.Button();
@@ -185,6 +186,10 @@
             this.btnA1VacuOn = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.Command_Group_A = new System.Windows.Forms.GroupBox();
+            this.Btn_EQASPOFF_A = new System.Windows.Forms.Button();
+            this.Btn_EQASPON_A = new System.Windows.Forms.Button();
+            this.Btn_Online_A = new System.Windows.Forms.Button();
+            this.Btn_Maintain_A = new System.Windows.Forms.Button();
             this.LblLED_A = new System.Windows.Forms.Label();
             this.Btn_ReadLED_A = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
@@ -317,7 +322,6 @@
             this.btnPause = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.pnlMotionStop = new System.Windows.Forms.Panel();
-            this.btnTest = new System.Windows.Forms.Button();
             this.tbcManual.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox20.SuspendLayout();
@@ -2167,6 +2171,16 @@
             this.panel16.Size = new System.Drawing.Size(686, 709);
             this.panel16.TabIndex = 18;
             // 
+            // btnTest
+            // 
+            this.btnTest.Location = new System.Drawing.Point(513, 652);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(117, 38);
+            this.btnTest.TabIndex = 109;
+            this.btnTest.Text = "test";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
             // nudA1Speed
             // 
             this.nudA1Speed.Increment = new decimal(new int[] {
@@ -2640,6 +2654,10 @@
             // Command_Group_A
             // 
             this.Command_Group_A.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.Command_Group_A.Controls.Add(this.Btn_EQASPOFF_A);
+            this.Command_Group_A.Controls.Add(this.Btn_EQASPON_A);
+            this.Command_Group_A.Controls.Add(this.Btn_Online_A);
+            this.Command_Group_A.Controls.Add(this.Btn_Maintain_A);
             this.Command_Group_A.Controls.Add(this.LblLED_A);
             this.Command_Group_A.Controls.Add(this.Btn_ReadLED_A);
             this.Command_Group_A.Controls.Add(this.groupBox10);
@@ -2679,6 +2697,62 @@
             this.Command_Group_A.TabIndex = 24;
             this.Command_Group_A.TabStop = false;
             this.Command_Group_A.Tag = "1";
+            // 
+            // Btn_EQASPOFF_A
+            // 
+            this.Btn_EQASPOFF_A.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Btn_EQASPOFF_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.Btn_EQASPOFF_A.Location = new System.Drawing.Point(303, 337);
+            this.Btn_EQASPOFF_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Btn_EQASPOFF_A.Name = "Btn_EQASPOFF_A";
+            this.Btn_EQASPOFF_A.Size = new System.Drawing.Size(119, 52);
+            this.Btn_EQASPOFF_A.TabIndex = 52;
+            this.Btn_EQASPOFF_A.Tag = "1";
+            this.Btn_EQASPOFF_A.Text = "EQASP OFF";
+            this.Btn_EQASPOFF_A.UseVisualStyleBackColor = true;
+            this.Btn_EQASPOFF_A.Click += new System.EventHandler(this.PortFunction_Click);
+            // 
+            // Btn_EQASPON_A
+            // 
+            this.Btn_EQASPON_A.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Btn_EQASPON_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.Btn_EQASPON_A.Location = new System.Drawing.Point(303, 275);
+            this.Btn_EQASPON_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Btn_EQASPON_A.Name = "Btn_EQASPON_A";
+            this.Btn_EQASPON_A.Size = new System.Drawing.Size(119, 52);
+            this.Btn_EQASPON_A.TabIndex = 51;
+            this.Btn_EQASPON_A.Tag = "1";
+            this.Btn_EQASPON_A.Text = "EQASP ON";
+            this.Btn_EQASPON_A.UseVisualStyleBackColor = true;
+            this.Btn_EQASPON_A.Click += new System.EventHandler(this.PortFunction_Click);
+            // 
+            // Btn_Online_A
+            // 
+            this.Btn_Online_A.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Btn_Online_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.Btn_Online_A.Location = new System.Drawing.Point(371, 597);
+            this.Btn_Online_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Btn_Online_A.Name = "Btn_Online_A";
+            this.Btn_Online_A.Size = new System.Drawing.Size(67, 35);
+            this.Btn_Online_A.TabIndex = 50;
+            this.Btn_Online_A.Tag = "1";
+            this.Btn_Online_A.Text = "Online";
+            this.Btn_Online_A.UseVisualStyleBackColor = true;
+            this.Btn_Online_A.Click += new System.EventHandler(this.PortFunction_Click);
+            // 
+            // Btn_Maintain_A
+            // 
+            this.Btn_Maintain_A.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Btn_Maintain_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.Btn_Maintain_A.Location = new System.Drawing.Point(303, 597);
+            this.Btn_Maintain_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Btn_Maintain_A.Name = "Btn_Maintain_A";
+            this.Btn_Maintain_A.Size = new System.Drawing.Size(67, 35);
+            this.Btn_Maintain_A.TabIndex = 49;
+            this.Btn_Maintain_A.Tag = "1";
+            this.Btn_Maintain_A.Text = "Mant";
+            this.Btn_Maintain_A.UseVisualStyleBackColor = true;
+            this.Btn_Maintain_A.Click += new System.EventHandler(this.PortFunction_Click);
             // 
             // LblLED_A
             // 
@@ -4379,7 +4453,7 @@
             // 
             this.Btn_Clamp_A.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.Btn_Clamp_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Btn_Clamp_A.Location = new System.Drawing.Point(180, 276);
+            this.Btn_Clamp_A.Location = new System.Drawing.Point(178, 275);
             this.Btn_Clamp_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Btn_Clamp_A.Name = "Btn_Clamp_A";
             this.Btn_Clamp_A.Size = new System.Drawing.Size(119, 52);
@@ -4530,16 +4604,6 @@
             this.pnlMotionStop.Name = "pnlMotionStop";
             this.pnlMotionStop.Size = new System.Drawing.Size(755, 50);
             this.pnlMotionStop.TabIndex = 1;
-            // 
-            // btnTest
-            // 
-            this.btnTest.Location = new System.Drawing.Point(513, 652);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(117, 38);
-            this.btnTest.TabIndex = 109;
-            this.btnTest.Text = "test";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // FormManual
             // 
@@ -4904,5 +4968,9 @@
         private System.Windows.Forms.RadioButton TwelveInch_rb;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnTest;
+        internal System.Windows.Forms.Button Btn_Online_A;
+        internal System.Windows.Forms.Button Btn_Maintain_A;
+        internal System.Windows.Forms.Button Btn_EQASPOFF_A;
+        internal System.Windows.Forms.Button Btn_EQASPON_A;
     }
 }

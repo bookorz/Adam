@@ -169,5 +169,35 @@ namespace Adam.Menu.Monitoring
             OCRResult form2 = new OCRResult((sender as PictureBox).Tag as Job);
             form2.ShowDialog();
         }
+
+        private void OCR02Read_Tb_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            string Message = "";
+            Transaction t = new Transaction();
+            Node ocr2 = NodeManagement.Get("OCR02");
+            t.Method = Transaction.Command.OCRType.ReadConfig;
+            t.Value = "0";
+            ocr2.SendCommand(t,out Message);
+        }
+
+        private void OCR02ReadT7_Tb_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            string Message = "";
+            Transaction t = new Transaction();
+            Node ocr2 = NodeManagement.Get("OCR02");
+            t.Method = Transaction.Command.OCRType.ReadConfig;
+            t.Value = "1";
+            ocr2.SendCommand(t, out Message);
+        }
+
+        private void Ocr2_lb_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            string Message = "";
+            Transaction t = new Transaction();
+            Node ocr2 = NodeManagement.Get("OCR02");
+            t.Method = Transaction.Command.OCRType.Read;
+           
+            ocr2.SendCommand(t, out Message);
+        }
     }
 }

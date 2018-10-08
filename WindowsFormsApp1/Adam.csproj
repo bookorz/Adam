@@ -327,11 +327,13 @@
     <Compile Include="UI_Update\Running\RunningUpdate.cs" />
     <Compile Include="UI_Update\Terminal\TerminalUpdate.cs" />
     <Compile Include="UI_Update\WaferMapping\WaferAssignUpdate.cs" />
+    <Compile Include="Util\OCRResult.cs" />
     <Compile Include="Util\SanwaUtil.cs" />
     <Compile Include="Util\StateUtil.cs" />
     <Compile Include="Util\Tools.cs" />
     <Compile Include="Util\TransferJob.cs" />
     <Compile Include="Util\TransferState.cs" />
+    <Compile Include="Util\XmlObjectSerializer.cs" />
     <EmbeddedResource Include="FormAlarm.resx">
       <DependentUpon>FormAlarm.cs</DependentUpon>
     </EmbeddedResource>

@@ -1,6 +1,6 @@
 {
   "SystemMode": "SORTER_2R2A8L",
-  "DBConnectionString": "server=127.0.0.1;port=3306;user id=sanwa;password=sanwa_adam;database=adam",
+  "DBConnectionString": "server=127.0.0.1;port=3307;user id=sanwa;password=sanwa_adam;database=adam",
   "OCR2ImgSourcePath": "C:/ProgramData/e-Reader0/e-Reader/AllImage",
   "OCR2ImgToJpgPath": "C:/ProgramData/e-Reader0/e-Reader/JPG",
   "OCR2ExePath": "C:/Program Files (x86)/HST Vision/e-Reader8000/VB9BReaderForm.exe",

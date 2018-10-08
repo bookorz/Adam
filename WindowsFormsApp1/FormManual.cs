@@ -152,6 +152,23 @@ namespace GUI
                 case "Btn_MappingDown_A":
                     txn.Method = Transaction.Command.LoadPortType.MappingDown;
                     break;
+                case "Btn_Maintain_A":
+                    txn.Method = Transaction.Command.LoadPortType.Mode;
+                    txn.Value = "1";
+                    break;
+                case "Btn_Online_A":
+                    txn.Method = Transaction.Command.LoadPortType.Mode;
+                    txn.Value = "0";
+                    break;
+                case "Btn_EQASPON_A":
+                    txn.Method = Transaction.Command.LoadPortType.EQASP;
+                    txn.Value = "1";
+                    break;
+                case "Btn_EQASPOFF_A":
+                    txn.Method = Transaction.Command.LoadPortType.EQASP;
+                    txn.Value = "0";
+                    break;
+
             }
             if (!txn.Method.Equals(""))
             {
@@ -875,8 +892,8 @@ namespace GUI
 
         private void btnTest_Click(object sender, EventArgs e)
         {
-            TransferJob job = new TransferJob("LOADPORT02","");
-            job.doTransfer();
+            //TransferJob job = new TransferJob("LOADPORT02","");
+            //job.doTransfer();
         }
     }
 }

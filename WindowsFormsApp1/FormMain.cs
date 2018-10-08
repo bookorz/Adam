@@ -489,7 +489,7 @@ namespace Adam
                     }
                     break;
                 default:
-                    TransferState.setState(Txn.FormName + "_ACK", true); //2018 Add by Steven for Transfer Job check rule
+                   // TransferState.setState(Txn.FormName + "_ACK", true); //2018 Add by Steven for Transfer Job check rule
                     break;
             }
         }
@@ -512,7 +512,14 @@ namespace Adam
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = Node.Name;
             CurrentAlarm.AlarmCode = Msg.Value;
-            CurrentAlarm.NeedReset = true;
+            if (Node.Type.Equals("OCR"))
+            {
+                CurrentAlarm.NeedReset = false;
+            }
+            else
+            {
+                CurrentAlarm.NeedReset = true;
+            }
             try
             {
 
@@ -578,16 +585,31 @@ namespace Adam
                             }
                             break;
                         case "OCR":
+                            Job j;
+                            if (Txn.TargetJobs.Count() != 0)
+                            {
+                                j = Txn.TargetJobs[0];
+                            }
+                            else
+                            {
+                                j = new Job();
+                            }
                             switch (Txn.Method)
                             {
                                 case Transaction.Command.OCRType.Read:
-                                    OCRUpdate.UpdateOCRRead(Node.Name, Msg.Value, Txn.TargetJobs[0]);
+                                    OCRUpdate.UpdateOCRRead(Node.Name, Msg.Value, j);
+
+                                    break;
+                                case Transaction.Command.OCRType.ReadConfig:
+                                    OCRInfo result = new OCRInfo(Msg.Value);
+                                    
+                                    OCRUpdate.UpdateOCRReadXML(Node.Name, result, j);
 
                                     break;
                             }
                             break;
                     }
-                    TransferState.setState(Txn.FormName + "_FIN", true); //2018 Add by Steven for Transfer Job check rule
+                    //TransferState.setState(Txn.FormName + "_FIN", true); //2018 Add by Steven for Transfer Job check rule
                     break;
             }
         }
@@ -816,15 +838,18 @@ namespace Adam
 
         public void On_Job_Location_Changed(Job Job)
         {
-            logger.Debug("On_Job_Location_Changed");
-            MonitoringUpdate.UpdateJobMove(Job.Job_Id);
-            if (Job.Position.ToUpper().Equals("ALIGNER01"))
+            if (!Job.Job_Id.ToUpper().Equals("DUMMY"))
             {
-                Job.DefaultOCR = "OCR01";
-            }
-            if (Job.Position.ToUpper().Equals("ALIGNER02"))
-            {
-                Job.DefaultOCR = "OCR02";
+                logger.Debug("On_Job_Location_Changed");
+                MonitoringUpdate.UpdateJobMove(Job.Job_Id);
+                if (Job.Position.ToUpper().Equals("ALIGNER01"))
+                {
+                    Job.DefaultOCR = "OCR01";
+                }
+                if (Job.Position.ToUpper().Equals("ALIGNER02"))
+                {
+                    Job.DefaultOCR = "OCR02";
+                }
             }
         }
 

@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.Aligner01_tb = new System.Windows.Forms.GroupBox();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.WPH = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
             this.LoadPort08_Mode = new System.Windows.Forms.Label();
             this.label54 = new System.Windows.Forms.Label();
             this.LoadPort07_Mode = new System.Windows.Forms.Label();
@@ -47,10 +50,12 @@
             this.label16 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.OCR01ReadT7_Tb = new System.Windows.Forms.TextBox();
             this.OCR01_Pic = new System.Windows.Forms.PictureBox();
             this.OCR01Read_Tb = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
+            this.Ocr2_lb = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.OCR02ReadT7_Tb = new System.Windows.Forms.TextBox();
             this.OCR02_Pic = new System.Windows.Forms.PictureBox();
             this.OCR02Read_Tb = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -509,10 +514,8 @@
             this.Aligner01_State = new System.Windows.Forms.TextBox();
             this.LoadPort01_FID = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.WPH = new System.Windows.Forms.Label();
-            this.label32 = new System.Windows.Forms.Label();
             this.Aligner01_tb.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.OCR01_Pic)).BeginInit();
             this.panel1.SuspendLayout();
@@ -529,7 +532,6 @@
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.TblPanel_A.SuspendLayout();
-            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // Aligner01_tb
@@ -554,7 +556,7 @@
             this.Aligner01_tb.Controls.Add(this.label16);
             this.Aligner01_tb.Controls.Add(this.label1);
             this.Aligner01_tb.Controls.Add(this.panel2);
-            this.Aligner01_tb.Controls.Add(this.label15);
+            this.Aligner01_tb.Controls.Add(this.Ocr2_lb);
             this.Aligner01_tb.Controls.Add(this.panel1);
             this.Aligner01_tb.Controls.Add(this.label8);
             this.Aligner01_tb.Controls.Add(this.panel3);
@@ -609,6 +611,48 @@
             this.Aligner01_tb.TabIndex = 1;
             this.Aligner01_tb.TabStop = false;
             this.Aligner01_tb.Text = "Device Information";
+            // 
+            // panel5
+            // 
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Controls.Add(this.WPH);
+            this.panel5.Controls.Add(this.label32);
+            this.panel5.Location = new System.Drawing.Point(1412, 694);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(177, 40);
+            this.panel5.TabIndex = 170;
+            // 
+            // WPH
+            // 
+            this.WPH.BackColor = System.Drawing.Color.Navy;
+            this.WPH.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.WPH.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.WPH.ForeColor = System.Drawing.Color.White;
+            this.WPH.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.WPH.Location = new System.Drawing.Point(63, 12);
+            this.WPH.Margin = new System.Windows.Forms.Padding(3);
+            this.WPH.Name = "WPH";
+            this.WPH.Size = new System.Drawing.Size(104, 18);
+            this.WPH.TabIndex = 17;
+            this.WPH.Tag = "1";
+            this.WPH.Text = "0";
+            this.WPH.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label32
+            // 
+            this.label32.BackColor = System.Drawing.Color.DimGray;
+            this.label32.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label32.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label32.ForeColor = System.Drawing.Color.White;
+            this.label32.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label32.Location = new System.Drawing.Point(9, 12);
+            this.label32.Margin = new System.Windows.Forms.Padding(3);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(48, 18);
+            this.label32.TabIndex = 16;
+            this.label32.Tag = "1";
+            this.label32.Text = "WPH";
+            this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LoadPort08_Mode
             // 
@@ -872,12 +916,22 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.OCR01ReadT7_Tb);
             this.panel2.Controls.Add(this.OCR01_Pic);
             this.panel2.Controls.Add(this.OCR01Read_Tb);
             this.panel2.Location = new System.Drawing.Point(1346, 38);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(243, 134);
+            this.panel2.Size = new System.Drawing.Size(243, 150);
             this.panel2.TabIndex = 152;
+            // 
+            // OCR01ReadT7_Tb
+            // 
+            this.OCR01ReadT7_Tb.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.OCR01ReadT7_Tb.Location = new System.Drawing.Point(14, 124);
+            this.OCR01ReadT7_Tb.Name = "OCR01ReadT7_Tb";
+            this.OCR01ReadT7_Tb.Size = new System.Drawing.Size(215, 16);
+            this.OCR01ReadT7_Tb.TabIndex = 2;
+            this.OCR01ReadT7_Tb.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // OCR01_Pic
             // 
@@ -900,26 +954,38 @@
             this.OCR01Read_Tb.TabIndex = 0;
             this.OCR01Read_Tb.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label15
+            // Ocr2_lb
             // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.ForeColor = System.Drawing.Color.Black;
-            this.label15.Location = new System.Drawing.Point(1366, 185);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(45, 19);
-            this.label15.TabIndex = 151;
-            this.label15.Text = "OCR2";
+            this.Ocr2_lb.AutoSize = true;
+            this.Ocr2_lb.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Ocr2_lb.ForeColor = System.Drawing.Color.Black;
+            this.Ocr2_lb.Location = new System.Drawing.Point(1366, 191);
+            this.Ocr2_lb.Name = "Ocr2_lb";
+            this.Ocr2_lb.Size = new System.Drawing.Size(45, 19);
+            this.Ocr2_lb.TabIndex = 151;
+            this.Ocr2_lb.Text = "OCR2";
+            this.Ocr2_lb.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Ocr2_lb_MouseDoubleClick);
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.OCR02ReadT7_Tb);
             this.panel1.Controls.Add(this.OCR02_Pic);
             this.panel1.Controls.Add(this.OCR02Read_Tb);
-            this.panel1.Location = new System.Drawing.Point(1346, 198);
+            this.panel1.Location = new System.Drawing.Point(1346, 204);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(243, 134);
+            this.panel1.Size = new System.Drawing.Size(243, 149);
             this.panel1.TabIndex = 147;
+            // 
+            // OCR02ReadT7_Tb
+            // 
+            this.OCR02ReadT7_Tb.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.OCR02ReadT7_Tb.Location = new System.Drawing.Point(13, 125);
+            this.OCR02ReadT7_Tb.Name = "OCR02ReadT7_Tb";
+            this.OCR02ReadT7_Tb.Size = new System.Drawing.Size(215, 16);
+            this.OCR02ReadT7_Tb.TabIndex = 2;
+            this.OCR02ReadT7_Tb.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.OCR02ReadT7_Tb.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.OCR02ReadT7_Tb_MouseDoubleClick);
             // 
             // OCR02_Pic
             // 
@@ -939,6 +1005,7 @@
             this.OCR02Read_Tb.Size = new System.Drawing.Size(215, 16);
             this.OCR02Read_Tb.TabIndex = 0;
             this.OCR02Read_Tb.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.OCR02Read_Tb.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.OCR02Read_Tb_MouseDoubleClick);
             // 
             // label8
             // 
@@ -9141,48 +9208,6 @@
             this.label9.Text = "LoadPort01";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // panel5
-            // 
-            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel5.Controls.Add(this.WPH);
-            this.panel5.Controls.Add(this.label32);
-            this.panel5.Location = new System.Drawing.Point(1412, 694);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(177, 40);
-            this.panel5.TabIndex = 170;
-            // 
-            // WPH
-            // 
-            this.WPH.BackColor = System.Drawing.Color.Navy;
-            this.WPH.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.WPH.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.WPH.ForeColor = System.Drawing.Color.White;
-            this.WPH.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.WPH.Location = new System.Drawing.Point(63, 12);
-            this.WPH.Margin = new System.Windows.Forms.Padding(3);
-            this.WPH.Name = "WPH";
-            this.WPH.Size = new System.Drawing.Size(104, 18);
-            this.WPH.TabIndex = 17;
-            this.WPH.Tag = "1";
-            this.WPH.Text = "0";
-            this.WPH.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label32
-            // 
-            this.label32.BackColor = System.Drawing.Color.DimGray;
-            this.label32.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label32.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label32.ForeColor = System.Drawing.Color.White;
-            this.label32.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label32.Location = new System.Drawing.Point(9, 12);
-            this.label32.Margin = new System.Windows.Forms.Padding(3);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(48, 18);
-            this.label32.TabIndex = 16;
-            this.label32.Tag = "1";
-            this.label32.Text = "WPH";
-            this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // FormMonitoring
             // 
             this.ClientSize = new System.Drawing.Size(1620, 760);
@@ -9190,6 +9215,7 @@
             this.Name = "FormMonitoring";
             this.Aligner01_tb.ResumeLayout(false);
             this.Aligner01_tb.PerformLayout();
+            this.panel5.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.OCR01_Pic)).EndInit();
@@ -9216,7 +9242,6 @@
             this.tableLayoutPanel1.PerformLayout();
             this.TblPanel_A.ResumeLayout(false);
             this.TblPanel_A.PerformLayout();
-            this.panel5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -9680,7 +9705,7 @@
         internal System.Windows.Forms.Label label40;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.GroupBox Aligner01_tb;
-        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label Ocr2_lb;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel2;
@@ -9707,5 +9732,7 @@
         private System.Windows.Forms.Panel panel5;
         internal System.Windows.Forms.Label WPH;
         internal System.Windows.Forms.Label label32;
+        private System.Windows.Forms.TextBox OCR01ReadT7_Tb;
+        private System.Windows.Forms.TextBox OCR02ReadT7_Tb;
     }
 }

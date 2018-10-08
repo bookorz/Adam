@@ -21,6 +21,7 @@ namespace Adam.UI_Update.OCR
     {
         static ILog logger = LogManager.GetLogger(typeof(OCRUpdate));
         delegate void UpdateOCR(string OCRName, string In, Job Job);
+        delegate void UpdateOCRInfo(string OCRName, OCRInfo Result, Job Job);
         [DllImport("user32.dll", SetLastError = true)]
         private static extern long SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
@@ -144,6 +145,7 @@ namespace Adam.UI_Update.OCR
                                     if (fileList.Count != 0)
                                     {
                                         fileList.Sort((x, y) => { return -File.GetLastWriteTime(x).CompareTo(File.GetLastWriteTime(y)); });
+
                                         File.Copy(fileList[0], saveTmpPath);
                                         Image bmp = Image.FromFile(saveTmpPath);
 
@@ -172,6 +174,122 @@ namespace Adam.UI_Update.OCR
             catch(Exception e)
             {
                 logger.Error("UpdateOCRRead: Update fail.");
+            }
+        }
+
+        public static void UpdateOCRReadXML(string OCRName,OCRInfo OcrResult, Job Job)
+        {
+            try
+            {
+                Form form = Application.OpenForms["FormMonitoring"];
+                TextBox Tb_OCRRead;
+                if (form == null)
+                    return;
+                
+
+                string TbName = OCRName;
+                switch (OcrResult.ResultID)
+                {
+                    case "0":
+                        TbName += "Read_Tb";
+                        break;
+                    case "1":
+                        TbName += "ReadT7_Tb";
+                        break;
+                }
+                
+                Tb_OCRRead = form.Controls.Find(TbName, true).FirstOrDefault() as TextBox;
+                if (Tb_OCRRead == null)
+                    return;
+
+                if (Tb_OCRRead.InvokeRequired)
+                {
+                    UpdateOCRInfo ph = new UpdateOCRInfo(UpdateOCRReadXML);
+                    Tb_OCRRead.BeginInvoke(ph, OCRName, OcrResult, Job);
+                }
+                else
+                {
+                    string save = "";
+                    string src = "";
+                    string Result = "";
+
+                    if (OcrResult.Passed.Equals("0"))
+                    {
+                        Result = "Failed";
+                    }
+                    else
+                    {
+                        Result = OcrResult.Result+"_"+ OcrResult.Score;
+                    }
+                    switch (OCRName)
+                    {
+                        case "OCR01":
+                            save = SystemConfig.Get().OCR1ImgToJpgPath;
+                            src = SystemConfig.Get().OCR1ImgSourcePath;
+                            break;
+                        case "OCR02":
+                            save = SystemConfig.Get().OCR2ImgToJpgPath;
+                            src = SystemConfig.Get().OCR2ImgSourcePath;
+                            break;
+                    }
+
+                    Thread.Sleep(500);
+                    Node OCR = NodeManagement.Get(OCRName);
+                    if (OCR != null)
+                    {
+
+                        if (!Directory.Exists(save))
+                        {
+                            Directory.CreateDirectory(save);
+                        }
+                        string saveTmpPath = save + "/" + Result + "_" + DateTime.Now.ToString("yyyy_mm_dd_HH_MM_ss") + ".bmp";
+                        string FileName = Result + "_" + DateTime.Now.ToString("yyyy_mm_dd_HH_MM_ss") + ".jpg";
+                        string savePath = save + "/" + FileName;
+
+                        if (savePath != "")
+                        {
+                            switch (OCR.Brand)
+                            {
+                                
+                                case "HST":
+                                    
+                                    Tb_OCRRead.Text = OcrResult.Result+" Score:"+ OcrResult.Score;
+
+                                    string[] files = Directory.GetFiles(src);
+                                    List<string> fileList = files.ToList();
+                                    if (fileList.Count != 0)
+                                    {
+                                        fileList.Sort((x, y) => { return -File.GetLastWriteTime(x).CompareTo(File.GetLastWriteTime(y)); });
+                                        File.Copy(fileList[0], saveTmpPath);
+                                        Image bmp = Image.FromFile(saveTmpPath);
+
+                                        bmp.Save(savePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                        bmp.Dispose();
+                                        PictureBox  Pic_OCR = form.Controls.Find(OCRName + "_Pic", true).FirstOrDefault() as PictureBox;
+                                        File.Delete(saveTmpPath);
+                                        if (Pic_OCR == null)
+                                            return;
+                                        Bitmap t = new Bitmap(Image.FromFile(savePath), new Size(320, 240));
+                                        Pic_OCR.Image = t;
+                                        Pic_OCR.Tag = Job;
+                                        Job.OCRImgPath = savePath;
+                                        if (Job.FromPort != null)
+                                        {
+                                            ProcessRecord.updateSubstrateOCR(NodeManagement.Get(Job.FromPort).PrID, Job);
+                                        }
+                                    }
+                                    break;
+                            }
+
+                        }
+                    }
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                logger.Error("UpdateOCRRead: Update fail."+e.StackTrace);
             }
         }
 
@@ -216,6 +334,7 @@ namespace Adam.UI_Update.OCR
                                where ocr.Type.Equals("OCR")
                                select ocr;
                     bool IsCognexInit = false;
+                    System.Threading.Thread.Sleep(2000);
                     foreach (Node ocr in ocrs)
                     {
                         switch (ocr.Brand)
