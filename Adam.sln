@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SANWA", "..\SANWAFunction\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIOControl", "..\DIOControl\DIOControl\DIOControl.csproj", "{21ADFCFC-11C7-4982-AF57-09002ED8E961}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFEMInterface", "..\EFEMInterface\EFEMInterface\EFEMInterface.csproj", "{FA9F0060-9751-4CF0-993A-357FD796143E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,14 +51,6 @@ Global
 		{21ADFCFC-11C7-4982-AF57-09002ED8E961}.Release|Any CPU.Build.0 = Release|Any CPU
 		{21ADFCFC-11C7-4982-AF57-09002ED8E961}.Release|x64.ActiveCfg = Release|Any CPU
 		{21ADFCFC-11C7-4982-AF57-09002ED8E961}.Release|x64.Build.0 = Release|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Debug|x64.Build.0 = Debug|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Release|x64.ActiveCfg = Release|Any CPU
-		{FA9F0060-9751-4CF0-993A-357FD796143E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

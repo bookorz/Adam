@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using SANWA.Utility;
 using System.Linq;
+using TransferControl.Engine;
 
 namespace Adam.Menu.SystemSetting
 {
@@ -157,7 +158,7 @@ namespace Adam.Menu.SystemSetting
 
                 UpdateList();
                 //改設定後套用
-                FormMain.DIO.Initial();
+                RouteControl.Instance.DIO.Initial();
             }
             catch (Exception ex)
             {

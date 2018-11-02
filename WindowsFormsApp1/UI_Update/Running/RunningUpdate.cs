@@ -181,7 +181,7 @@ namespace Adam.UI_Update.Running
                         if (Convert.ToInt32(tb.Text) <= 1)//次數歸零 停止DEMO
                         {
                             DestPort.Available = false;
-                            FormMain.RouteCtrl.Stop();
+                            //FormMain.RouteCtrl.Stop();
                         }
                         else
                         {

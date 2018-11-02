@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TransferControl.Engine;
 using TransferControl.Management;
 
 namespace Adam.UI_Update.Monitoring
@@ -143,7 +144,7 @@ namespace Adam.UI_Update.Monitoring
                         }
                         else
                         {
-                            FormMain.DIO.SetBlink("BLUE", "True");
+                            RouteControl.Instance.DIO.SetBlink("BLUE", "True");
                         }
                         if (!each.Green.Equals("BLINK"))
                         {
@@ -151,7 +152,7 @@ namespace Adam.UI_Update.Monitoring
                         }
                         else
                         {
-                            FormMain.DIO.SetBlink("GREEN", "True");
+                            RouteControl.Instance.DIO.SetBlink("GREEN", "True");
                         }
                         if (!each.Red.Equals("BLINK"))
                         {
@@ -159,7 +160,7 @@ namespace Adam.UI_Update.Monitoring
                         }
                         else
                         {
-                            FormMain.DIO.SetBlink("RED", "True");
+                            RouteControl.Instance.DIO.SetBlink("RED", "True");
                         }
                         if (!each.Orange.Equals("BLINK"))
                         {
@@ -167,10 +168,10 @@ namespace Adam.UI_Update.Monitoring
                         }
                         else
                         {
-                            FormMain.DIO.SetBlink("ORANGE", "True");
+                            RouteControl.Instance.DIO.SetBlink("ORANGE", "True");
                         }
 
-                        FormMain.DIO.SetIO(Params);
+                        RouteControl.Instance.DIO.SetIO(Params);
                     }
 
                 }

@@ -1,6 +1,6 @@
 ﻿namespace Adam
 {
-    partial class FromAlarm
+    partial class FormAlarm
     {
         /// <summary>
         /// Required designer variable.

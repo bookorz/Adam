@@ -14,9 +14,9 @@ using TransferControl.Management;
 
 namespace Adam
 {
-    public partial class FromAlarm : Form
+    public partial class FormAlarm : Form
     {
-        public FromAlarm()
+        public FormAlarm()
         {
             InitializeComponent();
         }
@@ -35,10 +35,10 @@ namespace Adam
 
             
 
-            foreach (Node node in NodeManagement.GetList())
-            {
-                node.State = node.LastState;
-            }
+            //foreach (Node node in NodeManagement.GetList())
+            //{
+            //    node.State = node.LastState;
+            //}
 
             var NodeList = AlarmManagement.GetAll().GroupBy(t => t.NodeName);
             foreach (var group in NodeList)

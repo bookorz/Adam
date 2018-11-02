@@ -15,8 +15,55 @@ namespace Adam.UI_Update.Layout
         delegate void UpdateDIO(string Parameter, string Value);
         delegate void GetBool();
 
-      
-        
+        public static void UpdateInterLock(string Parameter, string Value)
+        {
+            try
+            {
+                Form form = Application.OpenForms["FormMonitoring"];
+
+                if (form == null)
+                    return;
+
+                Label Signal = form.Controls.Find(Parameter + "_Signal", true).FirstOrDefault() as Label;
+
+                if (Signal == null)
+                    return;
+
+                if (Signal.InvokeRequired)
+                {
+                    UpdateDIO ph = new UpdateDIO(UpdateInterLock);
+                    Signal.BeginInvoke(ph, Parameter, Value);
+                }
+                else
+                {
+
+                    switch (Parameter)
+                    {
+                        default:
+                            switch (Value.ToUpper())
+                            {
+                                case "TRUE":
+                                    Signal.BackColor = Color.Lime;
+                                    break;
+                                case "FALSE":
+                                    Signal.BackColor = Color.Red;
+                                    break;
+                                
+                            }
+                            break;
+                    }
+
+
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                logger.Error("UpdateInterLock: Update fail.");
+            }
+        }
+
         public static void UpdateDIOStatus(string Parameter, string Value)
         {
             try

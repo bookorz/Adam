@@ -5,414 +5,426 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TransferControl.Engine;
 using TransferControl.Management;
+
 
 namespace Adam.Util
 {
-    /// <summary>
-    /// 跨區傳送, 一個Robot 負責取, 一個Robot 負責放
-    /// </summary>
-    class XfeCrossZone
+    public class XfeCrossZone
     {
+        private static ILog logger = LogManager.GetLogger(typeof(XfeCrossZone));
+        public static bool Running = false;
+        public static bool IsInitialize = false;
+        public static string LDRobot = "";
+        public static string LDRobot_Arm = "";
+        public static string ULDRobot = "";
+        public static string ULDRobot_Arm = "";
+        public static string LD = "";
+        public static string ULD = "";
 
-        private StringBuilder cLog1 = new StringBuilder();
-        private static readonly ILog logger = LogManager.GetLogger(typeof(XfeCrossZone));
-        private TransferRecipe recipe { get; set; }
-        private TransferWafer[] wafers { get; set; }
-        private string sourcePort { get; set; }
-        private Boolean isExeFail = false;
-        private int procTtlWaitCnt { get; set; }
-        private int procGetFinCnt { get; set; }
-        private int procPutFinCnt { get; set; }
-        private Boolean isGetFinish = false;
-        private Boolean isPutFinish = false;
-
-        Boolean isPutWithoutBack;
-        //int preTimeout = 600000;
-        //int postTimeout = 600000;
-        int preTimeout = 60000;
-        int postTimeout = 60000;
-        public XfeCrossZone(string sourcePort, TransferWafer[] wafers, TransferRecipe recipe)
+        private static void Initialize()
         {
-            this.sourcePort = sourcePort;
-            this.recipe = recipe;
-            this.wafers = wafers;
-            this.procTtlWaitCnt = getProcWaitCnt(wafers);
-            this.procGetFinCnt = 0;
-            this.procPutFinCnt = 0;
+            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT01");
+            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT02");
+            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER01");
+            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER02");
+            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR01");
+            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR02");
         }
 
-        private int getProcWaitCnt(TransferWafer[] wafers)
+        public static bool Start()
         {
-            int result = 0;
-            foreach (TransferWafer wafer in wafers)
+
+            if (!IsInitialize)
             {
-                if (wafer != null  && wafer.Target_Slot >=1 && wafer.Target_Slot <= 25)
-                {
-                    result++;
-                }
+                Initialize();
+                IsInitialize = true;
             }
-            return result;
+
+            //開始前先重設
+            foreach (Node each in NodeManagement.GetList())
+            {
+                each.RequestQueue.Clear();
+                each.LockOn = "";
+            }
+     LDRobot = "";
+LDRobot_Arm = "";
+ ULDRobot = "";
+       ULDRobot_Arm = "";
+     LD = "";
+ULD = "";
+        //找到LD & ULD
+        Node LROB = null;
+            if ((LROB = FindAvailableLoadport("ROBOT01")) != null)
+            {
+                LDRobot = "ROBOT01";
+                ULDRobot = "ROBOT02";
+                Node.ActionRequest request = new Node.ActionRequest();
+                request.TaskName = "GET_LOADPORT";
+                if (!LROB.RequestQueue.ContainsKey(request.TaskName))
+                {
+                    LROB.RequestQueue.Add(request.TaskName, request);
+                }
+                Running = true;
+            }
+            else if ((LROB = FindAvailableLoadport("ROBOT01")) != null)
+            {
+                LDRobot = "ROBOT02";
+                ULDRobot = "ROBOT01";
+                Node.ActionRequest request = new Node.ActionRequest();
+                request.TaskName = "GET_LOADPORT";
+                if (!LROB.RequestQueue.ContainsKey(request.TaskName))
+                {
+                    LROB.RequestQueue.Add(request.TaskName, request);
+                }
+                Running = true;
+            }
+            else
+            {
+                Running = false;
+            }
+            return Running;
         }
 
-        /// <summary>
-        /// 跨區傳送
-        /// </summary>
-        /// <param name="getRobot">從 Load port 取片的 Robot</param>
-        /// <param name="putRobot">放片到  Load port 的 Robot</param>
-        /// <returns></returns>
-        public Boolean doTransfer(string getRobot, string putRobot)
+        public static void Stop()
         {
-            Boolean result = false;
+            Running = false;
+        }
+
+
+        private static void Engine(object NodeName)
+        {
             try
             {
-                string[] aligners = recipe.ROB1_ALIGNER.Split(',');
-                System.Threading.WaitCallback callProcGetRobot = new WaitCallback(procGetRobot);
-                System.Threading.WaitCallback callProcPutRobot = new WaitCallback(procPutRobot);
-                System.Threading.WaitCallback callExecAlign1 = new WaitCallback(execAlign1);//aligner 1
-                System.Threading.WaitCallback callExecAlign2 = new WaitCallback(execAlign2);//aligner 2
-                
-                ThreadPool.QueueUserWorkItem(callProcGetRobot, getRobot);
-                ThreadPool.QueueUserWorkItem(callProcPutRobot, putRobot);
+                Node Target = NodeManagement.Get(NodeName.ToString());
 
-                SpinWait.SpinUntil(() => isGetFinish && isPutFinish, 86400000);// 等待所有工作都做完(timeout 1 day)
-                addLog(" Do Transfer End\n\n\n");
-                logger.Error("\n\n\n" + cLog1.ToString());
+                while (true)
+                {
+                    while (Target.RequestQueue.Count() == 0 && Running)
+                    {
+                        SpinWait.SpinUntil(() => Target.RequestQueue.Count() != 0 || !Running, 99999999);
+                    }
+                    if (Running)
+                    {
+                        string Message = "";
+                        string id = Guid.NewGuid().ToString();
+                        List<Node.ActionRequest> RequestQueue = Target.RequestQueue.Values.ToList();
+                        if (!Target.LockOn.Equals(""))
+                        {//當ROBOT正在存取某個，必須收回手臂才能對另一台動作
+                            logger.Debug(NodeName + " LockOn:" + Target.LockOn);
+                            var find = from Request in RequestQueue
+                                       where Request.Position.Equals(Target.LockOn)
+                                       select Request;
+                            RequestQueue = find.ToList();
+                        }
+
+                        RequestQueue.Sort((x, y) => { return x.TimeStamp.CompareTo(y.TimeStamp); });
+                        Node.ActionRequest req = RequestQueue.First();
+                        Target.RequestQueue.Remove(req.TaskName);
+                        logger.Debug(NodeName + " 開始執行:" + req.TaskName);
+                        Node nodeLD;
+                       
+                        switch (Target.Type)
+                        {
+                            case "ROBOT":
+                                switch (req.TaskName)
+                                {
+                                    case "GET_LOADPORT":
+                                        //從Loadport取片要求，需要決定Position Slot Arm
+                                        //等待有Loadport準備完成
+
+                                        if (Target.JobList.Count == 2)
+                                        {
+                                            req.TaskName = "PUT_ALIGNER";
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            //logger.Debug(NodeName + " 等待可用Loadport");
+                                            //while (FindAvailableLoadport(Target.Name) == null && Running)
+                                            //{
+                                            //    SpinWait.SpinUntil(() => FindAvailableLoadport(Target.Name) != null || !Running, 99999999);
+                                            //}
+                                            //if (!Running)
+                                            //{
+                                            //    logger.Debug(NodeName + " 運作停止");
+                                            //    continue;
+                                            //}
+                                            logger.Debug(NodeName + " 找到可用Loadport");
+                                            nodeLD = FindAvailableLoadport(Target.Name);
+                                            Target.LockOn = nodeLD.Name;//鎖定PORT
+                                            req.Position = nodeLD.Name;
+
+                                            var AvailableSlots = from eachSlot in nodeLD.JobList.Values.ToList()
+                                                                 where eachSlot.ProcessFlag
+                                                                 select eachSlot;
+                                            if (AvailableSlots.Count() != 0)
+                                            {
+                                                List<Job> AvailableSlotsList = AvailableSlots.ToList();
+                                                AvailableSlotsList.Sort((x, y) => { return x.Slot.CompareTo(y.Slot); });
+                                                Job j;
+                                                if (AvailableSlotsList.Count == 1)//Port剩下一片
+                                                {
+                                                    j = AvailableSlotsList.First();
+                                                    req.Slot = j.Slot;
+                                                    if (!Target.JobList.ContainsKey("1") && Target.RArmActive)//R沒片且R為可用狀態
+                                                    {
+                                                        req.Arm = "1";
+                                                    }
+                                                    else if (!Target.JobList.ContainsKey("2") && Target.LArmActive)//L沒片且L為可用狀態
+                                                    {
+                                                        req.Arm = "2";
+                                                    }
+                                                    else
+                                                    {
+                                                        //無法再取片
+                                                        if (Target.JobList.Count() != 0)
+                                                        {//開始放片至Aligner
+                                                            Node.ActionRequest request = new Node.ActionRequest();
+
+                                                            foreach (Job wafer in Target.JobList.Values)
+                                                            {
+                                                                foreach (Node Aligner in NodeManagement.GetAlignerList())
+                                                                {
+                                                                    if (Aligner.JobList.Count == 0)
+                                                                    {
+                                                                        //佇列裡面沒有才加
+                                                                        request.TaskName = "PUT_" + Aligner.Name;
+                                                                        //request.Arm = wafer.Slot;
+                                                                        if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                                        {
+                                                                            Target.RequestQueue.Add(request.TaskName, request);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            Target.LockOn = "";//解除鎖定
+                                                            continue;
+
+                                                        }
+                                                    }
+                                                }
+                                                else//Port 有兩片以上
+                                                {
+                                                    bool AllowDoubleArm = false;
+                                                    if (Convert.ToInt32(AvailableSlotsList[1].Slot) - Convert.ToInt32(AvailableSlotsList[0].Slot) == 1)
+                                                    {
+                                                        AllowDoubleArm = true;//連續Slot才能雙取
+                                                    }
+
+                                                    if (!Target.JobList.ContainsKey("1") && !Target.JobList.ContainsKey("2") && nodeLD.DoubleArmActive && nodeLD.RArmActive && nodeLD.LArmActive && AllowDoubleArm)//當可以雙取
+                                                    {//RL全為空 & RL都可用 & 雙取啟動 & 兩片為連續Slot
+                                                        //雙取要用第二片的Slot
+                                                        req.Slot = AvailableSlotsList[1].Slot;
+                                                        req.Slot2 = AvailableSlotsList[0].Slot;
+                                                        req.TaskName = "GET_LOADPORT_2ARM";
+                                                    }
+                                                    else//只能單取
+                                                    {
+                                                        j = AvailableSlotsList.First();
+                                                        req.Slot = j.Slot;
+                                                        if (!Target.JobList.ContainsKey("1") && Target.RArmActive)//R沒片且R為可用狀態
+                                                        {
+                                                            req.Arm = "1";
+                                                        }
+                                                        else if (!Target.JobList.ContainsKey("2") && Target.LArmActive)//L沒片且L為可用狀態
+                                                        {
+                                                            req.Arm = "2";
+                                                        }
+                                                        else
+                                                        {
+                                                            //無法再取片
+                                                            if (Target.JobList.Count() != 0)
+                                                            {//開始放片至Aligner
+                                                                Node.ActionRequest request = new Node.ActionRequest();
+
+                                                                foreach (Job wafer in Target.JobList.Values)
+                                                                {
+                                                                    foreach (Node Aligner in NodeManagement.GetAlignerList())
+                                                                    {
+                                                                        if (Aligner.JobList.Count == 0)
+                                                                        {
+                                                                            //佇列裡面沒有才加
+                                                                            request.TaskName = "PUT_" + Aligner.Name;
+                                                                            //request.Arm = wafer.Slot;
+                                                                            if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                                            {
+                                                                                Target.RequestQueue.Add(request.TaskName, request);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                Target.LockOn = "";//解除鎖定
+                                                                continue;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                logger.Debug(NodeName + " Loadport沒有片可處理");
+                                                nodeLD.Fetchable = false;
+                                            }
+                                        }
+                                        break;
+                                    case "PUT_ALIGNER01":
+                                    case "PUT_ALIGNER02":
+                                    case "PUTW_ALIGNER01":
+                                    case "PUTW_ALIGNER02":
+                                        //決定要放R或L
+                                        if (LDRobot_Arm.Equals(""))
+                                        {
+                                            foreach (Job wafer in Target.JobList.Values)
+                                            {
+                                                LDRobot_Arm = wafer.Slot;
+
+                                                break;
+                                            }
+                                        }
+                                        req.Arm = LDRobot_Arm;
+                                        break;
+                                    case "GET_ALIGNER01":
+                                    case "GET_ALIGNER02":
+                                    case "GETW_ALIGNER01":
+                                    case "GETW_ALIGNER02":
+                                        //決定要用R或L取
+                                        if (ULDRobot_Arm.Equals(""))
+                                        {
+                                            if (!Target.JobList.ContainsKey("1") && Target.RArmActive)//R沒片且R為可用狀態
+                                            {
+                                                ULDRobot_Arm = "1";
+                                            }
+                                            else if (!Target.JobList.ContainsKey("2") && Target.LArmActive)//L沒片且L為可用狀態
+                                            {
+                                                ULDRobot_Arm = "2";
+                                            }
+                                        }
+                                        req.Arm = ULDRobot_Arm;
+                                        break;
+                                    case "PUT_UNLOADPORT":
+                                        //檢查目前狀態是否要去放
+                                        
+                                        Node nodeLDRobot = NodeManagement.Get(LDRobot);
+                                        if (Target.JobList.Count != 2 && nodeLDRobot.JobList.Count!=0)
+                                        {
+                                            //還有片要處裡
+                                            Target.LockOn = "";
+                                            continue;
+                                        }
+                                        if (!Target.DoubleArmActive && Target.JobList.Count==2)
+                                        {//支援雙放
+                                            if(Target.JobList["1"].Destination.Equals(Target.JobList["2"].Destination) && Convert.ToInt32(Target.JobList["1"].DestinationSlot)- Convert.ToInt32(Target.JobList["2"].DestinationSlot) == 1)
+                                            {//目的地Slot連續且順序正確
+                                             //雙放要用R的Slot
+                                                req.Arm = "3";
+                                                req.Slot = Target.JobList["1"].DestinationSlot;
+                                                req.Slot2 = Target.JobList["2"].DestinationSlot;
+                                                req.TaskName = "PUT_UNLOADPORT_2ARM";
+                                            }
+                                            else
+                                            {//目的地不同 OR Slot不連續，只能單放
+                                                //先前置放R手臂
+                                                req.Position = Target.JobList["1"].Destination;
+                                                req.Arm = "1";
+                                                req.Slot = Target.JobList["1"].DestinationSlot;
+                                            }
+                                        }
+                                        else
+                                        {//只能單放
+                                            if (Target.JobList.ContainsKey("1"))
+                                            {//放R
+                                                req.Position = Target.JobList["1"].Destination;
+                                                req.Arm = "1";
+                                                req.Slot = Target.JobList["1"].DestinationSlot;
+                                            }
+                                            else if(Target.JobList.ContainsKey("2"))
+                                            {//放L
+                                                req.Position = Target.JobList["2"].Destination;
+                                                req.Arm = "2";
+                                                req.Slot = Target.JobList["2"].DestinationSlot;
+                                            }
+                                            else
+                                            {//沒東西放了
+                                                Target.LockOn = "";
+                                                continue;
+                                            }
+
+                                        }
+                                        Target.LockOn = req.Position;
+                                        break;
+                                }
+                                break;
+                            case "ALIGNER":
+
+                                break;
+                            case "OCR":
+
+                                break;
+                        }
+                        Dictionary<string, string> param = new Dictionary<string, string>();
+
+                        param.Add("@Target", NodeName.ToString());
+                        param.Add("@Slot", req.Slot);
+                        param.Add("@Slot2", req.Slot2);
+                        param.Add("@Arm", req.Arm);
+                        param.Add("@Value", req.Value);
+                        param.Add("@Position", req.Position);
+                        param.Add("@LDRobot", LDRobot);
+                        param.Add("@ULDRobot", ULDRobot);
+                        TaskJobManagment.CurrentProceedTask Task;
+                        RouteControl.Instance.TaskJob.Excute(id, out Message, out Task, req.TaskName, param);
+                        //這邊要卡住直到Task完成
+                        logger.Debug(NodeName + " 等待Task完成");
+                        while (!Task.Finished && Running)
+                        {
+                            SpinWait.SpinUntil(() => Task.Finished || !Running, 99999999);
+                        }
+                        if (Running)
+                        {
+                            logger.Debug(NodeName + " Task完成");
+                        }
+                        else
+                        {
+                            logger.Debug(NodeName + " 運作停止");
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        logger.Debug(NodeName + " 暫停監控RequestQueue");
+                        while (!Running)
+                        {
+                            SpinWait.SpinUntil(() => Running, 99999999);
+                        }
+                        logger.Debug(NodeName + " 開始監控RequestQueue");
+                    }
+                }
             }
             catch (Exception e)
             {
-                logger.Error(e.StackTrace + ":" + e.Message);
+                logger.Error(e.StackTrace);
             }
+        }
+
+        private static Node FindAvailableLoadport(string RobotName)
+        {
+            Node result = null;
+
+            var find = from eachPort in NodeManagement.GetLoadPortList()
+                       where eachPort.Fetchable && eachPort.Associated_Node.Equals(RobotName)
+                       select eachPort;
+            if (find.Count() != 0)
+            {
+                List<Node> pList = find.ToList();
+                pList.Sort((x, y) => { return x.LoadTime.CompareTo(y.LoadTime); });
+                result = pList.First();
+            }
+
             return result;
-        }
-        private void procGetRobot(object data)
-        {
-            TransferWafer wafer1;
-            TransferWafer wafer2;
-            int idx = 0;
-            while (!isExeFail && idx < 25)
-            {
-
-            }
-                //TransferWafer wafer = (TransferWafer)data;
-        }
-        private void procPutRobot(object data)
-        {
-            string robot = (string) data;
-            TransferWafer wafer1;
-            TransferWafer wafer2;
-            string[] aligners = recipe.ROB1_ALIGNER.Split(',');
-            int idx = 0;
-            while (!isExeFail && idx < 25 && procPutFinCnt < procTtlWaitCnt)
-            {
-                int waferCnt = 0;
-                //TransferState.processCnt = 0;
-
-                #region  Step0 => Look for the WAFER to be processed
-                wafer1 = getNextWafer(wafers, idx);
-                if (wafer1 != null)
-                {
-                    waferCnt++;
-                    idx = wafer1.Source_Slot;// change index to next new slot
-                    wafer2 = getNextWafer(wafers, idx);
-                    if (wafer2 != null)
-                    {
-                        waferCnt++;
-                        idx = wafer2.Source_Slot;// change index to next new slot
-                    }
-                }
-                else// No wafer waiting to be processed
-                {
-                    closePort(sourcePort);// close load port
-                    break;
-                }
-                #endregion                
-                #region Step2 =>  Put to Align & Process & Get From Aligner
-
-                isPutWithoutBack = false; // 跨區不會有 Put robot 在下面等的 Case , 所以給 false
-                if (wafer2 == null) //只有一片
-                {
-                    getFromAligner(wafer1, aligners[0], "ARM1", robot);
-                }
-                else if (aligners.Length == 1)// 有兩片, 只有一個 Aligner
-                {
-                    getFromAligner(wafer2, aligners[0], "ARM1", robot);
-                    getFromAligner(wafer1, aligners[0], "ARM2", robot);
-                }
-                else if (aligners.Length == 2)// 有兩片, 有兩個 Aligner
-                {
-                    //wafer 2
-                    getFromAligner(wafer2, aligners[0], "ARM1", robot);
-                    //wafer 1
-                    getFromAligner(wafer1, aligners[1], "ARM2", robot);
-                }
-                #endregion
-                SpinWait.SpinUntil(() => TransferState.processCntR1 == waferCnt, 86400000);//確保所有片數已處理完 timeout: 1 days
-                if (TransferState.processCntR1 != waferCnt)
-                {
-                    addLog(" 等待完成片數 Timeout");
-                    break;//exit while
-                }
-                #region Step 3 => Put to port
-                if (wafer2 == null)
-                {
-                    checkAlignerHome(aligners);
-                    putToPort(wafer1, "ARM1", robot);//上臂單放第一片
-                }
-                else if ( wafer2.Target == wafer1.Target && wafer2.Target_Slot == wafer1.Target_Slot + 1 && recipe.ROB1_DOUBLE_ARM.Equals("Y") )
-                {
-                    checkAlignerHome(aligners);
-                    putToPort(wafer2, "ARM3", robot);//雙放, 第一片在下臂, 第二片在上臂
-                }
-                else
-                {
-                    checkAlignerHome(aligners);
-                    putToPort(wafer2, "ARM1", robot);//上臂單放第二片
-                    putToPort(wafer1, "ARM2", robot);//下臂單放第一片
-                }
-                #endregion
-            }//end while
-
-            //TransferWafer wafer = (TransferWafer)data;
-        }
-        private void execAlign1(object data)
-        {
-            //TransferWafer wafer = (TransferWafer)data;
-        }
-        private void execAlign2(object data)
-        {
-            //TransferWafer wafer = (TransferWafer)data;
-        }
-
-        private TransferWafer getNextWafer(TransferWafer[] targets, int idx)
-        {
-            TransferWafer result = null;
-            for (int i = idx; i < targets.Length; i++)
-            {
-                if (targets[i] != null && targets[i].Target != null)
-                {
-                    return targets[i]; //find wafer
-                }
-            }
-            return result;
-        }
-
-        private void closePort(string sourcePort)
-        {
-            addLog("*** closePort " + sourcePort +" ***\n" );
-            Node port = NodeManagement.Get(sourcePort);
-            Transaction txn = new Transaction();
-            txn.Method = Transaction.Command.LoadPortType.Unload;
-            //port.SendCommand(txn); // 暫時不執行 kuma
-        }
-
-        private void getFromAligner(TransferWafer wafer, string aligner, string arm, string robot)
-        {
-            string methodName = "*** getFromAligner *** ";
-            string preCheckRule1 = aligner.Equals("ALIGNER01") ? "A1_RELEASE_FIN" : "A2_RELEASE_FIN";
-            string position = aligner;
-            string preRobot = "";
-            string tagAligner = "";
-            if (robot.Equals("ROBOT01"))
-            {
-                preRobot = "R1";
-            }else if (robot.Equals("ROBOT02"))
-            {
-                preRobot = "R2";
-            }
-            else
-            {
-                return;//do nothing
-            }
-            if (aligner.Equals("ALIGNER01"))
-            {
-                tagAligner = "A1";
-            }
-            else if (aligner.Equals("ALIGNER02"))
-            {
-                tagAligner = "A2";
-            }
-            else
-            {
-                return;//do nothing
-            }
-            TransferState.checkRule[ preRobot + "_GET_WAIT_" + "_FIN"] = false;
-            TransferState.checkRule[ preRobot + "_GET_OPT0_FIN"] = false;
-            TransferState.checkRule[ preRobot + "_GET_OPT3_FIN"] = false;
-            TransferState.checkRule[ tagAligner + "_HOME_FIN"] = false;
-            string[] preCheckRules = isPutWithoutBack ? new string[] { preRobot + "_PUT_OPT2_FIN", preCheckRule1 } : new string[] { preRobot + "_GET_WAIT_FIN", preCheckRule1 };
-
-            // Get wait to the aligner
-            Transaction txn1 = new Transaction();
-            txn1.FormName = preRobot + "_GET_WAIT";
-            txn1.Method = Transaction.Command.RobotType.GetWait;
-            txn1.Position = position;
-            txn1.Arm = SanwaUtil.GetArmID(arm);
-            txn1.Slot = "1";
-            CommandJob cmd1 = new CommandJob(txn1, robot, methodName);
-            cmd1.setPostCheckRule(preRobot + "_GET_WAIT_FIN");
-
-            // Get Wafer from aligner
-            Transaction txn2 = new Transaction();
-            txn2.FormName = preRobot + "_GET_OPT1";
-            txn2.Method = isPutWithoutBack ? Transaction.Command.RobotType.GetAfterWait : Transaction.Command.RobotType.Get;
-            txn2.Position = position;
-            txn2.Arm = SanwaUtil.GetArmID(arm);
-            txn2.Slot = "1";
-            CommandJob cmd2 = new CommandJob(txn2, robot, methodName);
-            cmd2.setPreCheckRules(preCheckRules);
-            cmd2.setPostCheckRule(txn2.FormName + "_FIN");
-
-            // Get Wafer from aligner
-            Transaction txn3 = new Transaction();
-            txn3.FormName = isPutWithoutBack ? preRobot + "_GET_OPT3" : preRobot + "_GET_OPT0";
-            txn3.Method = isPutWithoutBack ? Transaction.Command.RobotType.GetAfterWait : Transaction.Command.RobotType.Get;
-            txn3.Position = position;
-            txn3.Arm = SanwaUtil.GetArmID(arm);
-            txn3.Slot = "1";
-            CommandJob cmd3 = new CommandJob(txn3, robot, methodName);
-            cmd3.setPreCheckRules(preCheckRules);
-            cmd3.setPostCheckRule(isPutWithoutBack ? preRobot + "_GET_OPT3_FIN" : preRobot + "_GET_OPT0_FIN");
-
-            // Aligner Home
-            Transaction txn4 = new Transaction();
-            txn4.FormName = tagAligner + "_HOME";//A1_HOME or A2_HOME
-            txn4.Method = Transaction.Command.AlignerType.AlignerHome;
-            CommandJob cmd4 = new CommandJob(txn4, aligner, methodName);
-            //cmd2.preCheckRules = "";
-            cmd4.setPostCheckRule(tagAligner + "_HOME_FIN");//A1_HOME_FIN or A2_HOME_FIN
-
-            runCommands(new CommandJob[] { cmd1, cmd3, cmd4 });
-
-            //SpinWait.SpinUntil(() => TransferState.isJobFin, 3000);
-            wafer.Location = arm;
-            TransferState.addProcCnt(robot);
-        }
-
-        private void putToPort(TransferWafer wafer, string arm, string robot)
-        {
-            TransferState.checkRule["R1_PUT_OPT0_FIN"] = false;
-            string methodName = "*** putToPort *** ";
-            string position = "";
-            if (wafer.Target.StartsWith("P1"))
-                position = "LOADPORT01";
-            else if (wafer.Target.StartsWith("P2"))
-                position = "LOADPORT02";
-            else if (wafer.Target.StartsWith("P3"))
-                position = "LOADPORT03";
-            else if (wafer.Target.StartsWith("P4"))
-                position = "LOADPORT04";
-            else
-                position = wafer.Target;
-
-            Transaction txn = new Transaction();
-
-            txn.FormName = "R1_PUT_OPT0";
-            txn.Method = Transaction.Command.RobotType.Put;
-            txn.Position = position;
-            txn.Arm = SanwaUtil.GetArmID(arm);
-            txn.Slot = wafer.Source_Slot.ToString();
-            //txn.Value = "";
-
-            CommandJob cmd = new CommandJob(txn, robot, methodName);
-            cmd.setPostCheckRule("R1_PUT_OPT0_FIN");
-
-            runCommands(new CommandJob[] { cmd });
-            wafer.Location = wafer.Target;
-
-        }
-
-        private void addLog(string msg)
-        {
-            //return;
-            logger.Error(msg);
-            cLog1.Append(msg);
-        }
-
-        private void runCommands(object data)
-        {
-            //TransferState.isJobFin = false;
-            CommandJob[] cmds = (CommandJob[])data;
-            string Message = "";
-            foreach (CommandJob cmd in cmds)
-            {
-                if (cmd.nodeName.StartsWith("OCR") || cmd.nodeName.ToUpper().Equals("ALIGNER01"))
-                {
-                    TransferState.setState(cmd.txn.FormName + "_ACK", true); //2018 Add by Steven for Transfer Job check rule
-                    Thread.Sleep(100);//假裝等一下
-                    TransferState.setState(cmd.txn.FormName + "_FIN", true); //2018 Add by Steven for Transfer Job check rule
-                    Thread.Sleep(100);//假裝等一下
-                    continue;// OCR,Aligner1 先跳過不做 kuma
-                }
-
-                Node node = NodeManagement.Get(cmd.nodeName);
-                Boolean needChkPreRule = (cmd.preCheckRules != null && cmd.preCheckRules.Length > 0) ? true : false;
-                Boolean needChkPostRule = (cmd.postCheckRules != null && cmd.postCheckRules.Length > 0) ? true : false;
-                //pre check
-                if (needChkPreRule)
-                {
-                    foreach (string rule in cmd.preCheckRules)
-                    {
-                        SpinWait.SpinUntil(() => TransferState.checkRule[rule], preTimeout);// 等待前置條件成立
-                        if (!TransferState.checkRule[rule])
-                        {
-                            addLog("Check: " + rule + " timeout\n");
-                        }
-                    }
-                }
-                cmd.txn.RecipeID = "300MM"; //hard code
-                string msg = cmd.methodName + " Form:" + cmd.txn.FormName + " Method: " + cmd.txn.Method + " Position:" + cmd.txn.Position + " Arm:" + cmd.txn.Arm + " Slot:" + cmd.txn.Slot + " Node:" + cmd.nodeName;
-                addLog(msg + "\n");
-                logger.Error(msg);
-                node.SendCommand(cmd.txn,out Message);
-                //post check
-                if (needChkPostRule)
-                {
-                    foreach (string rule in cmd.postCheckRules)
-                    {
-                        //SpinWait.SpinUntil(() => TransferState.getState(rule).checkRule[rule], postTimeout);// 等待後置條件成立
-                        SpinWait.SpinUntil(() => TransferState.getState(rule), postTimeout);// 等待後置條件成立
-                        if (!TransferState.checkRule[rule])
-                        {
-                            addLog("Check: " + rule + " timeout\n");
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 確保所有Aligner 都回 HOME
-        /// </summary>
-        /// <param name="aligners"></param>
-        /// <returns></returns>
-        private Boolean checkAlignerHome(string[] aligners)
-        {
-            foreach (string aligner in aligners)
-            {
-                string rule = "";
-                if (aligner.Equals("ALIGNER01"))
-                {
-                    rule = "A1_HOME_FIN";
-                }
-                else if (aligner.Equals("ALIGNER02"))
-                {
-                    rule = "A2_HOME_FIN";
-                }
-                else
-                {
-                    addLog("Aligner: " + aligner + " Data Error\n");
-                    return false;
-                }
-
-                SpinWait.SpinUntil(() => TransferState.checkRule[rule], postTimeout);
-                if (!TransferState.checkRule[rule])
-                {
-                    addLog("Check: " + rule + " timeout\n");
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }

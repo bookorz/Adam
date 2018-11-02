@@ -14,7 +14,6 @@ using Adam.UI_Update.OCR;
 using Adam.UI_Update.WaferMapping;
 using System.Threading;
 using Adam.UI_Update.Authority;
-using DIOControl;
 using Adam.UI_Update.Layout;
 using Adam.UI_Update.Alarm;
 using GUI;
@@ -24,16 +23,22 @@ using System.Collections.Concurrent;
 using Adam.Util;
 using Adam.UI_Update.Communications;
 
+using System.Security.Cryptography;
+using System.Text;
+using SANWA.Utility.Config;
+
 namespace Adam
 {
-    public partial class FormMain : Form, IUserInterfaceReport, IDIOTriggerReport
+    public partial class FormMain : Form, IUserInterfaceReport
     {
         public static RouteControl RouteCtrl;
-        public static DIO DIO;
+
         public static AlarmMapping AlmMapping;
         private static readonly ILog logger = LogManager.GetLogger(typeof(FormMain));
 
-        FromAlarm alarmFrom = new FromAlarm();
+        public static bool AutoReverse = true;
+
+        FormAlarm alarmFrom = new FormAlarm();
         private Menu.Monitoring.FormMonitoring formMonitoring = new Menu.Monitoring.FormMonitoring();
         private Menu.Communications.FormCommunications formCommunications = new Menu.Communications.FormCommunications();
         private Menu.WaferMapping.FormWaferMapping formWafer = new Menu.WaferMapping.FormWaferMapping();
@@ -42,16 +47,17 @@ namespace Adam
         private Menu.SystemSetting.FormSystemSetting formSystem = new Menu.SystemSetting.FormSystemSetting();
         private Menu.RunningScreen.FormRunningScreen formTestMode = new Menu.RunningScreen.FormRunningScreen();
         private Menu.Wafer.FormWafer WaferForm = new Menu.Wafer.FormWafer();
-
+        public static GUI.FormManual formManual = null;
+        
 
         public FormMain()
         {
             InitializeComponent();
             XmlConfigurator.Configure();
             Initialize();
-            RouteCtrl = new RouteControl(this);
-            DIO = new DIO(this);
 
+           
+            RouteCtrl = new RouteControl(this, null);
             AlmMapping = new AlarmMapping();
 
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -60,7 +66,7 @@ namespace Adam
             SanwaUtil.addPartition();
             SanwaUtil.dropPartition();
             ThreadPool.QueueUserWorkItem(new WaitCallback(DBUtil.consumeSqlCmd));
-
+           
         }
 
         protected override CreateParams CreateParams
@@ -81,6 +87,8 @@ namespace Adam
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+
             Int32 oldWidth = this.Width;
             Int32 oldHeight = this.Height;
 
@@ -92,6 +100,9 @@ namespace Adam
 
             try
             {
+
+
+
                 for (int i = 0; i < ctrlForm.Length; i++)
                 {
                     ((Form)ctrlForm[i]).TopLevel = false;
@@ -101,9 +112,9 @@ namespace Adam
                 }
 
                 tbcMian.SelectTab(0);
-                alarmFrom.Hide();
-                alarmFrom.Show();
 
+                alarmFrom.Show();
+                //alarmFrom.SendToBack();
                 alarmFrom.Hide();
 
 
@@ -123,15 +134,16 @@ namespace Adam
             this.Width = oldWidth;
             this.Height = oldHeight;
             this.WindowState = FormWindowState.Maximized;
-            DIO.Connect();
-            AuthorityUpdate.UpdateFuncGroupEnable("INIT");//init 權限
+
             RouteCtrl.ConnectAll();
-            //ThreadPool.QueueUserWorkItem(new WaitCallback(RouteCtrl.ConnectAll));
+            AuthorityUpdate.UpdateFuncGroupEnable("INIT");//init 權限
+            //RouteCtrl.ConnectAll();
+
             this.Width = oldWidth;
             this.Height = oldHeight;
             this.WindowState = FormWindowState.Maximized;
 
-
+            
         }
 
         private void LoadPort01_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -175,33 +187,53 @@ namespace Adam
             string strMsg = "This equipment performs the initialization and origin search OK?\r\n" + "This equipment will be initalized, each axis will return to home position.\r\n" + "Check the condition of the wafer.";
             if (MessageBox.Show(strMsg, "Initialize", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
-
                 foreach (Node each in NodeManagement.GetList())
                 {
                     string Message = "";
-                    each.InitialComplete = false;
-                    switch (each.Type.ToUpper())
+                    switch (each.Type)
                     {
-                        case "ROBOT":
-                            each.ExcuteScript("RobotInit", "Initialize",out Message);
-                            break;
                         case "ALIGNER":
-                            each.ExcuteScript("AlignerInit", "Initialize", out Message);
+                            each.ErrorMsg = "";
+                            each.ExcuteScript("AlignerStateGet", "GetStatsBeforeInit", out Message);
                             break;
-                        case "LOADPORT":
-                            each.ExcuteScript("LoadPortInit", "Initialize", out Message);
+                        case "ROBOT":
+                            each.ErrorMsg = "";
+                            each.ExcuteScript("RobotStateGet", "GetStatsBeforeInit", out Message);
                             break;
                     }
                 }
             }
         }
 
+        private void ProceedInitial()
+        {
+
+            foreach (Node each in NodeManagement.GetList())
+            {
+                each.InitialComplete = false;
+                each.CheckStatus = false;
+                string Message = "";
+                switch (each.Type.ToUpper())
+                {
+                    case "ROBOT":
+                        each.ExcuteScript("RobotInit", "Initialize", out Message);
+                        break;
+                        //先做ROBOT
+                        //case "ALIGNER":
+                        //    each.ExcuteScript("AlignerInit", "Initialize");
+                        //    break;
+                        //case "LOADPORT":
+                        //    each.ExcuteScript("LoadPortInit", "Initialize");
+                        //    break;
+                }
+            }
+        }
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
             string strMsg = "Move to Home position. OK?";
-            string Message = "";
             if (MessageBox.Show(strMsg, "Org.Back", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.OK)
             {
+                string Message = "";
                 Transaction txn = new Transaction();
                 txn.Method = Transaction.Command.RobotType.RobotHome;
                 NodeManagement.Get("Robot01").SendCommand(txn, out Message);
@@ -277,7 +309,7 @@ namespace Adam
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            FromAlarm alarmFrom = new FromAlarm();
+            FormAlarm alarmFrom = new FormAlarm();
             alarmFrom.Text = "MessageFrom";
             alarmFrom.BackColor = Color.Blue;
             alarmFrom.ResetAll_bt.Enabled = false;
@@ -294,11 +326,50 @@ namespace Adam
         {
             logger.Debug("On_Command_Excuted");
             string Message = "";
-            Transaction txn = new Transaction();
+
+            Transaction SendTxn = new Transaction();
 
             if (Txn.Method == Transaction.Command.LoadPortType.Reset)
             {
                 AlarmUpdate.UpdateAlarmList(AlarmManagement.GetAll());
+            }
+
+            if (Txn.Method.Equals(Transaction.Command.LoadPortType.GetMapping))
+            {
+                Node Port = null;
+                switch (Node.Type)
+                {
+                    case "LOADPORT":
+                        Port = Node;
+                        break;
+                    case "ROBOT":
+                        Port = NodeManagement.Get(Node.CurrentPosition);
+                        break;
+                }
+
+                if (Port != null)
+                {
+                    //Asign Wafer
+
+                    foreach (Job j in Port.JobList.Values.ToList())
+                    {
+                        if (j.MapFlag)
+                        {
+                            j.AlignerFlag = true;
+                            j.OCRFlag = true;
+                            j.NeedProcess = true;
+                            j.RecipeID = Port.WaferSize;
+                            j.AssignPort(Port.Name, j.Slot);
+                            j.DefaultOCR = "OCR01";
+                        }
+                    }
+                    Port.Mode = "LU";
+                    if (!Port.WaferSize.Equals("200MM"))
+                    {
+                        Port.LoadTime = DateTime.Now;
+                    }
+                    Port.Available = true;
+                }
             }
 
             switch (Node.Type)
@@ -318,10 +389,66 @@ namespace Adam
                             break;
                     }
                     break;
+                case "ROBOT":
+                    switch (Txn.Method)
+                    {
+                        case Transaction.Command.RobotType.GetMapping:
+                            WaferAssignUpdate.RefreshMapping(Node.CurrentPosition);
+                            MonitoringUpdate.UpdateNodesJob(Node.CurrentPosition);
+                            break;
+                    }
+                    break;
             }
 
             switch (Txn.FormName)
             {
+                case "GetStatsBeforeInit":
+                    switch (Txn.Method)
+                    {
+                        //case Transaction.Command.AlignerType.GetStatus:
+
+                        //    break;
+                        //case Transaction.Command.RobotType.GetCombineStatus:
+
+                        //    break;
+                        //case Transaction.Command.AlignerType.GetSpeed:
+
+                        //    break;
+                        case Transaction.Command.AlignerType.GetRIO:
+                            if (Msg.Value == null || Msg.Value.IndexOf(",") < 0)
+                            {
+                                break;
+                            }
+                            string[] result = Msg.Value.Split(',');
+                            switch (result[0])
+                            {
+                                case "004":
+
+                                    if (result[1].Equals("1"))
+                                    {
+                                        Node.ErrorMsg += "Present_R 在席存在 ";
+                                    }
+
+                                    break;
+                                case "005":
+                                    if (result[1].Equals("1"))
+                                    {
+                                        Node.ErrorMsg += "Present_L 在席存在 ";
+                                    }
+                                    break;
+                            }
+                            break;
+                            //case Transaction.Command.AlignerType.GetError:
+
+                            //    break;
+                            //case Transaction.Command.AlignerType.GetMode:
+
+                            //    break;
+                            //case Transaction.Command.AlignerType.GetSV:
+
+                            //    break;
+                    }
+                    break;
                 case "FormStatus":
                     Util.StateUtil.UpdateSTS(Node.Name, Msg.Value);
                     break;
@@ -331,10 +458,23 @@ namespace Adam
                 case "FormManual":
                     switch (Node.Type)
                     {
-                        case "LOADPORT":
-                            if (!Txn.CommandType.Equals("MOV"))
+                        case "SMARTTAG":
+                            if (!Txn.Method.Equals(Transaction.Command.SmartTagType.GetLCDData))
                             {
-                                ManualPortStatusUpdate.LockUI(false);
+                                //ManualPortStatusUpdate.LockUI(false);
+                            }
+                            break;
+                        case "LOADPORT":
+                            if (!Txn.CommandType.Equals("MOV") && !Txn.CommandType.Equals("HCS"))
+                            {
+                                //ManualPortStatusUpdate.LockUI(false);
+                            }
+                            else
+                            {
+                                if (Txn.Method.Equals(Transaction.Command.LoadPortType.Reset))
+                                {
+                                   // ManualPortStatusUpdate.LockUI(false);
+                                }
                             }
                             ManualPortStatusUpdate.UpdateLog(Node.Name, Msg.Command + " Excuted");
                             switch (Txn.Method)
@@ -346,7 +486,7 @@ namespace Adam
                                     ManualPortStatusUpdate.UpdateLED(Node.Name, Msg.Value);
                                     break;
                                 case Transaction.Command.LoadPortType.ReadStatus:
-                                    ManualPortStatusUpdate.UpdateStatus(Node.Name, Msg.Value);
+                                    ManualPortStatusUpdate.UpdateSmifStatus(Node.Name, Msg.Value);
                                     break;
                                 case Transaction.Command.LoadPortType.GetCount:
 
@@ -371,14 +511,7 @@ namespace Adam
                                 case Transaction.Command.RobotType.RobotMode:
                                 case Transaction.Command.RobotType.Reset:
                                 case Transaction.Command.RobotType.RobotServo:
-                                    //case Transaction.Command.RobotType.Stop:
-                                    //case Transaction.Command.RobotType.Pause:
-                                    //case Transaction.Command.RobotType.Continue:
-                                    Thread.Sleep(1000);
-                                    //向Robot 詢問狀態
-                                    Node robot = NodeManagement.Get(Node.Name);
-                                    String script_name = robot.Brand.ToUpper().Equals("SANWA") ? "RobotStateGet" : "RobotStateGet(Kawasaki)";
-                                    robot.ExcuteScript(script_name, "FormManual", out Message);
+                                    
                                     ManualRobotStatusUpdate.UpdateGUI(Txn, Node.Name, Msg.Value);//update 手動功能畫面 
                                     break;
                                 case Transaction.Command.RobotType.GetSpeed:
@@ -424,72 +557,9 @@ namespace Adam
 
                     }
                     break;
-                case "InitialFinish":
-                    switch (Node.Type)
-                    {
-                        case "LOADPORT":
-                            switch (Txn.Method)
-                            {
-
-                                case Transaction.Command.LoadPortType.ReadStatus:
-                                    MessageParser parser = new MessageParser(Node.Brand);
-                                    Dictionary<string, string> content = parser.ParseMessage(Txn.Method, Msg.Value);
-                                    bool CheckResult = true;
-                                    foreach (KeyValuePair<string, string> each in content)
-                                    {
-                                        switch (each.Key)
-                                        {
-                                            case "FOUP Clamp Status":
-                                                if (!each.Value.Equals("Open"))
-                                                {
-                                                    CheckResult = false;
-                                                }
-                                                break;
-                                            case "Latch Key Status":
-                                                if (!each.Value.Equals("Close"))
-                                                {
-                                                    CheckResult = false;
-                                                }
-                                                break;
-                                            case "Cassette Presence":
-                                                if (!each.Value.Equals("Normal position"))
-                                                {
-                                                    CheckResult = false;
-                                                }
-                                                break;
-                                            case "Door Position":
-                                                if (!each.Value.Equals("Close position"))
-                                                {
-                                                    CheckResult = false;
-                                                }
-                                                break;
-                                            case "Equipment Status":
-                                                if (each.Value.Equals("Fatal error"))
-                                                {
-                                                    CheckResult = false;
-                                                }
-                                                break;
-                                        }
-                                    }
-                                    if (CheckResult)
-                                    {
-                                        Node.FoupReady = true;
-                                        Node.ExcuteScript("LoadPortFoupIn", "LoadPortFoup", out Message, "", true);
-
-                                    }
-                                    else
-                                    {
-                                        Node.FoupReady = false;
-                                        Node.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", out Message, "", true);
-                                        On_Node_State_Changed(Node, "Ready To Load");
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
+               
                 default:
-                   // TransferState.setState(Txn.FormName + "_ACK", true); //2018 Add by Steven for Transfer Job check rule
+
                     break;
             }
         }
@@ -502,7 +572,7 @@ namespace Adam
                     switch (Node.Type)
                     {
                         case "LOADPORT":
-                            ManualPortStatusUpdate.LockUI(false);
+                            //ManualPortStatusUpdate.LockUI(false);
                             break;
 
                     }
@@ -512,14 +582,7 @@ namespace Adam
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = Node.Name;
             CurrentAlarm.AlarmCode = Msg.Value;
-            if (Node.Type.Equals("OCR"))
-            {
-                CurrentAlarm.NeedReset = false;
-            }
-            else
-            {
-                CurrentAlarm.NeedReset = true;
-            }
+            CurrentAlarm.NeedReset = true;
             try
             {
 
@@ -532,7 +595,7 @@ namespace Adam
                 CurrentAlarm.IsStop = Detail.IsStop;
                 if (CurrentAlarm.IsStop)
                 {
-                    RouteCtrl.Stop();
+                   // RouteCtrl.Stop();
                 }
             }
             catch (Exception e)
@@ -546,7 +609,7 @@ namespace Adam
 
             AlarmUpdate.UpdateAlarmList(AlarmManagement.GetAll());
             AlarmUpdate.UpdateAlarmHistory(AlarmManagement.GetHistory());
-
+    
         }
 
         public void On_Command_Finished(Node Node, Transaction Txn, ReturnMessage Msg)
@@ -555,15 +618,36 @@ namespace Adam
             //Transaction txn = new Transaction();
             switch (Txn.FormName)
             {
-
+                case "ChangeAlignWaferSize":
+                    switch (Node.Type)
+                    {
+                        case "ROBOT":
+                            switch (Txn.Method)
+                            {
+                                case Transaction.Command.RobotType.GetWait:
+                                    Node.WaitForFinish = false;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
                 case "FormManual":
 
                     switch (Node.Type)
                     {
+                        case "SMARTTAG":
+                            switch (Txn.Method)
+                            {
+                                case Transaction.Command.SmartTagType.GetLCDData:
+                                    ManualPortStatusUpdate.UpdateID(Msg.Value);
+                                    break;
+                            }
+                            //ManualPortStatusUpdate.LockUI(false);
+                            break;
                         case "LOADPORT":
 
                             ManualPortStatusUpdate.UpdateLog(Node.Name, Msg.Command + " Finished");
-                            ManualPortStatusUpdate.LockUI(false);
+                            //ManualPortStatusUpdate.LockUI(false);
 
                             break;
 
@@ -578,6 +662,14 @@ namespace Adam
                 default:
                     switch (Node.Type)
                     {
+                        case "ROBOT":
+                        //switch (Txn.Method)
+                        //{
+                        //    case Transaction.Command.RobotType.Mapping: //when 200mm port mapped by robot's fork, then port's busy switch to false.
+                        //        NodeManagement.Get(Txn.Position).Busy = false;
+                        //        break;
+                        //}
+                        //break;
                         case "LOADPORT":
                             switch (Txn.Method)
                             {
@@ -585,31 +677,15 @@ namespace Adam
                             }
                             break;
                         case "OCR":
-                            Job j;
-                            if (Txn.TargetJobs.Count() != 0)
-                            {
-                                j = Txn.TargetJobs[0];
-                            }
-                            else
-                            {
-                                j = new Job();
-                            }
                             switch (Txn.Method)
                             {
                                 case Transaction.Command.OCRType.Read:
-                                    OCRUpdate.UpdateOCRRead(Node.Name, Msg.Value, j);
-
-                                    break;
-                                case Transaction.Command.OCRType.ReadConfig:
-                                    OCRInfo result = new OCRInfo(Msg.Value);
-                                    
-                                    OCRUpdate.UpdateOCRReadXML(Node.Name, result, j);
+                                    OCRUpdate.UpdateOCRRead(Node.Name, Msg.Value, Txn.TargetJobs[0]);
 
                                     break;
                             }
                             break;
                     }
-                    //TransferState.setState(Txn.FormName + "_FIN", true); //2018 Add by Steven for Transfer Job check rule
                     break;
             }
         }
@@ -633,7 +709,7 @@ namespace Adam
                 CurrentAlarm.IsStop = Detail.IsStop;
                 if (CurrentAlarm.IsStop)
                 {
-                    RouteCtrl.Stop();
+                    //RouteCtrl.Stop();
                 }
             }
             catch (Exception e)
@@ -650,35 +726,20 @@ namespace Adam
         public void On_Event_Trigger(Node Node, ReturnMessage Msg)
         {
             logger.Debug("On_Event_Trigger");
-            string Message = "";
 
-            Transaction txn = new Transaction();
-            switch (Node.Type)
+            try
             {
-                case "LOADPORT":
-                    ManualPortStatusUpdate.UpdateLog(Node.Name, Msg.Command + " Trigger");
-                    switch (Msg.Command)
-                    {
-                        case "MANSW":
-                            if (Node.FoupReady)
-                            {
-                                Node.ExcuteScript("LoadPortMapping", "MANSW", out Message, "", true);
-                            }
-                            break;
-                        case "PODON":
-                            //檢查LoadPort狀態
-                            txn.Method = Transaction.Command.LoadPortType.ReadStatus;
-                            txn.FormName = "";
-                            Node.SendCommand(txn, out Message);
-
-                            break;
-                        case "PODOF":
-                            Node.FoupReady = false;
-                            Node.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", out Message, "", true);
-                            On_Node_State_Changed(Node, "Ready To Load");
-                            break;
-                    }
-                    break;
+                Transaction txn = new Transaction();
+                switch (Node.Type)
+                {
+                    case "LOADPORT":
+                        
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.StackTrace, e);
             }
 
         }
@@ -708,25 +769,34 @@ namespace Adam
 
         public void On_Controller_State_Changed(string Device_ID, string Status)
         {
-            string Message = "";
+
             ConnectionStatusUpdate.UpdateControllerStatus(Device_ID, Status);
 
-            if (Status.Equals("Connected"))
-            {
-                //當Loadport連線成功，檢查狀態，進行燈號顯示
-                var findPort = from port in NodeManagement.GetLoadPortList()
-                               where port.Controller.Equals(Device_ID) && !port.ByPass && port.Type.Equals("LOADPORT")
-                               select port;
+            //if (Status.Equals("Connected"))
+            //{
+            //    //當Loadport連線成功，檢查狀態，進行燈號顯示
+            //    // var findPort = from port in NodeManagement.GetLoadPortList()
+            //    //               where port.Controller.Equals(Device_ID) && !port.ByPass && port.Type.Equals("LOADPORT")
+            //    //               select port;
 
-                foreach (Node port in findPort)
-                {
-                    port.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", out Message, "", true);
-                }
-                CommunicationsUpdate.UpdateConnection(Device_ID, true);
-            }
-            else
+            //    //foreach (Node port in findPort)
+            //    //{
+            //    //    port.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", "", true);
+            //    //}
+            //    CommunicationsUpdate.UpdateConnection(Device_ID, true);
+            //}
+            //else
+            //{
+            //    CommunicationsUpdate.UpdateConnection(Device_ID, false);
+            //}
+            switch (Status)
             {
-                CommunicationsUpdate.UpdateConnection(Device_ID, false);
+                case "Connected":
+
+                    break;
+                case "Connection_Error":
+
+                    break;
             }
 
 
@@ -736,24 +806,9 @@ namespace Adam
         public void On_Port_Begin(string PortName, string FormName)
         {
             logger.Debug("On_Port_Begin");
+            
 
-            WaferAssignUpdate.RefreshMapping(PortName);
-            WaferAssignUpdate.RefreshMapping(NodeManagement.Get(PortName).DestPort);
-            try
-            {
-                switch (FormName)
-                {
-                    case "Running":
-                        MonitoringUpdate.UpdateUseState(PortName, true);
-                        WaferAssignUpdate.UpdateUseState(PortName, true);
-                        break;
-
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.StackTrace);
-            }
+           
         }
 
         public void On_Port_Finished(string PortName, string FormName)
@@ -761,33 +816,7 @@ namespace Adam
             logger.Debug("On_Port_Finished");
             try
             {
-                string Message = "";
-                WaferAssignUpdate.RefreshMapping(PortName);
-                WaferAssignUpdate.RefreshMapping(NodeManagement.Get(PortName).DestPort);
-                Node Port = NodeManagement.Get(PortName);
-                Node DestPort = NodeManagement.Get(Port.DestPort);
-                switch (FormName)
-                {
-                    case "Running":
-                        //RunningUpdate.UpdateUseState(PortName, false);
-                        MonitoringUpdate.UpdateUseState(PortName, false);
-                        WaferAssignUpdate.UpdateUseState(PortName, false);
-                        if (!Port.ByPass)
-                        {
-                            Port.ExcuteScript("LoadPortUnloadAndLoad", "Running_Port_Finished", out Message);
-                            DestPort.ExcuteScript("LoadPortUnloadAndLoad", "Running_Port_Finished", out Message);
-                        }
-                        else
-                        {
-                            RunningUpdate.ReverseRunning(Port.Name);
-                        }
-                        //RunningUpdate.ReverseRunning(PortName);
-
-                        break;
-                    default:
-                        Port.ExcuteScript("LoadPortUnload", "Port_Finished", out Message);
-                        break;
-                }
+                
             }
             catch (Exception e)
             {
@@ -802,14 +831,14 @@ namespace Adam
             try
             {
                 RunningUpdate.UpdateRunningInfo("LapsedTime", LapsedTime);
-                RunningUpdate.UpdateRunningInfo("TransCount", "-1");
+                RunningUpdate.UpdateRunningInfo("TransCount", "+1");
                 RunningUpdate.UpdateRunningInfo("LapsedWfCount", LapsedWfCount.ToString());
                 RunningUpdate.UpdateRunningInfo("LapsedLotCount", LapsedLotCount.ToString());
                 RunningUpdate.UpdateRunningInfo("WPH", (LapsedWfCount / Convert.ToDouble(LapsedTime) * 3600).ToString());
                 MonitoringUpdate.UpdateWPH(Math.Round((LapsedWfCount / Convert.ToDouble(LapsedTime) * 3600), 1).ToString());
-                foreach(Node port in NodeManagement.GetLoadPortList())
+                foreach (Node port in NodeManagement.GetLoadPortList())
                 {
-                    WaferAssignUpdate.ResetAssignCM(port.Name,true);
+                    WaferAssignUpdate.ResetAssignCM(port.Name, true);
                 }
             }
             catch (Exception e)
@@ -825,145 +854,27 @@ namespace Adam
 
             ConnectionStatusUpdate.UpdateModeStatus(Mode);
             RunningUpdate.UpdateModeStatus(Mode);
+            //MonitoringUpdate.UpdateStatus(Mode);
             foreach (Node port in NodeManagement.GetLoadPortList())
             {
                 WaferAssignUpdate.RefreshMapping(port.Name);
                 if (Mode.Equals("Stop"))
                 {
-                    WaferAssignUpdate.ResetAssignCM(port.Name,true);
+                    WaferAssignUpdate.ResetAssignCM(port.Name, true);
                 }
             }
-            
+
         }
 
         public void On_Job_Location_Changed(Job Job)
         {
-            if (!Job.Job_Id.ToUpper().Equals("DUMMY"))
-            {
-                logger.Debug("On_Job_Location_Changed");
-                MonitoringUpdate.UpdateJobMove(Job.Job_Id);
-                if (Job.Position.ToUpper().Equals("ALIGNER01"))
-                {
-                    Job.DefaultOCR = "OCR01";
-                }
-                if (Job.Position.ToUpper().Equals("ALIGNER02"))
-                {
-                    Job.DefaultOCR = "OCR02";
-                }
-            }
+            logger.Debug("On_Job_Location_Changed");
+            MonitoringUpdate.UpdateJobMove(Job.Job_Id);
+
+
         }
 
-        public void On_Script_Finished(Node Node, string ScriptName, string FormName)
-        {
-            logger.Debug("On_Script_Finished: " + Node.Name + " Script:" + ScriptName + " Finished, Form name:" + FormName);
-            string Message = "";
-            switch (FormName)
-            {
-                case "Initialize":
-                   
-                    Node.InitialObject();
-                    Node.InitialComplete = true;
-                    switch (Node.Type)
-                    {
-                        case "ROBOT":
-                        case "ALIGNER":
-                            Node.State = "Idle";
-                            break;
-                        case "LOADPORT":
-                            Node.State = "Ready To Load";
-                            break;
-                    }
-                    if (!NodeManagement.IsNeedInitial())
-                    {
-                        NodeStatusUpdate.UpdateCurrentState("Idle");
-                        ConnectionStatusUpdate.UpdateInitial(true.ToString());
-                        foreach (Node port in NodeManagement.GetLoadPortList())
-                        {
-                            if (!port.ByPass)
-                            {
-                                Transaction txn = new Transaction();
-                                txn.Method = Transaction.Command.LoadPortType.ReadStatus;
-                                txn.FormName = "InitialFinish";
-                                port.SendCommand(txn, out Message);
-                            }
-                        }
-                    }
-                    break;
-                case "FormManual-Script":
-
-                    switch (Node.Type)
-                    {
-                        case "ROBOT":
-                            ManualRobotStatusUpdate.UpdateGUI(new Transaction(), Node.Name, "");//update 手動功能畫面
-                            break;
-                    }
-                    break;
-
-                case "Running_Port_Finished":
-                    if (ScriptName.Equals("LoadPortUnloadAndLoad"))
-                    {
-                        Node Port;
-                        Node DestPort;
-
-                        Node.PortUnloadAndLoadFinished = true;
-                        if (!Node.DestPort.Equals(""))
-                        {
-                            Port = Node;
-                            DestPort = NodeManagement.Get(Node.DestPort);
-                            // SpinWait.SpinUntil(() => (Port.IsMapping && Port.JobList.Count!=0 && DestPort.IsMapping && DestPort.JobList.Count != 0) || RouteCtrl.GetMode().Equals("Stop") , 99999999);
-
-                            SpinWait.SpinUntil(() => (Port.PortUnloadAndLoadFinished && DestPort.PortUnloadAndLoadFinished) || RouteCtrl.GetMode().Equals("Stop"), 99999999);
-
-                            if (!RouteCtrl.GetMode().Equals("Stop") && Port.PortUnloadAndLoadFinished && DestPort.PortUnloadAndLoadFinished)
-                            {
-                                Port.PortUnloadAndLoadFinished = false;
-                                DestPort.PortUnloadAndLoadFinished = false;
-                                RunningUpdate.ReverseRunning(Port.Name);
-                            }
-                        }
-                        //else
-                        //{
-                        //    var findPort = from port in NodeManagement.GetLoadPortList()
-                        //                   where port.DestPort.Equals(Node.Name)
-                        //                   select port;
-
-                        //    if (findPort.Count() != 0)
-                        //    {
-                        //        Port = findPort.First();
-                        //        DestPort = Node;
-                        //        //SpinWait.SpinUntil(() => (Port.IsMapping && Port.JobList.Count != 0 && DestPort.IsMapping && DestPort.JobList.Count != 0) || RouteCtrl.GetMode().Equals("Stop"), 99999999);
-
-                        //        //SpinWait.SpinUntil(() => (Port.IsMapping && DestPort.IsMapping) || RouteCtrl.GetMode().Equals("Stop"), 99999999);
-                        //        if (!RouteCtrl.GetMode().Equals("Stop") && Port.PortUnloadAndLoadFinished && DestPort.PortUnloadAndLoadFinished)
-                        //        {
-
-                        //            RunningUpdate.ReverseRunning(Port.Name);
-
-                        //        }
-
-                        //    }
-                        //}
-
-                    }
-
-                    break;
-            }
-        }
-
-        //private void vSBRobotStatus_Scroll(object sender, ScrollEventArgs e)
-        //{
-        //    //pbRobotState.Top = -vSBRobotStatus.Value;
-        //}
-
-        //private void vSBAlignerStatus_Scroll(object sender, ScrollEventArgs e)
-        //{
-        //    //pbAlignerState.Top = -vSBAlignerStatus.Value;
-        //}
-
-        //private void vSBPortStatus_Scroll(object sender, ScrollEventArgs e)
-        //{
-        //    //pbPortState.Top = -vSBPortStatus.Value;
-        //}
+        
 
 
 
@@ -978,13 +889,27 @@ namespace Adam
 
         public void On_Data_Chnaged(string Parameter, string Value)
         {
-            DIOUpdate.UpdateDIOStatus(Parameter, Value);
+            switch (Parameter)
+            {
+                case "BF1_DOOR_OPEN":
+                case "BF1_ARM_EXTEND_ENABLE":
+                case "BF2_DOOR_OPEN":
+                case "BF2_ARM_EXTEND_ENABLE":
+                case "ARM_NOT_EXTEND_BF1":
+                case "ARM_NOT_EXTEND_BF2":
+                    DIOUpdate.UpdateInterLock(Parameter, Value);
+                    break;                
+                default:
+                    DIOUpdate.UpdateDIOStatus(Parameter, Value);
+                    break;
+            }
+
 
         }
 
         public void On_Alarm_Happen(string DIOName, string ErrorCode)
         {
-
+            
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = DIOName;
             CurrentAlarm.AlarmCode = ErrorCode;
@@ -999,9 +924,11 @@ namespace Adam
                 CurrentAlarm.EngDesc = Detail.Code_Cause_English;
                 CurrentAlarm.Type = Detail.Code_Type;
                 CurrentAlarm.IsStop = Detail.IsStop;
+
+                
                 if (CurrentAlarm.IsStop)
                 {
-                    RouteCtrl.Stop();
+                    //RouteCtrl.Stop();
                 }
             }
             catch (Exception e)
@@ -1035,7 +962,7 @@ namespace Adam
                 CurrentAlarm.IsStop = Detail.IsStop;
                 if (CurrentAlarm.IsStop)
                 {
-                    RouteCtrl.Stop();
+                   // RouteCtrl.Stop();
                 }
             }
             catch (Exception e)
@@ -1058,63 +985,63 @@ namespace Adam
             switch ((sender as Button).Name)
             {
                 case "RED_Signal":
-                    if (DIO.GetIO("OUT", "RED").ToUpper().Equals("TRUE"))
+                    if (RouteControl.Instance.DIO.GetIO("OUT", "RED").ToUpper().Equals("TRUE"))
                     {
-                        DIO.SetIO("RED", "False");
+                        RouteControl.Instance.DIO.SetIO("RED", "False");
                     }
                     else
                     {
-                        DIO.SetIO("RED", "True");
+                        RouteControl.Instance.DIO.SetIO("RED", "True");
                     }
                     break;
                 case "ORANGE_Signal":
-                    if (DIO.GetIO("OUT", "ORANGE").ToUpper().Equals("TRUE"))
+                    if (RouteControl.Instance.DIO.GetIO("OUT", "ORANGE").ToUpper().Equals("TRUE"))
                     {
-                        DIO.SetIO("ORANGE", "False");
+                        RouteControl.Instance.DIO.SetIO("ORANGE", "False");
                     }
                     else
                     {
-                        DIO.SetIO("ORANGE", "True");
+                        RouteControl.Instance.DIO.SetIO("ORANGE", "True");
                     }
                     break;
                 case "GREEN_Signal":
-                    if (DIO.GetIO("OUT", "GREEN").ToUpper().Equals("TRUE"))
+                    if (RouteControl.Instance.DIO.GetIO("OUT", "GREEN").ToUpper().Equals("TRUE"))
                     {
-                        DIO.SetIO("GREEN", "False");
+                        RouteControl.Instance.DIO.SetIO("GREEN", "False");
                     }
                     else
                     {
-                        DIO.SetIO("GREEN", "True");
+                        RouteControl.Instance.DIO.SetIO("GREEN", "True");
                     }
                     break;
                 case "BLUE_Signal":
-                    if (DIO.GetIO("OUT", "BLUE").ToUpper().Equals("TRUE"))
+                    if (RouteControl.Instance.DIO.GetIO("OUT", "BLUE").ToUpper().Equals("TRUE"))
                     {
-                        DIO.SetIO("BLUE", "False");
+                        RouteControl.Instance.DIO.SetIO("BLUE", "False");
                     }
                     else
                     {
-                        DIO.SetIO("BLUE", "True");
+                        RouteControl.Instance.DIO.SetIO("BLUE", "True");
                     }
                     break;
                 case "BUZZER1_Signal":
-                    if (DIO.GetIO("OUT", "BUZZER1").ToUpper().Equals("TRUE"))
+                    if (RouteControl.Instance.DIO.GetIO("OUT", "BUZZER1").ToUpper().Equals("TRUE"))
                     {
-                        DIO.SetIO("BUZZER1", "False");
+                        RouteControl.Instance.DIO.SetIO("BUZZER1", "False");
                     }
                     else
                     {
-                        DIO.SetIO("BUZZER1", "True");
+                        RouteControl.Instance.DIO.SetIO("BUZZER1", "True");
                     }
                     break;
                 case "BUZZER2_Signal":
-                    if (DIO.GetIO("OUT", "BUZZER2").ToUpper().Equals("TRUE"))
+                    if (RouteControl.Instance.DIO.GetIO("OUT", "BUZZER2").ToUpper().Equals("TRUE"))
                     {
-                        DIO.SetIO("BUZZER2", "False");
+                        RouteControl.Instance.DIO.SetIO("BUZZER2", "False");
                     }
                     else
                     {
-                        DIO.SetIO("BUZZER2", "True");
+                        RouteControl.Instance.DIO.SetIO("BUZZER2", "True");
                     }
                     break;
             }
@@ -1122,33 +1049,27 @@ namespace Adam
 
         private void Conn_gv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            try
+            switch (e.ColumnIndex)
             {
-                switch (e.ColumnIndex)
-                {
-                    case 1:
-                        switch (e.Value)
-                        {
-                            case "Connecting":
-                                e.CellStyle.BackColor = Color.Yellow;
-                                e.CellStyle.ForeColor = Color.Black;
-                                break;
-                            case "Connected":
-                                e.CellStyle.BackColor = Color.Green;
-                                e.CellStyle.ForeColor = Color.White;
-                                break;
-                            default:
-                                e.CellStyle.BackColor = Color.Red;
-                                e.CellStyle.ForeColor = Color.White;
-                                break;
+                case 1:
+                    switch (e.Value)
+                    {
+                        case "Connecting":
+                            e.CellStyle.BackColor = Color.Yellow;
+                            e.CellStyle.ForeColor = Color.Black;
+                            break;
+                        case "Connected":
+                            e.CellStyle.BackColor = Color.Green;
+                            e.CellStyle.ForeColor = Color.White;
+                            break;
+                        default:
+                            e.CellStyle.BackColor = Color.Red;
+                            e.CellStyle.ForeColor = Color.White;
+                            break;
 
-                        }
-                        break;
+                    }
+                    break;
 
-                }
-            }catch(Exception ex)
-            {
-                MessageBox.Show(ex.StackTrace);
             }
         }
 
@@ -1172,48 +1093,86 @@ namespace Adam
         private void Mode_btn_Click(object sender, EventArgs e)
         {
 
-            if (Mode_btn.Tag.ToString() == "Manual")
+            if (Mode_btn.Text.Equals("Manual-Mode"))
             {
-
-                //if (Connection_btn.Tag.ToString() == "Offline")
-                //{
-                //    MessageBox.Show("尚未連線");
-                //    return;
-                //}
-
-
-
-
-                if (AlarmManagement.HasCritical())
+                
+                Mode_btn.Text = "Online-Mode";
+                Mode_btn.BackColor = Color.Green;
+                btnManual.Enabled = false;
+                btnManual.BackColor = Color.Gray;
+                if (formManual != null)
                 {
-                    MessageBox.Show("關鍵Alarm尚未解除");
-                }
-                else
-                {
-                    if (NodeManagement.IsNeedInitial())
-                    {
-                        ConnectionStatusUpdate.UpdateInitial(false.ToString());
-                        MessageBox.Show("請先執行Initial");
-                    }
-                    else
-                    {
-
-                        ConnectionStatusUpdate.UpdateInitial(false.ToString());
-                        NodeStatusUpdate.UpdateCurrentState(NodeManagement.GetCurrentState());
-                        RouteCtrl.Start("Running");
-                        //ConnectionStatusUpdate.UpdateModeStatus("Start");
-
-
-                    }
+                    formManual.Close();
                 }
             }
             else
             {
-                RouteCtrl.Stop();
-                //ConnectionStatusUpdate.UpdateModeStatus("Manual");
+                //check 密碼
+                MD5 md5 = MD5.Create();
+                string[] use_info = ShowLoginDialog();
+                string user_id = use_info[0];
+                string password = use_info[1];
+                byte[] source = Encoding.Default.GetBytes(password);//將字串轉為Byte[]
+                byte[] crypto = md5.ComputeHash(source);//進行MD5加密
+                string md5_result = BitConverter.ToString(crypto).Replace("-", String.Empty).ToUpper();//取得 MD5
+                string config_password = SystemConfig.Get().AdminPassword;
+                if (md5_result.Equals(config_password))
+                {
+                   
+                    Mode_btn.Text = "Manual-Mode";
+                    Mode_btn.BackColor = Color.Orange;
+                    btnManual.Enabled = true;
+                    btnManual.BackColor = Color.Orange;
+                }
+                else
+                {
+                    MessageBox.Show("Password incorrect !!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                    btnManual.Enabled = false;
+                    btnManual.BackColor = Color.Gray;
+                }
 
-                ConnectionStatusUpdate.UpdateInitial(false.ToString());
             }
+        }
+
+
+        public static string[] ShowLoginDialog()
+        {
+            string[] result = new string[] { "", "" };
+            Form prompt = new Form()
+            {
+                Width = 450,
+                Height = 280,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = "Authority check",
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            Label lblUser = new Label() { Left = 30, Top = 20, Text = "User", Width = 200 };
+            TextBox tbUser = new TextBox() { Left = 30, Top = 50, Width = 350 , Text = "Administrator"};
+            Label lblPassword = new Label() { Left = 30, Top = 90, Text = "Password", Width = 200 };
+            TextBox tbPassword = new TextBox() { Left = 30, Top = 120, Width = 350 };
+            tbPassword.PasswordChar = '*';
+            Button confirmation = new Button() { Text = "Ok", Left = 280, Width = 100, Top = 170, DialogResult = DialogResult.OK, Height = 35 };
+            lblUser.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            lblPassword.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            tbUser.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            tbPassword.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            confirmation.Font = new System.Drawing.Font("Consolas", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            confirmation.Click += (sender, e) => { prompt.Close(); };
+            prompt.Controls.Add(lblUser);
+            prompt.Controls.Add(tbUser);
+            prompt.Controls.Add(tbPassword);
+            prompt.Controls.Add(confirmation);
+            prompt.Controls.Add(lblPassword);
+            prompt.AcceptButton = confirmation;
+            tbPassword.Focus();
+            tbUser.Enabled = false;
+
+            if (prompt.ShowDialog() == DialogResult.OK)
+            {
+                result[0] = tbUser.Text;
+                result[1] = tbPassword.Text;
+            }
+            return result;
         }
 
         public void On_InterLock_Report(Node Node, bool InterLock)
@@ -1221,23 +1180,23 @@ namespace Adam
             //throw new NotImplementedException();
         }
 
-        private void Pause_btn_Click(object sender, EventArgs e)
-        {
-            if (RouteCtrl.GetMode().Equals("Start"))
-            {
+        //private void Pause_btn_Click(object sender, EventArgs e)
+        //{
+        //    if (RouteCtrl.GetMode().Equals("Start"))
+        //    {
 
-                RouteCtrl.Pause();
-                NodeStatusUpdate.UpdateCurrentState("Run");
-                Pause_btn.Text = "Continue";
+        //        RouteCtrl.Pause();
+        //        NodeStatusUpdate.UpdateCurrentState("Run");
+        //        Pause_btn.Text = "Continue";
 
-            }
-            else if (RouteCtrl.GetMode().Equals("Pause"))
-            {
-                RouteCtrl.Continue();
-                NodeStatusUpdate.UpdateCurrentState("Idle");
-                Pause_btn.Text = "Pause";
-            }
-        }
+        //    }
+        //    else if (RouteCtrl.GetMode().Equals("Pause"))
+        //    {
+        //        RouteCtrl.Continue();
+        //        NodeStatusUpdate.UpdateCurrentState("Idle");
+        //        Pause_btn.Text = "Pause";
+        //    }
+        //}
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
@@ -1268,6 +1227,72 @@ namespace Adam
 
         private void Conn_gv_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
+
+        }
+
+        
+
+        public void On_TaskJob_Aborted(string TaskID, string NodeName, string ReportType, string Message)
+        {
+            if (TaskID.Equals("FormManual"))
+            {
+                ManualPortStatusUpdate.LockUI(false);
+            }
+            AlarmInfo CurrentAlarm = new AlarmInfo();
+            CurrentAlarm.NodeName = "SYSTEM";
+            CurrentAlarm.AlarmCode = Message;
+            CurrentAlarm.NeedReset = false;
+            try
+            {
+
+                AlarmMessage Detail = AlmMapping.Get("SYSTEM", CurrentAlarm.AlarmCode);
+                if (!Detail.Code_Group.Equals("UNDEFINITION"))
+                {
+                    CurrentAlarm.SystemAlarmCode = Detail.CodeID;
+                    CurrentAlarm.Desc = Detail.Code_Cause;
+                    CurrentAlarm.EngDesc = Detail.Code_Cause_English;
+                    CurrentAlarm.Type = Detail.Code_Type;
+                    CurrentAlarm.IsStop = Detail.IsStop;
+                    if (CurrentAlarm.IsStop)
+                    {
+                        //RouteCtrl.Stop();
+                    }
+                    CurrentAlarm.TimeStamp = DateTime.Now;
+
+                    AlarmManagement.Add(CurrentAlarm);
+
+                    AlarmUpdate.UpdateAlarmList(AlarmManagement.GetAll());
+                    AlarmUpdate.UpdateAlarmHistory(AlarmManagement.GetHistory());
+                }
+            }
+            catch (Exception e)
+            {
+                CurrentAlarm.Desc = "未定義";
+                logger.Error("(GetAlarmMessage)" + e.Message + "\n" + e.StackTrace);
+            }
+           
+
+        }
+
+        public void On_TaskJob_Finished(string TaskID)
+        {
+            if (TaskID.Equals("FormManual"))
+            {
+                ManualPortStatusUpdate.LockUI(false);
+            }
+        }
+
+        private void btnManual_Click(object sender, EventArgs e)
+        {
+            if (formManual == null)
+            {
+                formManual = new GUI.FormManual();
+                formManual.Show();
+            }
+            else
+            {
+                formManual.Focus();
+            }
         }
     }
 }

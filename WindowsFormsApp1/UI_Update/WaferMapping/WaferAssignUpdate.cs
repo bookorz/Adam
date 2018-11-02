@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TransferControl.Engine;
 using TransferControl.Management;
 
 namespace Adam.UI_Update.WaferMapping
@@ -176,7 +177,7 @@ namespace Adam.UI_Update.WaferMapping
                         int currentIdx = 1;
                         for (int i = 0; i < Mapping.Length; i++)
                         {
-                            Job wafer = new Job();
+                            Job wafer = RouteControl.CreateJob();
                             wafer.Slot = (i + 1).ToString();
                             wafer.FromPort = PortName;
                             wafer.FromPortSlot = wafer.Slot;

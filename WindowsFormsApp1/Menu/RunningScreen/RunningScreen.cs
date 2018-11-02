@@ -30,7 +30,7 @@ namespace Adam.Menu.RunningScreen
             }
             if (Start_btn.Tag.Equals("Start"))
             {
-                FormMain.RouteCtrl.Stop();
+                
                 //FormMain.RouteCtrl.Stop();
 
 
@@ -38,35 +38,7 @@ namespace Adam.Menu.RunningScreen
             }
             else
             {
-                if (NodeManagement.IsNeedInitial())
-                {
-                    ConnectionStatusUpdate.UpdateInitial(false.ToString());
-                    MessageBox.Show("請先執行Initial");
-                }
-                else
-                {
-                    var findByPass = from node in NodeManagement.GetList()
-                                     where node.ByPass
-                                     select node;
-
-                    if (findByPass.Count() != 0)
-                    {
-                        string msg = "";
-                        foreach (Node node in findByPass)
-                        {
-                            msg += node.Name + "\n";
-                        }
-                        msg += "\n為By pass 模式，確定要繼續?";
-
-                        if (MessageBox.Show(msg, "警告", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
-                        {
-                            return;
-                        }
-                    }
-
-                    FormMain.RouteCtrl.Start("Running");
-                }
-
+                
             }
 
         }

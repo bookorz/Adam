@@ -60,9 +60,9 @@ namespace Adam.UI_Update.Manual
                             StateUtil.UpdateSV(name, msg);
                             break;
                         default:
-                            manual.Cursor = Cursors.Default;
-                            Control tbcManual = manual.Controls.Find("tbcManual", true).FirstOrDefault() as Control;
-                            tbcManual.Enabled = true;
+                            //manual.Cursor = Cursors.Default;
+                            //Control tbcManual = manual.Controls.Find("tbcManual", true).FirstOrDefault() as Control;
+                            //tbcManual.Enabled = true;
                             return;
                     }
                     UpdateStatus(name);
