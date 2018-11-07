@@ -235,10 +235,10 @@ namespace Adam
             {
                 string Message = "";
                 Transaction txn = new Transaction();
-                txn.Method = Transaction.Command.RobotType.RobotHome;
+                txn.Method = Transaction.Command.RobotType.Home;
                 NodeManagement.Get("Robot01").SendCommand(txn, out Message);
                 txn = new Transaction();
-                txn.Method = Transaction.Command.RobotType.RobotHome;
+                txn.Method = Transaction.Command.RobotType.Home;
                 NodeManagement.Get("Robot02").SendCommand(txn, out Message);
             }
         }
@@ -507,10 +507,10 @@ namespace Adam
                         case "ROBOT":
                             switch (Txn.Method)
                             {
-                                case Transaction.Command.RobotType.RobotSpeed:
-                                case Transaction.Command.RobotType.RobotMode:
+                                case Transaction.Command.RobotType.Speed:
+                                case Transaction.Command.RobotType.Mode:
                                 case Transaction.Command.RobotType.Reset:
-                                case Transaction.Command.RobotType.RobotServo:
+                                case Transaction.Command.RobotType.Servo:
                                     
                                     ManualRobotStatusUpdate.UpdateGUI(Txn, Node.Name, Msg.Value);//update 手動功能畫面 
                                     break;
@@ -530,10 +530,10 @@ namespace Adam
                         case "ALIGNER":
                             switch (Txn.Method)
                             {
-                                case Transaction.Command.AlignerType.AlignerSpeed:
-                                case Transaction.Command.AlignerType.AlignerMode:
+                                case Transaction.Command.AlignerType.Speed:
+                                case Transaction.Command.AlignerType.Mode:
                                 case Transaction.Command.AlignerType.Reset:
-                                case Transaction.Command.AlignerType.AlignerServo:
+                                case Transaction.Command.AlignerType.Servo:
                                     Thread.Sleep(500);
                                     //向Aligner 詢問狀態
                                     Node aligner = NodeManagement.Get(Node.Name);

@@ -300,63 +300,71 @@ namespace GUI
                         break;
                 }
             }
+            string TaskName = "";
+            Dictionary<string, string> param = new Dictionary<string, string>();
             switch (btnFuncName)
             {
-                case "btnConn":
-                    //ControllerManagement.Get(aligner.Controller).Connect();
-                    aligner.State = "";
-                    SetFormEnable(false);
-                    Thread.Sleep(500);//暫解
-                    setAlignerStatus();
-                    SetFormEnable(true);
-                    return;
-                case "btnDisConn":
-                    // ControllerManagement.Get(aligner.Controller).Close();
-                    aligner.State = "";
-                    SetFormEnable(false);
-                    Thread.Sleep(500);//暫解
-                    setAlignerStatus();
-                    SetFormEnable(true);
-                    return;
+                //case "btnConn":
+                //    //ControllerManagement.Get(aligner.Controller).Connect();
+                //    aligner.State = "";
+                //    SetFormEnable(false);
+                //    Thread.Sleep(500);//暫解
+                //    setAlignerStatus();
+                //    SetFormEnable(true);
+                //    return;
+                //case "btnDisConn":
+                //    // ControllerManagement.Get(aligner.Controller).Close();
+                //    aligner.State = "";
+                //    SetFormEnable(false);
+                //    Thread.Sleep(500);//暫解
+                //    setAlignerStatus();
+                //    SetFormEnable(true);
+                //    return;
                 case "btnInit":
-                    //txns = new Transaction[4];
-                    //txns[0].Method = Transaction.Command.AlignerType.Reset;
-                    //txns[1].Method = Transaction.Command.AlignerType.AlignerOrigin;
-                    //txns[2].Method = Transaction.Command.AlignerType.AlignerServo;
-                    //txns[3].Method = Transaction.Command.AlignerType.AlignerHome;
+                    TaskName = "ALIGNER_MANUAL_INIT";
+                    param.Add("@Target", nodeName);
                     break;
                 case "btnOrg":
-                    txns[0].Method = Transaction.Command.AlignerType.AlignerOrigin;
+                    TaskName = "ALIGNER_MANUAL_ORGSH";
+                    param.Add("@Target", nodeName);
                     break;
                 case "btnHome":
-                    txns[0].Method = Transaction.Command.AlignerType.AlignerHome;
+                    TaskName = "ALIGNER_MANUAL_HOME";
+                    param.Add("@Target", nodeName);
                     break;
                 case "btnServoOn":
-                    txns[0].Method = Transaction.Command.AlignerType.AlignerServo;
-                    txns[0].Value = "1";
+                    TaskName = "ALIGNER_MANUAL_SERVO";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Value", "1");
                     break;
                 case "btnServoOff":
-                    txns[0].Method = Transaction.Command.AlignerType.AlignerServo;
-                    txns[0].Value = "0";
+                    TaskName = "ALIGNER_MANUAL_SERVO";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Value", "0");
                     break;
                 case "btnVacuOn":
-                    txns[0].Method = Transaction.Command.AlignerType.WaferHold;
-                    txns[0].Arm = "1";
+                    TaskName = "ALIGNER_MANUAL_WAFER_HOLD";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Arm", "1");
                     break;
                 case "btnVacuOff":
-                    txns[0].Method = Transaction.Command.AlignerType.WaferRelease;
-                    txns[0].Arm = "1";
+                    TaskName = "ALIGNER_MANUAL_WAFER_RELEASE";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Arm", "1");
                     break;
                 case "btnChgSpeed":
-                    txns[0].Method = Transaction.Command.AlignerType.AlignerSpeed;
-                    txns[0].Value = speed;
+                    TaskName = "ALIGNER_MANUAL_SPEED";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Value", speed);
                     break;
                 case "btnReset":
-                    txns[0].Method = Transaction.Command.AlignerType.Reset;
+                    TaskName = "ALIGNER_MANUAL_RESET";
+                    param.Add("@Target", nodeName);
                     break;
                 case "btnAlign":
-                    txns[0].Method = Transaction.Command.AlignerType.Align;
-                    txns[0].Value = angle;
+                    TaskName = "ALIGNER_MANUAL_ALIGN";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Value", angle);
                     break;
                 case "btnChgMode":
                     int mode = -1;
@@ -373,20 +381,17 @@ namespace GUI
                         MessageBox.Show(" Insufficient information, please select mode!", "Invalid Mode");
                         return;
                     }
-                    txns[0].Method = Transaction.Command.AlignerType.AlignerMode;
-                    txns[0].Value = Convert.ToString(mode);
+                   
+                    TaskName = "ALIGNER_MANUAL_MODE";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Value", Convert.ToString(mode));
                     break;
             }
-            if (!txns[0].Method.Equals(""))
-            {
-                aligner.SendCommand(txns[0], out Message);
-            }
-            else
-            {
-                MessageBox.Show("Command is empty!");
-            }
-            SetFormEnable(false);
-            setAlignerStatus();
+
+            ManualPortStatusUpdate.LockUI(true);
+            TaskJobManagment.CurrentProceedTask Task;
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
+           // setAlignerStatus();
         }
 
         private void SetFormEnable(bool enable)
@@ -588,10 +593,6 @@ namespace GUI
                     break;
                 case "btnRGet":
                     TaskName = "LOAD";
-                    if (!SANWA.Utility.Config.SystemConfig.Get().SaftyCheckByPass)
-                    {
-                        TaskName += "_SaftyCheck";
-                    }
                     if (cbRA1Point.Text.Equals(""))
                     {
                         MessageBox.Show("Point is empty!");
@@ -604,14 +605,12 @@ namespace GUI
                     }
                     param.Add("@Target", nodeName);
                     param.Add("@Position", cbRA1Point.Text);
-                    param.Add("@Slot", cbRA1Slot.Text.PadLeft(2,'0'));                    
+                    param.Add("@Slot", cbRA1Slot.Text.PadLeft(2,'0'));
+                    param.Add("@Slot2", (Convert.ToInt32(cbRA1Slot.Text)-1).ToString().PadLeft(2, '0'));
+                    param.Add("@Arm", SanwaUtil.GetArmID(cbRA1Arm.Text));
                     break;
                 case "btnRPut":
                     TaskName = "UNLOAD";
-                    if (!SANWA.Utility.Config.SystemConfig.Get().SaftyCheckByPass)
-                    {
-                        TaskName += "_SaftyCheck";
-                    }
                     if (cbRA2Point.Text.Equals(""))
                     {
                         MessageBox.Show("Point is empty!");
@@ -625,6 +624,8 @@ namespace GUI
                     param.Add("@Target", nodeName);
                     param.Add("@Position", cbRA2Point.Text);
                     param.Add("@Slot", cbRA2Slot.Text.PadLeft(2, '0'));
+                    param.Add("@Slot2", (Convert.ToInt32(cbRA2Slot.Text) - 1).ToString().PadLeft(2, '0'));
+                    param.Add("@Arm", SanwaUtil.GetArmID(cbRA2Arm.Text));
                     break;
                 case "btnRGetWait":
                     TaskName = "DOWN_GOTO";
@@ -658,7 +659,7 @@ namespace GUI
                     param.Add("@Target", nodeName);
                     param.Add("@Position", cbRA2Point.Text);
                     param.Add("@Slot", cbRA2Slot.Text.PadLeft(2, '0'));
-                    param.Add("@Arm", SanwaUtil.GetArmID(cbRA1Arm.Text));
+                    param.Add("@Arm", SanwaUtil.GetArmID(cbRA2Arm.Text));
                     break;
                 case "btnROrg":
                     TaskName = "ROBOT_ORGSH";
@@ -994,16 +995,24 @@ namespace GUI
             Node aligner2 = NodeManagement.Get("ALIGNER02");
 
             //向Aligner 詢問狀態
-            if (!tbA1Status.Text.Equals("N/A") && !tbA1Status.Text.Equals("Disconnected") && !tbA1Status.Text.Equals(""))
-            {
-                String script_name = aligner1.Brand.ToUpper().Equals("KAWASAKI") ? "AlignerStateGet(Kawasaki)" : "AlignerStateGet";
-                aligner1.ExcuteScript(script_name, "FormManual", out Message); ;//連線狀態下才執行
-            }
-            if (!tbA2Status.Text.Equals("N/A") && !tbA2Status.Text.Equals("Disconnected") && !tbA2Status.Text.Equals(""))
-            {
-                String script_name = aligner2.Brand.ToUpper().Equals("KAWASAKI") ? "AlignerStateGet(Kawasaki)" : "AlignerStateGet";
-                aligner2.ExcuteScript(script_name, "FormManual", out Message); ;//連線狀態下才執行
-            }
+            //if (!tbA1Status.Text.Equals("N/A") && !tbA1Status.Text.Equals("Disconnected") && !tbA1Status.Text.Equals(""))
+            //{
+            //    String script_name = aligner1.Brand.ToUpper().Equals("KAWASAKI") ? "AlignerStateGet(Kawasaki)" : "AlignerStateGet";
+            //    aligner1.ExcuteScript(script_name, "FormManual", out Message); ;//連線狀態下才執行
+            //}
+            //if (!tbA2Status.Text.Equals("N/A") && !tbA2Status.Text.Equals("Disconnected") && !tbA2Status.Text.Equals(""))
+            //{
+            //    String script_name = aligner2.Brand.ToUpper().Equals("KAWASAKI") ? "AlignerStateGet(Kawasaki)" : "AlignerStateGet";
+            //    aligner2.ExcuteScript(script_name, "FormManual", out Message); ;//連線狀態下才執行
+            //}
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            string TaskName = "ALIGNER_MANUAL_INIT";
+            param.Add("@Target", "ALIGNER01");
+            TaskJobManagment.CurrentProceedTask Task;
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
+            param.Add("@Target", "ALIGNER02");
+            
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
         }
 
         private void SetDeviceStatus(string name)
@@ -1062,7 +1071,7 @@ namespace GUI
 
         private void FormManual_EnabledChanged(object sender, EventArgs e)
         {
-            //Update_Manual_Status();
+            Update_Manual_Status();
         }
 
         private void rb_CheckedChanged(object sender, EventArgs e)

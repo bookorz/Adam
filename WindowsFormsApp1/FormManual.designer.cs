@@ -227,14 +227,12 @@
             this.tbA2Servo = new System.Windows.Forms.TextBox();
             this.tbA2Status = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.btnA2Conn = new System.Windows.Forms.Button();
             this.tbA2Error = new System.Windows.Forms.TextBox();
             this.btnA2VacuOn = new System.Windows.Forms.Button();
             this.cbA2Angle = new System.Windows.Forms.ComboBox();
             this.btnA2Reset = new System.Windows.Forms.Button();
             this.label16 = new System.Windows.Forms.Label();
             this.btnA2Init = new System.Windows.Forms.Button();
-            this.btnA2DisConn = new System.Windows.Forms.Button();
             this.btnA2VacuOff = new System.Windows.Forms.Button();
             this.label15 = new System.Windows.Forms.Label();
             this.btnA2ServoOff = new System.Windows.Forms.Button();
@@ -279,10 +277,8 @@
             this.btnA1Home = new System.Windows.Forms.Button();
             this.btnA1ServoOff = new System.Windows.Forms.Button();
             this.btnA1VacuOff = new System.Windows.Forms.Button();
-            this.btnA1DisConn = new System.Windows.Forms.Button();
             this.btnA1Init = new System.Windows.Forms.Button();
             this.btnA1Reset = new System.Windows.Forms.Button();
-            this.btnA1Conn = new System.Windows.Forms.Button();
             this.btnA1VacuOn = new System.Windows.Forms.Button();
             this.tabLoadport = new System.Windows.Forms.TabPage();
             this.Command_Group_A = new System.Windows.Forms.GroupBox();
@@ -632,6 +628,7 @@
             this.btnRMoveDown.TabIndex = 47;
             this.btnRMoveDown.Text = "Move Stage Down(GET)";
             this.btnRMoveDown.UseVisualStyleBackColor = false;
+            this.btnRMoveDown.Visible = false;
             this.btnRMoveDown.Click += new System.EventHandler(this.RobotFunction_Click);
             // 
             // btnRGetWait
@@ -735,7 +732,6 @@
             // 
             // cbRA1Arm
             // 
-            this.cbRA1Arm.Enabled = false;
             this.cbRA1Arm.FormattingEnabled = true;
             this.cbRA1Arm.Items.AddRange(new object[] {
             "Upper"});
@@ -818,6 +814,7 @@
             this.btnRMoveUp.TabIndex = 46;
             this.btnRMoveUp.Text = "Move Stage Up(PUT)";
             this.btnRMoveUp.UseVisualStyleBackColor = false;
+            this.btnRMoveUp.Visible = false;
             this.btnRMoveUp.Click += new System.EventHandler(this.RobotFunction_Click);
             // 
             // label51
@@ -932,7 +929,6 @@
             // 
             // cbRA2Arm
             // 
-            this.cbRA2Arm.Enabled = false;
             this.cbRA2Arm.FormattingEnabled = true;
             this.cbRA2Arm.Items.AddRange(new object[] {
             "Upper",
@@ -1038,13 +1034,11 @@
             // EightInch_rb
             // 
             this.EightInch_rb.AutoSize = true;
-            this.EightInch_rb.Checked = true;
             this.EightInch_rb.Enabled = false;
             this.EightInch_rb.Location = new System.Drawing.Point(510, 6);
             this.EightInch_rb.Name = "EightInch_rb";
             this.EightInch_rb.Size = new System.Drawing.Size(119, 34);
             this.EightInch_rb.TabIndex = 1;
-            this.EightInch_rb.TabStop = true;
             this.EightInch_rb.Text = "200MM";
             this.EightInch_rb.UseVisualStyleBackColor = true;
             // 
@@ -1068,11 +1062,13 @@
             // TwelveInch_rb
             // 
             this.TwelveInch_rb.AutoSize = true;
+            this.TwelveInch_rb.Checked = true;
             this.TwelveInch_rb.Enabled = false;
             this.TwelveInch_rb.Location = new System.Drawing.Point(628, 6);
             this.TwelveInch_rb.Name = "TwelveInch_rb";
             this.TwelveInch_rb.Size = new System.Drawing.Size(119, 34);
             this.TwelveInch_rb.TabIndex = 0;
+            this.TwelveInch_rb.TabStop = true;
             this.TwelveInch_rb.Text = "300MM";
             this.TwelveInch_rb.UseVisualStyleBackColor = true;
             // 
@@ -3183,14 +3179,12 @@
             this.panel18.Controls.Add(this.tbA2Servo);
             this.panel18.Controls.Add(this.tbA2Status);
             this.panel18.Controls.Add(this.label17);
-            this.panel18.Controls.Add(this.btnA2Conn);
             this.panel18.Controls.Add(this.tbA2Error);
             this.panel18.Controls.Add(this.btnA2VacuOn);
             this.panel18.Controls.Add(this.cbA2Angle);
             this.panel18.Controls.Add(this.btnA2Reset);
             this.panel18.Controls.Add(this.label16);
             this.panel18.Controls.Add(this.btnA2Init);
-            this.panel18.Controls.Add(this.btnA2DisConn);
             this.panel18.Controls.Add(this.btnA2VacuOff);
             this.panel18.Controls.Add(this.label15);
             this.panel18.Controls.Add(this.btnA2ServoOff);
@@ -3356,22 +3350,6 @@
             this.label17.Text = "Angle";
             this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnA2Conn
-            // 
-            this.btnA2Conn.BackColor = System.Drawing.Color.DarkGray;
-            this.btnA2Conn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnA2Conn.FlatAppearance.BorderSize = 2;
-            this.btnA2Conn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnA2Conn.Font = new System.Drawing.Font("微軟正黑體", 14.25F);
-            this.btnA2Conn.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnA2Conn.Location = new System.Drawing.Point(519, 28);
-            this.btnA2Conn.Name = "btnA2Conn";
-            this.btnA2Conn.Size = new System.Drawing.Size(118, 46);
-            this.btnA2Conn.TabIndex = 21;
-            this.btnA2Conn.Text = "Connect";
-            this.btnA2Conn.UseVisualStyleBackColor = false;
-            this.btnA2Conn.Click += new System.EventHandler(this.AlignerFunction_Click);
-            // 
             // tbA2Error
             // 
             this.tbA2Error.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -3454,29 +3432,13 @@
             this.btnA2Init.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnA2Init.Font = new System.Drawing.Font("微軟正黑體", 14.25F);
             this.btnA2Init.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnA2Init.Location = new System.Drawing.Point(519, 231);
+            this.btnA2Init.Location = new System.Drawing.Point(519, 99);
             this.btnA2Init.Name = "btnA2Init";
             this.btnA2Init.Size = new System.Drawing.Size(118, 46);
             this.btnA2Init.TabIndex = 53;
             this.btnA2Init.Text = "Initialize";
             this.btnA2Init.UseVisualStyleBackColor = false;
             this.btnA2Init.Click += new System.EventHandler(this.AlignerFunction_Click);
-            // 
-            // btnA2DisConn
-            // 
-            this.btnA2DisConn.BackColor = System.Drawing.Color.DarkGray;
-            this.btnA2DisConn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnA2DisConn.FlatAppearance.BorderSize = 2;
-            this.btnA2DisConn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnA2DisConn.Font = new System.Drawing.Font("微軟正黑體", 14.25F);
-            this.btnA2DisConn.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnA2DisConn.Location = new System.Drawing.Point(519, 98);
-            this.btnA2DisConn.Name = "btnA2DisConn";
-            this.btnA2DisConn.Size = new System.Drawing.Size(118, 46);
-            this.btnA2DisConn.TabIndex = 22;
-            this.btnA2DisConn.Text = "Disconnect";
-            this.btnA2DisConn.UseVisualStyleBackColor = false;
-            this.btnA2DisConn.Click += new System.EventHandler(this.AlignerFunction_Click);
             // 
             // btnA2VacuOff
             // 
@@ -3725,10 +3687,8 @@
             this.panel16.Controls.Add(this.btnA1Home);
             this.panel16.Controls.Add(this.btnA1ServoOff);
             this.panel16.Controls.Add(this.btnA1VacuOff);
-            this.panel16.Controls.Add(this.btnA1DisConn);
             this.panel16.Controls.Add(this.btnA1Init);
             this.panel16.Controls.Add(this.btnA1Reset);
-            this.panel16.Controls.Add(this.btnA1Conn);
             this.panel16.Controls.Add(this.btnA1VacuOn);
             this.panel16.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel16.Location = new System.Drawing.Point(20, 20);
@@ -4114,22 +4074,6 @@
             this.btnA1VacuOff.UseVisualStyleBackColor = false;
             this.btnA1VacuOff.Click += new System.EventHandler(this.AlignerFunction_Click);
             // 
-            // btnA1DisConn
-            // 
-            this.btnA1DisConn.BackColor = System.Drawing.Color.DarkGray;
-            this.btnA1DisConn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnA1DisConn.FlatAppearance.BorderSize = 2;
-            this.btnA1DisConn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnA1DisConn.Font = new System.Drawing.Font("微軟正黑體", 14.25F);
-            this.btnA1DisConn.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnA1DisConn.Location = new System.Drawing.Point(512, 103);
-            this.btnA1DisConn.Name = "btnA1DisConn";
-            this.btnA1DisConn.Size = new System.Drawing.Size(118, 46);
-            this.btnA1DisConn.TabIndex = 22;
-            this.btnA1DisConn.Text = "Disconnect";
-            this.btnA1DisConn.UseVisualStyleBackColor = false;
-            this.btnA1DisConn.Click += new System.EventHandler(this.AlignerFunction_Click);
-            // 
             // btnA1Init
             // 
             this.btnA1Init.BackColor = System.Drawing.Color.DarkGray;
@@ -4139,7 +4083,7 @@
             this.btnA1Init.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnA1Init.Font = new System.Drawing.Font("微軟正黑體", 14.25F);
             this.btnA1Init.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnA1Init.Location = new System.Drawing.Point(512, 231);
+            this.btnA1Init.Location = new System.Drawing.Point(512, 104);
             this.btnA1Init.Name = "btnA1Init";
             this.btnA1Init.Size = new System.Drawing.Size(118, 46);
             this.btnA1Init.TabIndex = 53;
@@ -4162,22 +4106,6 @@
             this.btnA1Reset.Text = "Reset";
             this.btnA1Reset.UseVisualStyleBackColor = false;
             this.btnA1Reset.Click += new System.EventHandler(this.AlignerFunction_Click);
-            // 
-            // btnA1Conn
-            // 
-            this.btnA1Conn.BackColor = System.Drawing.Color.DarkGray;
-            this.btnA1Conn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnA1Conn.FlatAppearance.BorderSize = 2;
-            this.btnA1Conn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnA1Conn.Font = new System.Drawing.Font("微軟正黑體", 14.25F);
-            this.btnA1Conn.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnA1Conn.Location = new System.Drawing.Point(512, 34);
-            this.btnA1Conn.Name = "btnA1Conn";
-            this.btnA1Conn.Size = new System.Drawing.Size(118, 46);
-            this.btnA1Conn.TabIndex = 21;
-            this.btnA1Conn.Text = "Connect";
-            this.btnA1Conn.UseVisualStyleBackColor = false;
-            this.btnA1Conn.Click += new System.EventHandler(this.AlignerFunction_Click);
             // 
             // btnA1VacuOn
             // 
@@ -6398,9 +6326,7 @@
         private System.Windows.Forms.Button btnA1ServoOn;
         private System.Windows.Forms.Button btnA1ServoOff;
         private System.Windows.Forms.Button btnA1VacuOff;
-        private System.Windows.Forms.Button btnA1DisConn;
         private System.Windows.Forms.Button btnA1Reset;
-        private System.Windows.Forms.Button btnA1Conn;
         private System.Windows.Forms.Button btnA1VacuOn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -6420,14 +6346,12 @@
         private System.Windows.Forms.Button btnA2Org;
         private System.Windows.Forms.TextBox tbA2WaferSensor;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Button btnA2Conn;
         private System.Windows.Forms.TextBox tbA2Error;
         private System.Windows.Forms.Button btnA2VacuOn;
         private System.Windows.Forms.ComboBox cbA2Angle;
         private System.Windows.Forms.Button btnA2Reset;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button btnA2Init;
-        private System.Windows.Forms.Button btnA2DisConn;
         private System.Windows.Forms.Button btnA2VacuOff;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Button btnA2ServoOff;
