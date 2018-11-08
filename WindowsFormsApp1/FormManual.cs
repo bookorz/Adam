@@ -44,17 +44,17 @@ namespace GUI
             {
                 if (port.Brand.ToUpper().Equals("ASYST"))
                 {
-                    
+
                     Cb_SMIFSelect.Items.Add(port.Name);
                     if (Cb_SMIFSelect.Text.Equals(""))
                     {
                         Cb_SMIFSelect.SelectedIndex = 0;
                         ResetUI();
-                        
+
                     }
-                   
-                   
-                    
+
+
+
                 }
                 else if (port.Brand.ToUpper().Equals("TDK"))
                 {
@@ -72,9 +72,6 @@ namespace GUI
         {
             string Message = "";
             Node port = NodeManagement.Get(Cb_LoadPortSelect.Text);
-            Transaction txn = new Transaction();
-            txn.FormName = "FormManual";
-            Dictionary<string, string> param = new Dictionary<string, string>();
 
             if (port == null)
             {
@@ -82,128 +79,154 @@ namespace GUI
                 return;
             }
             Button btn = (Button)sender;
+            string TaskName = "";
+            Dictionary<string, string> param = new Dictionary<string, string>();
             switch (btn.Name)
             {
-                case "SMIF_Open_bt":
-                    txn.Method = Transaction.Command.LoadPortType.MappingLoad;
-                    break;
-                case "SMIF_Stage_bt":
-                    txn.Method = Transaction.Command.LoadPortType.Load;
-                    break;
-                case "SMIF_Close_bt":
-                    txn.Method = Transaction.Command.LoadPortType.Unload;
-                    break;
+
                 case "Btn_LOAD_A":
                     if (ChkWithSlotMap_A.Checked)
                     {
-                        txn.Method = Transaction.Command.LoadPortType.MappingLoad;
+                        TaskName = "LOADPORT_OPEN";
                     }
                     else
                     {
-                        txn.Method = Transaction.Command.LoadPortType.Load;
+                        TaskName = "LOADPORT_OPEN_NOMAP";
                     }
+
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_UNLOAD_A":
                     if (ChkWithSlotMap_A.Checked)
                     {
-                        txn.Method = Transaction.Command.LoadPortType.MappingUnload;
+                        TaskName = "LOADPORT_CLOSE";
                     }
                     else
                     {
-                        txn.Method = Transaction.Command.LoadPortType.Unload;
+                        TaskName = "LOADPORT_CLOSE_NOMAP";
                     }
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_Reset_A":
-                case "SMIF_Reset_bt":
-                    txn.Method = Transaction.Command.LoadPortType.Reset;
+
+                    TaskName = "LOADPORT_RESET";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_Initialize_A":
-                    txn.Method = Transaction.Command.LoadPortType.InitialPos;
+                    TaskName = "LOADPORT_ORGSH";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_ForceInitial_A":
-                    txn.Method = Transaction.Command.LoadPortType.ForceInitialPos;
+                    TaskName = "LOADPORT_FORCE_ORGSH";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_UnClamp_A":
-                case "SMIF_UnLock_bt":
-                    txn.Method = Transaction.Command.LoadPortType.UnClamp;
+
+                    TaskName = "LOADPORT_UNCLAMP";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_Clamp_A":
-                case "SMIF_Lock_bt":
-                    txn.Method = Transaction.Command.LoadPortType.Clamp;
-                    param.Add("@Target", Cb_LoadPortSelect.Text);
+
+                    TaskName = "LOADPORT_CLAMP";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_UnDock_A":
-                    txn.Method = Transaction.Command.LoadPortType.UnDock;
+                    TaskName = "LOADPORT_UNDOCK";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_Dock_A":
-                    txn.Method = Transaction.Command.LoadPortType.Dock;
+                    TaskName = "LOADPORT_DOCK";
+
+                    param.Add("@Target", port.Name);
                     break;
-                case "Btn_VacuumOFF_A":
-                    txn.Method = Transaction.Command.LoadPortType.VacuumOFF;
+                case "Btn_VacuumOFF_A":                    
+                    TaskName = "LOADPORT_VAC_OFF";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_VacuumON_A":
-                    txn.Method = Transaction.Command.LoadPortType.VacuumON;
+                    TaskName = "LOADPORT_VAC_ON";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_LatchDoor_A":
-                    txn.Method = Transaction.Command.LoadPortType.LatchDoor;
+                    TaskName = "LOADPORT_LATCH";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_UnLatchDoor_A":
-                    txn.Method = Transaction.Command.LoadPortType.UnLatchDoor;
+                    TaskName = "LOADPORT_UNLATCH";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_DoorClose_A":
-                    txn.Method = Transaction.Command.LoadPortType.DoorClose;
+                    TaskName = "LOADPORT_DOOR_CLOSE";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_DoorOpen_A":
-                    txn.Method = Transaction.Command.LoadPortType.DoorOpen;
+                    TaskName = "LOADPORT_DOOR_OPEN";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_DoorDown_A":
-                    txn.Method = Transaction.Command.LoadPortType.DoorDown;
+                    TaskName = "LOADPORT_DOOR_DOWN";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_DoorUp_A":
-                    txn.Method = Transaction.Command.LoadPortType.DoorUp;
+                    TaskName = "LOADPORT_DOOR_UP";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_ReadLED_A":
-                    txn.Method = Transaction.Command.LoadPortType.GetLED;
+                    TaskName = "LOADPORT_READ_LED";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_ReadVersion_A":
-                case "SMIF_ReadVersion_bt":
-                    txn.Method = Transaction.Command.LoadPortType.ReadVersion;
+                    TaskName = "LOADPORT_READ_VERSION";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_ReadStatus_A":
-                case "SMIF_ReadStatus_bt":
-                    txn.Method = Transaction.Command.LoadPortType.ReadStatus;
+                    TaskName = "LOADPORT_READ_STATUS";
+
+                    param.Add("@Target", port.Name);
                     break;
                 case "Btn_Map_A":
-                    txn.Method = Transaction.Command.LoadPortType.GetMapping;
+                    TaskName = "LOADPORT_GET_MAPDT";
+
+                    param.Add("@Target", port.Name);
                     break;
-                case "Btn_MapperWaitPosition_A":
-                    txn.Method = Transaction.Command.LoadPortType.MapperWaitPosition;
+                case "Btn_ReMapping_A":
+                    TaskName = "LOADPORT_RE_MAPPING";
+
+                    param.Add("@Target", port.Name);
                     break;
-                case "Btn_MapperStartPosition_A":
-                    txn.Method = Transaction.Command.LoadPortType.MapperStartPosition;
-                    break;
-                case "Btn_MapperArmRetracted_A":
-                    txn.Method = Transaction.Command.LoadPortType.MapperArmRetracted;
-                    break;
-                case "Btn_MapperArmStretch_A":
-                    txn.Method = Transaction.Command.LoadPortType.MapperArmStretch;
-                    break;
-                case "Btn_MappingDown_A":
-                    txn.Method = Transaction.Command.LoadPortType.MappingDown;
-                    break;
+                
             }
-            if (!txn.Method.Equals(""))
+            if (!TaskName.Equals(""))
             {
                 ManualPortStatusUpdate.LockUI(true);
                 //port.SendCommand(txn, out Message);
                 TaskJobManagment.CurrentProceedTask Task;
-                RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, txn.Method);
+                RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName);
             }
             else
             {
                 MessageBox.Show("Command is empty!");
             }
         }
+
+
 
         private void Btn_ClearSlotResult_A_Click(object sender, EventArgs e)
         {
@@ -381,7 +404,7 @@ namespace GUI
                         MessageBox.Show(" Insufficient information, please select mode!", "Invalid Mode");
                         return;
                     }
-                   
+
                     TaskName = "ALIGNER_MANUAL_MODE";
                     param.Add("@Target", nodeName);
                     param.Add("@Value", Convert.ToString(mode));
@@ -391,7 +414,7 @@ namespace GUI
             ManualPortStatusUpdate.LockUI(true);
             TaskJobManagment.CurrentProceedTask Task;
             RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
-           // setAlignerStatus();
+            // setAlignerStatus();
         }
 
         private void SetFormEnable(bool enable)
@@ -441,7 +464,7 @@ namespace GUI
                     break;
             }
             TaskJobManagment.CurrentProceedTask Task;
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message,out Task, TaskName, param);
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
             ManualPortStatusUpdate.LockUI(false);
             //SetFormEnable(true);
             //Node node = NodeManagement.Get(nodeName);
@@ -542,12 +565,12 @@ namespace GUI
             //        }
             //        break;
             //}
-           
+
             string TaskName = "";
             Dictionary<string, string> param = new Dictionary<string, string>();
-           
-            
-            
+
+
+
 
             switch (btn.Name)
             {
@@ -605,8 +628,8 @@ namespace GUI
                     }
                     param.Add("@Target", nodeName);
                     param.Add("@Position", cbRA1Point.Text);
-                    param.Add("@Slot", cbRA1Slot.Text.PadLeft(2,'0'));
-                    param.Add("@Slot2", (Convert.ToInt32(cbRA1Slot.Text)-1).ToString().PadLeft(2, '0'));
+                    param.Add("@Slot", cbRA1Slot.Text.PadLeft(2, '0'));
+                    param.Add("@Slot2", (Convert.ToInt32(cbRA1Slot.Text) - 1).ToString().PadLeft(2, '0'));
                     param.Add("@Arm", SanwaUtil.GetArmID(cbRA1Arm.Text));
                     break;
                 case "btnRPut":
@@ -700,20 +723,20 @@ namespace GUI
                     {
                         MessageBox.Show(" Insufficient information, please select mode!", "Invalid Mode");
                         return;
-                    }      
+                    }
                     TaskName = "SET_MODE";
                     param.Add("@Target", nodeName);
                     param.Add("@Value", Convert.ToString(cbRMode.SelectedIndex));
                     break;
                 case "btnRReset":
                     TaskName = "ROBOT_RESET";
-                    param.Add("@Target", nodeName);                 
+                    param.Add("@Target", nodeName);
                     break;
             }
             ManualPortStatusUpdate.LockUI(true);
             TaskJobManagment.CurrentProceedTask Task;
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message,out Task, TaskName, param);
-            
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
+
             //switch (btn.Name)
             //{
             //    case "btnRConn":
@@ -971,12 +994,12 @@ namespace GUI
             //Node robot = NodeManagement.Get(nodeName);
             //String script_name = robot.Brand.ToUpper().Equals("KAWASAKI") ? "RobotStateGet(Kawasaki)" : "RobotStateGet";
             //robot.ExcuteScript(script_name, "FormManual", out Message);
-           
+
             Dictionary<string, string> param = new Dictionary<string, string>();
             string TaskName = "ROBOT_Init";
             param.Add("@Target", nodeName);
             TaskJobManagment.CurrentProceedTask Task;
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message,out Task, TaskName, param);
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
         }
 
 
@@ -1011,7 +1034,7 @@ namespace GUI
             TaskJobManagment.CurrentProceedTask Task;
             RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
             param.Add("@Target", "ALIGNER02");
-            
+
             RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
         }
 
@@ -1087,7 +1110,7 @@ namespace GUI
                 case "Aligner":
                     pnlMotionStop.Visible = true;
                     break;
-                
+
                 default:
                     pnlMotionStop.Visible = false;
                     break;
@@ -1130,10 +1153,10 @@ namespace GUI
 
         private void SmifFunction_Click(object sender, EventArgs e)
         {
-            
+
             Node port = NodeManagement.Get(Cb_SMIFSelect.Text);
-            
-           
+
+
 
             if (port == null)
             {
@@ -1147,7 +1170,7 @@ namespace GUI
 
         }
 
-        private void SendCommand(string Cmd,string NodeName)
+        private void SendCommand(string Cmd, string NodeName)
         {
             string Message = "";
             string TaskName = "";
@@ -1213,7 +1236,7 @@ namespace GUI
             }
             ManualPortStatusUpdate.LockUI(true);
             TaskJobManagment.CurrentProceedTask Task;
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message,out Task, TaskName, param);
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
         }
 
         private void SMIF_ClearMap_bt_Click(object sender, EventArgs e)
@@ -1243,11 +1266,11 @@ namespace GUI
 
             Smif_log_rt.Text = "";
 
-            for(int i = 1; i <= 25; i++)
+            for (int i = 1; i <= 25; i++)
             {
                 string Slot = i.ToString("00");
                 Label slotLb = this.Controls.Find("Lab_S_Slot_" + Slot, true).FirstOrDefault() as Label;
-                if(slotLb != null)
+                if (slotLb != null)
                 {
                     slotLb.Text = "Undefined";
                     slotLb.BackColor = Color.Silver;
@@ -1270,9 +1293,9 @@ namespace GUI
             string TaskName = "READ_LCD";
             Dictionary<string, string> param = new Dictionary<string, string>();
             ManualPortStatusUpdate.LockUI(true);
-            param.Add("@Target", "SMARTTAG"+Cb_SMIFSelect.Text.Replace("LOADPORT",""));
+            param.Add("@Target", "SMARTTAG" + Cb_SMIFSelect.Text.Replace("LOADPORT", ""));
             TaskJobManagment.CurrentProceedTask Task;
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message,out Task, TaskName,param);
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
         }
 
         private void TagWrite_bt_Click(object sender, EventArgs e)
@@ -1284,7 +1307,7 @@ namespace GUI
             param.Add("@Target", "SMARTTAG" + Cb_SMIFSelect.Text.Replace("LOADPORT", ""));
             param.Add("@Value", SmartTagWrite_tb.Text);
             TaskJobManagment.CurrentProceedTask Task;
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message,out Task, TaskName, param);
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
         }
 
         private void FormManual_FormClosed(object sender, FormClosedEventArgs e)

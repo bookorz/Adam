@@ -338,11 +338,7 @@
             this.Btn_Map_A = new System.Windows.Forms.Button();
             this.Btn_DoorUp_A = new System.Windows.Forms.Button();
             this.groupBox25 = new System.Windows.Forms.GroupBox();
-            this.Btn_MapperWaitPosition_A = new System.Windows.Forms.Button();
-            this.Btn_MapperArmStretch_A = new System.Windows.Forms.Button();
-            this.Btn_MapperArmRetracted_A = new System.Windows.Forms.Button();
-            this.Btn_MapperStartPosition_A = new System.Windows.Forms.Button();
-            this.Btn_MappingDown_A = new System.Windows.Forms.Button();
+            this.Btn_ReMapping_A = new System.Windows.Forms.Button();
             this.TblPanel_A = new System.Windows.Forms.TableLayoutPanel();
             this.Lab_A_Slot_01 = new System.Windows.Forms.Label();
             this.label82 = new System.Windows.Forms.Label();
@@ -4882,84 +4878,28 @@
             // 
             // groupBox25
             // 
-            this.groupBox25.Controls.Add(this.Btn_MapperWaitPosition_A);
-            this.groupBox25.Controls.Add(this.Btn_MapperArmStretch_A);
-            this.groupBox25.Controls.Add(this.Btn_MapperArmRetracted_A);
-            this.groupBox25.Controls.Add(this.Btn_MapperStartPosition_A);
-            this.groupBox25.Controls.Add(this.Btn_MappingDown_A);
+            this.groupBox25.Controls.Add(this.Btn_ReMapping_A);
             this.groupBox25.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.groupBox25.Location = new System.Drawing.Point(23, 637);
             this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(421, 153);
+            this.groupBox25.Size = new System.Drawing.Size(299, 91);
             this.groupBox25.TabIndex = 33;
             this.groupBox25.TabStop = false;
             this.groupBox25.Tag = "1";
             this.groupBox25.Text = "Slot Mapping";
             // 
-            // Btn_MapperWaitPosition_A
+            // Btn_ReMapping_A
             // 
-            this.Btn_MapperWaitPosition_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Btn_MapperWaitPosition_A.Location = new System.Drawing.Point(30, 27);
-            this.Btn_MapperWaitPosition_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Btn_MapperWaitPosition_A.Name = "Btn_MapperWaitPosition_A";
-            this.Btn_MapperWaitPosition_A.Size = new System.Drawing.Size(119, 52);
-            this.Btn_MapperWaitPosition_A.TabIndex = 13;
-            this.Btn_MapperWaitPosition_A.Tag = "1";
-            this.Btn_MapperWaitPosition_A.Text = "Mapping\r\nWait Position";
-            this.Btn_MapperWaitPosition_A.UseVisualStyleBackColor = true;
-            this.Btn_MapperWaitPosition_A.Click += new System.EventHandler(this.PortFunction_Click);
-            // 
-            // Btn_MapperArmStretch_A
-            // 
-            this.Btn_MapperArmStretch_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Btn_MapperArmStretch_A.Location = new System.Drawing.Point(155, 87);
-            this.Btn_MapperArmStretch_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Btn_MapperArmStretch_A.Name = "Btn_MapperArmStretch_A";
-            this.Btn_MapperArmStretch_A.Size = new System.Drawing.Size(119, 52);
-            this.Btn_MapperArmStretch_A.TabIndex = 14;
-            this.Btn_MapperArmStretch_A.Tag = "1";
-            this.Btn_MapperArmStretch_A.Text = "Mapper Arm\r\nStretch";
-            this.Btn_MapperArmStretch_A.UseVisualStyleBackColor = true;
-            this.Btn_MapperArmStretch_A.Click += new System.EventHandler(this.PortFunction_Click);
-            // 
-            // Btn_MapperArmRetracted_A
-            // 
-            this.Btn_MapperArmRetracted_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Btn_MapperArmRetracted_A.Location = new System.Drawing.Point(30, 87);
-            this.Btn_MapperArmRetracted_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Btn_MapperArmRetracted_A.Name = "Btn_MapperArmRetracted_A";
-            this.Btn_MapperArmRetracted_A.Size = new System.Drawing.Size(119, 52);
-            this.Btn_MapperArmRetracted_A.TabIndex = 15;
-            this.Btn_MapperArmRetracted_A.Tag = "1";
-            this.Btn_MapperArmRetracted_A.Text = "Mapper Arm\r\nRetracted";
-            this.Btn_MapperArmRetracted_A.UseVisualStyleBackColor = true;
-            this.Btn_MapperArmRetracted_A.Click += new System.EventHandler(this.PortFunction_Click);
-            // 
-            // Btn_MapperStartPosition_A
-            // 
-            this.Btn_MapperStartPosition_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Btn_MapperStartPosition_A.Location = new System.Drawing.Point(155, 27);
-            this.Btn_MapperStartPosition_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Btn_MapperStartPosition_A.Name = "Btn_MapperStartPosition_A";
-            this.Btn_MapperStartPosition_A.Size = new System.Drawing.Size(119, 52);
-            this.Btn_MapperStartPosition_A.TabIndex = 12;
-            this.Btn_MapperStartPosition_A.Tag = "1";
-            this.Btn_MapperStartPosition_A.Text = "Mapping\r\nStart Position";
-            this.Btn_MapperStartPosition_A.UseVisualStyleBackColor = true;
-            this.Btn_MapperStartPosition_A.Click += new System.EventHandler(this.PortFunction_Click);
-            // 
-            // Btn_MappingDown_A
-            // 
-            this.Btn_MappingDown_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Btn_MappingDown_A.Location = new System.Drawing.Point(280, 26);
-            this.Btn_MappingDown_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Btn_MappingDown_A.Name = "Btn_MappingDown_A";
-            this.Btn_MappingDown_A.Size = new System.Drawing.Size(135, 112);
-            this.Btn_MappingDown_A.TabIndex = 6;
-            this.Btn_MappingDown_A.Tag = "1";
-            this.Btn_MappingDown_A.Text = "Move + Slot Map";
-            this.Btn_MappingDown_A.UseVisualStyleBackColor = true;
-            this.Btn_MappingDown_A.Click += new System.EventHandler(this.PortFunction_Click);
+            this.Btn_ReMapping_A.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.Btn_ReMapping_A.Location = new System.Drawing.Point(30, 27);
+            this.Btn_ReMapping_A.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Btn_ReMapping_A.Name = "Btn_ReMapping_A";
+            this.Btn_ReMapping_A.Size = new System.Drawing.Size(119, 52);
+            this.Btn_ReMapping_A.TabIndex = 13;
+            this.Btn_ReMapping_A.Tag = "1";
+            this.Btn_ReMapping_A.Text = "Re:Mapping";
+            this.Btn_ReMapping_A.UseVisualStyleBackColor = true;
+            this.Btn_ReMapping_A.Click += new System.EventHandler(this.PortFunction_Click);
             // 
             // TblPanel_A
             // 
@@ -6129,11 +6069,7 @@
         internal System.Windows.Forms.Button Btn_Map_A;
         internal System.Windows.Forms.Button Btn_DoorUp_A;
         internal System.Windows.Forms.GroupBox groupBox25;
-        internal System.Windows.Forms.Button Btn_MapperWaitPosition_A;
-        internal System.Windows.Forms.Button Btn_MapperArmStretch_A;
-        internal System.Windows.Forms.Button Btn_MapperArmRetracted_A;
-        internal System.Windows.Forms.Button Btn_MapperStartPosition_A;
-        internal System.Windows.Forms.Button Btn_MappingDown_A;
+        internal System.Windows.Forms.Button Btn_ReMapping_A;
         internal System.Windows.Forms.TableLayoutPanel TblPanel_A;
         internal System.Windows.Forms.Label Lab_A_Slot_01;
         internal System.Windows.Forms.Label label82;
