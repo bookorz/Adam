@@ -34,8 +34,7 @@ namespace GUI
             Initialize();
             Update_Manual_Status();
             //20181030 隱藏EFEM 用不到的頁面
-            this.tabAligner.Parent = null;
-            this.tabLoadport.Parent = null;
+            this.tabSmif.Parent = null;
         }
 
         public void Initialize()
@@ -218,7 +217,7 @@ namespace GUI
                 ManualPortStatusUpdate.LockUI(true);
                 //port.SendCommand(txn, out Message);
                 TaskJobManagment.CurrentProceedTask Task;
-                RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName);
+                RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
             }
             else
             {
@@ -718,6 +717,16 @@ namespace GUI
                     param.Add("@Target", nodeName);
                     param.Add("@Arm", "1");
                     break;
+                case "btnRLVacuOn":
+                    TaskName = "SET_CLAMP_ON";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Arm", "2");
+                    break;
+                case "btnRLVacuOff":
+                    TaskName = "SET_CLAMP_OFF";
+                    param.Add("@Target", nodeName);
+                    param.Add("@Arm", "2");
+                    break;
                 case "btnRChgMode":
                     if (cbRMode.SelectedIndex < 0)
                     {
@@ -1031,6 +1040,7 @@ namespace GUI
             Dictionary<string, string> param = new Dictionary<string, string>();
             string TaskName = "ALIGNER_MANUAL_INIT";
             param.Add("@Target", "ALIGNER01");
+            param.Clear();
             TaskJobManagment.CurrentProceedTask Task;
             RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
             param.Add("@Target", "ALIGNER02");

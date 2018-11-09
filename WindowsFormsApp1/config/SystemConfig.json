@@ -6,5 +6,7 @@
   "OCR2ExePath": "C:/Program Files (x86)/HST Vision/e-Reader8000/VB9BReaderForm.exe",
   "OCR1ImgSourcePath": "C:/ProgramData/e-Reader1/e-Reader/AllImage",
   "OCR1ImgToJpgPath": "D:/OCR01/JPG",
-  "OCR1ExePath": "C:/Program Files (x86)/Cognex/In-Sight/In-Sight Explorer Wafer 4.5.0/WaferID.exe"
+  "OCR1ExePath": "C:/Program Files (x86)/Cognex/In-Sight/In-Sight Explorer Wafer 4.5.0/WaferID.exe",
+  "AdminPassword": "0192023A7BBD73250516F069DF18B500",
+  "SaftyCheckByPass": true
 }
