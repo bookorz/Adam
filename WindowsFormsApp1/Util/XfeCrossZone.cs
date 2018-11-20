@@ -29,8 +29,8 @@ namespace Adam.Util
             ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT02");
             ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER01");
             ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER02");
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR01");
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR02");
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR01");
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR02");
         }
 
         public static bool Start()
@@ -48,35 +48,48 @@ namespace Adam.Util
                 each.RequestQueue.Clear();
                 each.LockOn = "";
             }
-     LDRobot = "";
-LDRobot_Arm = "";
- ULDRobot = "";
-       ULDRobot_Arm = "";
-     LD = "";
-ULD = "";
-        //找到LD & ULD
-        Node LROB = null;
-            if ((LROB = FindAvailableLoadport("ROBOT01")) != null)
+            LDRobot = "";
+            LDRobot_Arm = "";
+            ULDRobot = "";
+            ULDRobot_Arm = "";
+            LD = "";
+            ULD = "";
+            //找到LD & ULD
+            Node nodeLD = null;
+            Node LROB = null;
+            if ((nodeLD = FindAvailableLoadport("ROBOT01")) != null)
             {
                 LDRobot = "ROBOT01";
                 ULDRobot = "ROBOT02";
+                LD = nodeLD.Name;
+                ULD = nodeLD.DestPort;
+                LROB = NodeManagement.Get("ROBOT01");
                 Node.ActionRequest request = new Node.ActionRequest();
-                request.TaskName = "GET_LOADPORT";
-                if (!LROB.RequestQueue.ContainsKey(request.TaskName))
+                request.TaskName = "TRANSFER_GET_LOADPORT";
+                lock (LROB.RequestQueue)
                 {
-                    LROB.RequestQueue.Add(request.TaskName, request);
+                    if (!LROB.RequestQueue.ContainsKey(request.TaskName))
+                    {
+                        LROB.RequestQueue.Add(request.TaskName, request);
+                    }
                 }
                 Running = true;
             }
-            else if ((LROB = FindAvailableLoadport("ROBOT01")) != null)
+            else if ((nodeLD = FindAvailableLoadport("ROBOT01")) != null)
             {
                 LDRobot = "ROBOT02";
                 ULDRobot = "ROBOT01";
+                LD = nodeLD.Name;
+                ULD = nodeLD.DestPort;
+                LROB = NodeManagement.Get("ROBOT02");
                 Node.ActionRequest request = new Node.ActionRequest();
-                request.TaskName = "GET_LOADPORT";
-                if (!LROB.RequestQueue.ContainsKey(request.TaskName))
+                request.TaskName = "TRANSFER_GET_LOADPORT";
+                lock (LROB.RequestQueue)
                 {
-                    LROB.RequestQueue.Add(request.TaskName, request);
+                    if (!LROB.RequestQueue.ContainsKey(request.TaskName))
+                    {
+                        LROB.RequestQueue.Add(request.TaskName, request);
+                    }
                 }
                 Running = true;
             }
@@ -92,6 +105,24 @@ ULD = "";
             Running = false;
         }
 
+        private static bool CheckQueue(Node Target)
+        {
+
+            if (Target.LockOn == null)
+            {
+                Target.LockOn = "";
+            }
+            //當沒有鎖定時，Queue裡有就做
+            bool a = Target.RequestQueue.Count() != 0 && Target.LockOn.Equals("");
+            
+            //當有鎖定時，只能做鎖定的
+            bool b = (from Request in Target.RequestQueue.Values.ToList()
+                      where Request.Position.Equals(Target.LockOn)
+                      select Request).Count() != 0 && !Target.LockOn.Equals("");
+
+            return a || b;
+        }
+
 
         private static void Engine(object NodeName)
         {
@@ -101,42 +132,76 @@ ULD = "";
 
                 while (true)
                 {
-                    while (Target.RequestQueue.Count() == 0 && Running)
+                    while (!CheckQueue(Target) && Running)
                     {
-                        SpinWait.SpinUntil(() => Target.RequestQueue.Count() != 0 || !Running, 99999999);
+                        SpinWait.SpinUntil(() => CheckQueue(Target) || !Running, 99999999);
                     }
                     if (Running)
                     {
                         string Message = "";
                         string id = Guid.NewGuid().ToString();
-                        List<Node.ActionRequest> RequestQueue = Target.RequestQueue.Values.ToList();
-                        if (!Target.LockOn.Equals(""))
-                        {//當ROBOT正在存取某個，必須收回手臂才能對另一台動作
-                            logger.Debug(NodeName + " LockOn:" + Target.LockOn);
-                            var find = from Request in RequestQueue
-                                       where Request.Position.Equals(Target.LockOn)
-                                       select Request;
-                            RequestQueue = find.ToList();
-                        }
+                        Node.ActionRequest req;
+                        lock (Target.RequestQueue)
+                        {
+                            List<Node.ActionRequest> RequestQueue = Target.RequestQueue.Values.ToList();
 
-                        RequestQueue.Sort((x, y) => { return x.TimeStamp.CompareTo(y.TimeStamp); });
-                        Node.ActionRequest req = RequestQueue.First();
-                        Target.RequestQueue.Remove(req.TaskName);
+                            if (!Target.LockOn.Equals(""))
+                            {//當ROBOT正在存取某個，必須收回手臂才能對另一台動作
+                                logger.Debug(NodeName + " LockOn:" + Target.LockOn);
+                                var find = from Request in RequestQueue
+                                           where Request.Position.Equals(Target.LockOn)
+                                           select Request;
+                                RequestQueue = find.ToList();
+                            }
+
+                            RequestQueue.Sort((x, y) => { return x.TimeStamp.CompareTo(y.TimeStamp); });
+                            if (RequestQueue.Count == 0)
+                            {
+                                continue;
+                            }
+                            req = RequestQueue.First();
+                            Target.RequestQueue.Remove(req.TaskName);
+                        }
                         logger.Debug(NodeName + " 開始執行:" + req.TaskName);
                         Node nodeLD;
-                       
+
                         switch (Target.Type)
                         {
                             case "ROBOT":
                                 switch (req.TaskName)
                                 {
-                                    case "GET_LOADPORT":
+                                    case "TRANSFER_GET_LOADPORT":
                                         //從Loadport取片要求，需要決定Position Slot Arm
                                         //等待有Loadport準備完成
 
                                         if (Target.JobList.Count == 2)
                                         {
-                                            req.TaskName = "PUT_ALIGNER";
+
+
+                                            foreach (Job wafer in Target.JobList.Values)
+                                            {
+                                                foreach (Node Aligner in NodeManagement.GetAlignerList())
+                                                {
+                                                    if (Aligner.JobList.Count == 0)
+                                                    {
+                                                        //佇列裡面沒有才加
+                                                        Node.ActionRequest request = new Node.ActionRequest();
+                                                        request.TaskName = "TRANSFER_PUT_" + Aligner.Name;
+                                                        request.Position = Aligner.Name;
+                                                        //request.Arm = wafer.Slot;
+                                                        lock (Target.RequestQueue)
+                                                        {
+                                                            if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                            {
+                                                                Target.RequestQueue.Add(request.TaskName, request);
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            Target.LockOn = "";//解除鎖定
                                             continue;
                                         }
                                         else
@@ -157,12 +222,12 @@ ULD = "";
                                             req.Position = nodeLD.Name;
 
                                             var AvailableSlots = from eachSlot in nodeLD.JobList.Values.ToList()
-                                                                 where eachSlot.ProcessFlag
+                                                                 where eachSlot.NeedProcess
                                                                  select eachSlot;
                                             if (AvailableSlots.Count() != 0)
                                             {
                                                 List<Job> AvailableSlotsList = AvailableSlots.ToList();
-                                                AvailableSlotsList.Sort((x, y) => { return x.Slot.CompareTo(y.Slot); });
+                                                AvailableSlotsList.Sort((x, y) => { return Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
                                                 Job j;
                                                 if (AvailableSlotsList.Count == 1)//Port剩下一片
                                                 {
@@ -190,11 +255,15 @@ ULD = "";
                                                                     if (Aligner.JobList.Count == 0)
                                                                     {
                                                                         //佇列裡面沒有才加
-                                                                        request.TaskName = "PUT_" + Aligner.Name;
+                                                                        request.TaskName = "TRANSFER_PUT_" + Aligner.Name;
+                                                                        request.Position = Aligner.Name;
                                                                         //request.Arm = wafer.Slot;
-                                                                        if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                                        lock (Target.RequestQueue)
                                                                         {
-                                                                            Target.RequestQueue.Add(request.TaskName, request);
+                                                                            if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                                            {
+                                                                                Target.RequestQueue.Add(request.TaskName, request);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -209,17 +278,19 @@ ULD = "";
                                                 else//Port 有兩片以上
                                                 {
                                                     bool AllowDoubleArm = false;
-                                                    if (Convert.ToInt32(AvailableSlotsList[1].Slot) - Convert.ToInt32(AvailableSlotsList[0].Slot) == 1)
+                                                    if (Math.Abs(Convert.ToInt32(AvailableSlotsList[1].Slot) - Convert.ToInt32(AvailableSlotsList[0].Slot)) == 1)
                                                     {
                                                         AllowDoubleArm = true;//連續Slot才能雙取
                                                     }
 
-                                                    if (!Target.JobList.ContainsKey("1") && !Target.JobList.ContainsKey("2") && nodeLD.DoubleArmActive && nodeLD.RArmActive && nodeLD.LArmActive && AllowDoubleArm)//當可以雙取
+                                                    if (!Target.JobList.ContainsKey("1") && !Target.JobList.ContainsKey("2") && nodeLD.DoubleArmActive && Target.RArmActive && Target.LArmActive && AllowDoubleArm)//當可以雙取
                                                     {//RL全為空 & RL都可用 & 雙取啟動 & 兩片為連續Slot
                                                         //雙取要用第二片的Slot
                                                         req.Slot = AvailableSlotsList[1].Slot;
                                                         req.Slot2 = AvailableSlotsList[0].Slot;
-                                                        req.TaskName = "GET_LOADPORT_2ARM";
+                                                        req.TaskName = "TRANSFER_GET_LOADPORT_2ARM";
+                                                        req.Arm = "3";
+                                                        
                                                     }
                                                     else//只能單取
                                                     {
@@ -247,11 +318,15 @@ ULD = "";
                                                                         if (Aligner.JobList.Count == 0)
                                                                         {
                                                                             //佇列裡面沒有才加
-                                                                            request.TaskName = "PUT_" + Aligner.Name;
+                                                                            request.TaskName = "TRANSFER_PUT_" + Aligner.Name;
+                                                                            request.Position = Aligner.Name;
                                                                             //request.Arm = wafer.Slot;
-                                                                            if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                                            lock (Target.RequestQueue)
                                                                             {
-                                                                                Target.RequestQueue.Add(request.TaskName, request);
+                                                                                if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                                                {
+                                                                                    Target.RequestQueue.Add(request.TaskName, request);
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -268,13 +343,48 @@ ULD = "";
                                             {
                                                 logger.Debug(NodeName + " Loadport沒有片可處理");
                                                 nodeLD.Fetchable = false;
+                                                //結束工作
+                                                continue;
                                             }
                                         }
                                         break;
-                                    case "PUT_ALIGNER01":
-                                    case "PUT_ALIGNER02":
-                                    case "PUTW_ALIGNER01":
-                                    case "PUTW_ALIGNER02":
+                                    case "TRANSFER_PUT_ALIGNER01":
+                                    case "TRANSFER_PUT_ALIGNER02":
+                                        //決定要放R或L
+                                        if (LDRobot_Arm.Equals(""))
+                                        {
+                                            List<Job> tmpForSort = Target.JobList.Values.ToList();
+                                            tmpForSort.Sort((x, y) => { return - Convert.ToInt32(x.DestinationSlot).CompareTo(Convert.ToInt32(y.DestinationSlot)); });
+                                            //先放目的地Slot位置比較高的，讓取片Robot先放在R軸，確保可以做雙ARM放片
+                                            foreach (Job wafer in tmpForSort)
+                                            {
+                                                LDRobot_Arm = wafer.Slot;
+
+                                                break;
+                                            }
+                                        }
+                                        req.Arm = LDRobot_Arm;
+                                        Target.LockOn = req.Position;
+                                        Node pos = NodeManagement.Get(req.Position);
+                                        logger.Debug("Waiting for "+req.Position +" ready...");
+                                        while (!pos.ReadyForAccess && Running)
+                                        {
+                                            SpinWait.SpinUntil(() => pos.ReadyForAccess || !Running, 99999999);                                            
+                                        }
+                                        if (!Running)
+                                        {
+                                            continue;
+                                        }
+                                        logger.Debug(req.Position + " is ready now.");
+                                        pos.ReadyForAccess = false;
+                                        break;
+                                    case "TRANSFER_PUT_ALIGNER01_2":
+                                    case "TRANSFER_PUT_ALIGNER02_2":
+                                        Target.LockOn = "";
+                                        LDRobot_Arm = "";
+                                        break;
+                                    case "TRANSFER_PUTW_ALIGNER01":
+                                    case "TRANSFER_PUTW_ALIGNER02":
                                         //決定要放R或L
                                         if (LDRobot_Arm.Equals(""))
                                         {
@@ -286,11 +396,10 @@ ULD = "";
                                             }
                                         }
                                         req.Arm = LDRobot_Arm;
+                                        Target.LockOn = req.Position;
                                         break;
-                                    case "GET_ALIGNER01":
-                                    case "GET_ALIGNER02":
-                                    case "GETW_ALIGNER01":
-                                    case "GETW_ALIGNER02":
+                                    case "TRANSFER_GET_ALIGNER01":
+                                    case "TRANSFER_GET_ALIGNER02":
                                         //決定要用R或L取
                                         if (ULDRobot_Arm.Equals(""))
                                         {
@@ -304,26 +413,63 @@ ULD = "";
                                             }
                                         }
                                         req.Arm = ULDRobot_Arm;
+                                        Target.LockOn = req.Position;
+                                        pos = NodeManagement.Get(req.Position);
+                                        logger.Debug("Waiting for " + req.Position + " ready...");
+                                        while (!pos.ReadyForAccess && Running)
+                                        {
+                                            SpinWait.SpinUntil(() => pos.ReadyForAccess || !Running, 99999999);
+                                        }
+                                        if (!Running)
+                                        {
+                                            continue;
+                                        }
+                                        logger.Debug(req.Position + " is ready now.");
+                                        pos.ReadyForAccess = false;
                                         break;
-                                    case "PUT_UNLOADPORT":
+
+                                    case "TRANSFER_GET_ALIGNER01_2":
+                                    case "TRANSFER_GET_ALIGNER02_2":
+                                        Target.LockOn = "";
+                                        ULDRobot_Arm = "";
+                                        break;
+                                    case "TRANSFER_GETW_ALIGNER01":
+                                    case "TRANSFER_GETW_ALIGNER02":
+                                        //決定要用R或L取
+                                        if (ULDRobot_Arm.Equals(""))
+                                        {
+                                            if (!Target.JobList.ContainsKey("1") && Target.RArmActive)//R沒片且R為可用狀態
+                                            {
+                                                ULDRobot_Arm = "1";
+                                            }
+                                            else if (!Target.JobList.ContainsKey("2") && Target.LArmActive)//L沒片且L為可用狀態
+                                            {
+                                                ULDRobot_Arm = "2";
+                                            }
+                                        }
+                                        req.Arm = ULDRobot_Arm;
+                                        Target.LockOn = req.Position;
+                                        break;
+                                    case "TRANSFER_PUT_UNLOADPORT":
                                         //檢查目前狀態是否要去放
-                                        
+
                                         Node nodeLDRobot = NodeManagement.Get(LDRobot);
-                                        if (Target.JobList.Count != 2 && nodeLDRobot.JobList.Count!=0)
+                                        if (Target.JobList.Count != 2 && nodeLDRobot.JobList.Count != 0)
                                         {
                                             //還有片要處裡
                                             Target.LockOn = "";
                                             continue;
                                         }
-                                        if (!Target.DoubleArmActive && Target.JobList.Count==2)
+                                        if (Target.DoubleArmActive && Target.JobList.Count == 2)
                                         {//支援雙放
-                                            if(Target.JobList["1"].Destination.Equals(Target.JobList["2"].Destination) && Convert.ToInt32(Target.JobList["1"].DestinationSlot)- Convert.ToInt32(Target.JobList["2"].DestinationSlot) == 1)
+                                            if (Target.JobList["1"].Destination.Equals(Target.JobList["2"].Destination) && Convert.ToInt32(Target.JobList["1"].DestinationSlot) - Convert.ToInt32(Target.JobList["2"].DestinationSlot) == 1)
                                             {//目的地Slot連續且順序正確
                                              //雙放要用R的Slot
                                                 req.Arm = "3";
                                                 req.Slot = Target.JobList["1"].DestinationSlot;
                                                 req.Slot2 = Target.JobList["2"].DestinationSlot;
-                                                req.TaskName = "PUT_UNLOADPORT_2ARM";
+                                                req.TaskName = "TRANSFER_PUT_UNLOADPORT_2ARM";
+                                                req.Position = Target.JobList["1"].Destination;
                                             }
                                             else
                                             {//目的地不同 OR Slot不連續，只能單放
@@ -341,7 +487,7 @@ ULD = "";
                                                 req.Arm = "1";
                                                 req.Slot = Target.JobList["1"].DestinationSlot;
                                             }
-                                            else if(Target.JobList.ContainsKey("2"))
+                                            else if (Target.JobList.ContainsKey("2"))
                                             {//放L
                                                 req.Position = Target.JobList["2"].Destination;
                                                 req.Arm = "2";
@@ -369,7 +515,7 @@ ULD = "";
 
                         param.Add("@Target", NodeName.ToString());
                         param.Add("@Slot", req.Slot);
-                        param.Add("@Slot2", req.Slot2);
+                        param.Add("@2Slot", req.Slot2);
                         param.Add("@Arm", req.Arm);
                         param.Add("@Value", req.Value);
                         param.Add("@Position", req.Position);
@@ -415,7 +561,7 @@ ULD = "";
             Node result = null;
 
             var find = from eachPort in NodeManagement.GetLoadPortList()
-                       where eachPort.Fetchable && eachPort.Associated_Node.Equals(RobotName)
+                       where eachPort.Available && eachPort.Associated_Node.Equals(RobotName)
                        select eachPort;
             if (find.Count() != 0)
             {

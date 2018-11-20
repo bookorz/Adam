@@ -334,43 +334,7 @@ namespace Adam
                 AlarmUpdate.UpdateAlarmList(AlarmManagement.GetAll());
             }
 
-            if (Txn.Method.Equals(Transaction.Command.LoadPortType.GetMapping))
-            {
-                Node Port = null;
-                switch (Node.Type)
-                {
-                    case "LOADPORT":
-                        Port = Node;
-                        break;
-                    case "ROBOT":
-                        Port = NodeManagement.Get(Node.CurrentPosition);
-                        break;
-                }
-
-                if (Port != null)
-                {
-                    //Asign Wafer
-
-                    foreach (Job j in Port.JobList.Values.ToList())
-                    {
-                        if (j.MapFlag)
-                        {
-                            j.AlignerFlag = true;
-                            j.OCRFlag = true;
-                            j.NeedProcess = true;
-                            j.RecipeID = Port.WaferSize;
-                            j.AssignPort(Port.Name, j.Slot);
-                            j.DefaultOCR = "OCR01";
-                        }
-                    }
-                    Port.Mode = "LU";
-                    if (!Port.WaferSize.Equals("200MM"))
-                    {
-                        Port.LoadTime = DateTime.Now;
-                    }
-                    Port.Available = true;
-                }
-            }
+            
 
             switch (Node.Type)
             {
@@ -456,6 +420,7 @@ namespace Adam
 
                     break;
                 case "FormManual":
+                case "FormManual-1":
                     switch (Node.Type)
                     {
                         case "SMARTTAG":
@@ -566,18 +531,7 @@ namespace Adam
 
         public void On_Command_Error(Node Node, Transaction Txn, ReturnMessage Msg)
         {
-            switch (Txn.FormName)
-            {
-                case "FormManual":
-                    switch (Node.Type)
-                    {
-                        case "LOADPORT":
-                            //ManualPortStatusUpdate.LockUI(false);
-                            break;
-
-                    }
-                    break;
-            }
+            XfeCrossZone.Stop();
             logger.Debug("On_Command_Error");
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = Node.Name;
@@ -632,7 +586,7 @@ namespace Adam
                     }
                     break;
                 case "FormManual":
-
+                case "FormManual-1":
                     switch (Node.Type)
                     {
                         case "SMARTTAG":
@@ -1166,7 +1120,7 @@ namespace Adam
             prompt.AcceptButton = confirmation;
             tbPassword.Focus();
             tbUser.Enabled = false;
-
+            tbPassword.Text = "admin123";
             if (prompt.ShowDialog() == DialogResult.OK)
             {
                 result[0] = tbUser.Text;
@@ -1234,7 +1188,7 @@ namespace Adam
 
         public void On_TaskJob_Aborted(string TaskID, string NodeName, string ReportType, string Message)
         {
-            if (TaskID.Equals("FormManual"))
+            if (TaskID.IndexOf("FormManual")!=-1)
             {
                 ManualPortStatusUpdate.LockUI(false);
             }
@@ -1276,7 +1230,7 @@ namespace Adam
 
         public void On_TaskJob_Finished(string TaskID)
         {
-            if (TaskID.Equals("FormManual"))
+            if (TaskID.IndexOf("FormManual")!=-1)
             {
                 ManualPortStatusUpdate.LockUI(false);
             }

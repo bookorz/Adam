@@ -1,5 +1,6 @@
 using Adam.UI_Update.Monitoring;
 using Adam.UI_Update.WaferMapping;
+using Adam.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -441,6 +442,7 @@ namespace Adam.Menu.WaferMapping
                     Port_gv.Enabled = false;
                     DestPort_gv.Enabled = false;
                     DestPort_btn.Enabled = false;
+                    XfeCrossZone.Start();
                 }
             }
             else

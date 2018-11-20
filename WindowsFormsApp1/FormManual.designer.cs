@@ -1523,7 +1523,6 @@
             // rbR2
             // 
             this.rbR2.AutoSize = true;
-            this.rbR2.Enabled = false;
             this.rbR2.Font = new System.Drawing.Font("微軟正黑體", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.rbR2.Location = new System.Drawing.Point(417, 24);
             this.rbR2.Name = "rbR2";
@@ -1538,7 +1537,6 @@
             // 
             this.rbR1.AutoSize = true;
             this.rbR1.Checked = true;
-            this.rbR1.Enabled = false;
             this.rbR1.Font = new System.Drawing.Font("微軟正黑體", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.rbR1.Location = new System.Drawing.Point(270, 24);
             this.rbR1.Name = "rbR1";

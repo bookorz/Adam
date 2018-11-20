@@ -125,6 +125,9 @@ namespace Adam.UI_Update.WaferMapping
                     Port_gv.Columns["LastSlot"].Visible = false;
                     Port_gv.Columns["FromPortSlot"].Visible = false;
                     Port_gv.Columns["AssignTime"].Visible = false;
+                    Port_gv.Columns["DefaultOCR"].Visible = false;
+                    Port_gv.Columns["RecipeID"].Visible = false;
+                    Port_gv.Columns["ErrPosition"].Visible = false;
 
                     //MonitoringUpdate.UpdateNodesJob(PortName);
 
@@ -272,6 +275,11 @@ namespace Adam.UI_Update.WaferMapping
                     Port_gv.Columns["LastSlot"].Visible = false;
                     Port_gv.Columns["FromPortSlot"].Visible = false;
                     Port_gv.Columns["AssignTime"].Visible = false;
+                    Port_gv.Columns["DefaultOCR"].Visible = false;
+                    Port_gv.Columns["RecipeID"].Visible = false;
+                    Port_gv.Columns["ErrPosition"].Visible = false;
+
+
 
                     MonitoringUpdate.UpdateNodesJob(PortName);
                     port.IsMapping = true;

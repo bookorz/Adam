@@ -343,48 +343,48 @@ namespace GUI
                 //    SetFormEnable(true);
                 //    return;
                 case "btnInit":
-                    TaskName = "ALIGNER_MANUAL_INIT";
+                    TaskName = "ALIGNER_INIT";
                     param.Add("@Target", nodeName);
                     break;
                 case "btnOrg":
-                    TaskName = "ALIGNER_MANUAL_ORGSH";
+                    TaskName = "ALIGNER_ORGSH";
                     param.Add("@Target", nodeName);
                     break;
                 case "btnHome":
-                    TaskName = "ALIGNER_MANUAL_HOME";
+                    TaskName = "ALIGNER_HOME";
                     param.Add("@Target", nodeName);
                     break;
                 case "btnServoOn":
-                    TaskName = "ALIGNER_MANUAL_SERVO";
+                    TaskName = "ALIGNER_SERVO";
                     param.Add("@Target", nodeName);
                     param.Add("@Value", "1");
                     break;
                 case "btnServoOff":
-                    TaskName = "ALIGNER_MANUAL_SERVO";
+                    TaskName = "ALIGNER_SERVO";
                     param.Add("@Target", nodeName);
                     param.Add("@Value", "0");
                     break;
                 case "btnVacuOn":
-                    TaskName = "ALIGNER_MANUAL_WAFER_HOLD";
+                    TaskName = "ALIGNER_WAFER_HOLD";
                     param.Add("@Target", nodeName);
                     param.Add("@Arm", "1");
                     break;
                 case "btnVacuOff":
-                    TaskName = "ALIGNER_MANUAL_WAFER_RELEASE";
+                    TaskName = "ALIGNER_WAFER_RELEASE";
                     param.Add("@Target", nodeName);
                     param.Add("@Arm", "1");
                     break;
                 case "btnChgSpeed":
-                    TaskName = "ALIGNER_MANUAL_SPEED";
+                    TaskName = "ALIGNER_SPEED";
                     param.Add("@Target", nodeName);
                     param.Add("@Value", speed);
                     break;
                 case "btnReset":
-                    TaskName = "ALIGNER_MANUAL_RESET";
+                    TaskName = "ALIGNER_RESET";
                     param.Add("@Target", nodeName);
                     break;
                 case "btnAlign":
-                    TaskName = "ALIGNER_MANUAL_ALIGN";
+                    TaskName = "ALIGNER_ALIGN";
                     param.Add("@Target", nodeName);
                     param.Add("@Value", angle);
                     break;
@@ -404,7 +404,7 @@ namespace GUI
                         return;
                     }
 
-                    TaskName = "ALIGNER_MANUAL_MODE";
+                    TaskName = "ALIGNER_MODE";
                     param.Add("@Target", nodeName);
                     param.Add("@Value", Convert.ToString(mode));
                     break;
@@ -1038,14 +1038,16 @@ namespace GUI
             //    aligner2.ExcuteScript(script_name, "FormManual", out Message); ;//連線狀態下才執行
             //}
             Dictionary<string, string> param = new Dictionary<string, string>();
-            string TaskName = "ALIGNER_MANUAL_INIT";
+            string TaskName = "ALIGNER_INIT";
             param.Add("@Target", "ALIGNER01");
-            param.Clear();
+            
             TaskJobManagment.CurrentProceedTask Task;
             RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
+
+            param = new Dictionary<string, string>();
             param.Add("@Target", "ALIGNER02");
 
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
+            RouteControl.Instance.TaskJob.Excute("FormManual-1", out Message, out Task, TaskName, param);
         }
 
         private void SetDeviceStatus(string name)
