@@ -75,7 +75,7 @@ namespace Adam.Util
                 }
                 Running = true;
             }
-            else if ((nodeLD = FindAvailableLoadport("ROBOT01")) != null)
+            else if ((nodeLD = FindAvailableLoadport("ROBOT02")) != null)
             {
                 LDRobot = "ROBOT02";
                 ULDRobot = "ROBOT01";
@@ -107,7 +107,14 @@ namespace Adam.Util
 
         private static bool CheckQueue(Node Target)
         {
-
+            if (Target.Name.Equals("ROBOT02"))
+            {
+                string ttt= "";
+            }
+            if (Target.Name.Equals("ROBOT01"))
+            {
+                string ttt = "";
+            }
             if (Target.LockOn == null)
             {
                 Target.LockOn = "";
@@ -177,13 +184,13 @@ namespace Adam.Util
                                         if (Target.JobList.Count == 2)
                                         {
 
-
+                                            int Aidx = 1;
                                             foreach (Job wafer in Target.JobList.Values)
                                             {
                                                 foreach (Node Aligner in NodeManagement.GetAlignerList())
                                                 {
-                                                    if (Aligner.JobList.Count == 0)
-                                                    {
+                                                    //if (Aligner.JobList.Count == 0)
+                                                    //{
                                                         //佇列裡面沒有才加
                                                         Node.ActionRequest request = new Node.ActionRequest();
                                                         request.TaskName = "TRANSFER_PUT_" + Aligner.Name;
@@ -193,11 +200,17 @@ namespace Adam.Util
                                                         {
                                                             if (!Target.RequestQueue.ContainsKey(request.TaskName))
                                                             {
+                                                                if (Aidx == 2)
+                                                                {
+                                                                    //讓後面的ALIGNER有時間差，排序才會在上一台後面
+                                                                    request.TimeStamp+=Aidx;
+                                                                }
                                                                 Target.RequestQueue.Add(request.TaskName, request);
+                                                                Aidx++;
                                                                 break;
                                                             }
                                                         }
-                                                    }
+                                                    //}
                                                 }
                                             }
 
@@ -263,6 +276,7 @@ namespace Adam.Util
                                                                             if (!Target.RequestQueue.ContainsKey(request.TaskName))
                                                                             {
                                                                                 Target.RequestQueue.Add(request.TaskName, request);
+                                                                                break;
                                                                             }
                                                                         }
                                                                     }
@@ -326,6 +340,7 @@ namespace Adam.Util
                                                                                 if (!Target.RequestQueue.ContainsKey(request.TaskName))
                                                                                 {
                                                                                     Target.RequestQueue.Add(request.TaskName, request);
+                                                                                    break;
                                                                                 }
                                                                             }
                                                                         }
@@ -341,10 +356,42 @@ namespace Adam.Util
                                             }
                                             else
                                             {
-                                                logger.Debug(NodeName + " Loadport沒有片可處理");
-                                                nodeLD.Fetchable = false;
-                                                //結束工作
-                                                continue;
+                                                if (Target.JobList.Count != 0)
+                                                {
+                                                    Node.ActionRequest request = new Node.ActionRequest();
+
+                                                    foreach (Job wafer in Target.JobList.Values)
+                                                    {
+                                                        foreach (Node Aligner in NodeManagement.GetAlignerList())
+                                                        {
+                                                            if (Aligner.JobList.Count == 0)
+                                                            {
+                                                                //佇列裡面沒有才加
+                                                                request.TaskName = "TRANSFER_PUT_" + Aligner.Name;
+                                                                request.Position = Aligner.Name;
+                                                                //request.Arm = wafer.Slot;
+                                                                lock (Target.RequestQueue)
+                                                                {
+                                                                    if (!Target.RequestQueue.ContainsKey(request.TaskName))
+                                                                    {
+                                                                        Target.RequestQueue.Add(request.TaskName, request);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    Target.LockOn = "";//解除鎖定
+                                                    continue;
+                                                }
+                                                else
+                                                {
+                                                    logger.Debug(NodeName + " Loadport沒有片可處理");
+                                                    nodeLD.Fetchable = false;
+                                                    //結束工作
+                                                    continue;
+                                                }
                                             }
                                         }
                                         break;
