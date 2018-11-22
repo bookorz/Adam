@@ -29,7 +29,7 @@ using SANWA.Utility.Config;
 
 namespace Adam
 {
-    public partial class FormMain : Form, IUserInterfaceReport
+    public partial class FormMain : Form, IUserInterfaceReport, IXfeStateReport
     {
         public static RouteControl RouteCtrl;
 
@@ -48,7 +48,7 @@ namespace Adam
         private Menu.RunningScreen.FormRunningScreen formTestMode = new Menu.RunningScreen.FormRunningScreen();
         private Menu.Wafer.FormWafer WaferForm = new Menu.Wafer.FormWafer();
         public static GUI.FormManual formManual = null;
-        
+        public static XfeCrossZone xfe ;
 
         public FormMain()
         {
@@ -66,7 +66,8 @@ namespace Adam
             SanwaUtil.addPartition();
             SanwaUtil.dropPartition();
             ThreadPool.QueueUserWorkItem(new WaitCallback(DBUtil.consumeSqlCmd));
-           
+            xfe = new XfeCrossZone(this);
+
         }
 
         protected override CreateParams CreateParams
@@ -194,11 +195,11 @@ namespace Adam
                     {
                         case "ALIGNER":
                             each.ErrorMsg = "";
-                            each.ExcuteScript("AlignerStateGet", "GetStatsBeforeInit", out Message);
+                            //each.ExcuteScript("AlignerStateGet", "GetStatsBeforeInit", out Message);
                             break;
                         case "ROBOT":
                             each.ErrorMsg = "";
-                            each.ExcuteScript("RobotStateGet", "GetStatsBeforeInit", out Message);
+                            //each.ExcuteScript("RobotStateGet", "GetStatsBeforeInit", out Message);
                             break;
                     }
                 }
@@ -216,7 +217,7 @@ namespace Adam
                 switch (each.Type.ToUpper())
                 {
                     case "ROBOT":
-                        each.ExcuteScript("RobotInit", "Initialize", out Message);
+                        //each.ExcuteScript("RobotInit", "Initialize", out Message);
                         break;
                         //先做ROBOT
                         //case "ALIGNER":
@@ -503,7 +504,7 @@ namespace Adam
                                     //向Aligner 詢問狀態
                                     Node aligner = NodeManagement.Get(Node.Name);
                                     String script_name = aligner.Brand.ToUpper().Equals("SANWA") ? "AlignerStateGet" : "AlignerStateGet(Kawasaki)";
-                                    aligner.ExcuteScript(script_name, "FormManual", out Message);
+                                    //aligner.ExcuteScript(script_name, "FormManual", out Message);
                                     ManualAlignerStatusUpdate.UpdateGUI(Txn, Node.Name, Msg.Value);//update 
                                     break;
                                 case Transaction.Command.AlignerType.GetMode:
@@ -531,7 +532,7 @@ namespace Adam
 
         public void On_Command_Error(Node Node, Transaction Txn, ReturnMessage Msg)
         {
-            XfeCrossZone.Stop();
+            
             logger.Debug("On_Command_Error");
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = Node.Name;
@@ -549,7 +550,7 @@ namespace Adam
                 CurrentAlarm.IsStop = Detail.IsStop;
                 if (CurrentAlarm.IsStop)
                 {
-                   // RouteCtrl.Stop();
+                    XfeCrossZone.Stop();
                 }
             }
             catch (Exception e)
@@ -1247,6 +1248,25 @@ namespace Adam
             {
                 formManual.Focus();
             }
+        }
+
+        public void On_Transfer_Complete(XfeCrossZone xfe)
+        {
+            XfeCrossZone.Stop();
+
+            //Reverse Foup
+            string startPort = "";
+            foreach (Job each in JobManagement.GetJobList())
+            {
+                startPort = each.Destination;
+                string from = each.FromPort;
+                string fromSlot = each.FromPortSlot;
+                each.FromPort = each.Destination;
+                each.FromPortSlot = each.DestinationSlot;
+                each.AssignPort(from,fromSlot);
+                each.NeedProcess = true;
+            }
+            xfe.Start(startPort);
         }
     }
 }

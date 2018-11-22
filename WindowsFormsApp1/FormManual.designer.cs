@@ -592,8 +592,8 @@
             "LOADPORT02",
             "LOADPORT03",
             "LOADPORT04",
-            "BF1",
-            "BF2"});
+            "ALIGNER01",
+            "ALIGNER02"});
             this.cbRA1Point.Location = new System.Drawing.Point(129, 60);
             this.cbRA1Point.Name = "cbRA1Point";
             this.cbRA1Point.Size = new System.Drawing.Size(208, 38);
@@ -789,8 +789,8 @@
             "LOADPORT02",
             "LOADPORT03",
             "LOADPORT04",
-            "BF1",
-            "BF2"});
+            "ALIGNER01",
+            "ALIGNER02"});
             this.cbRA2Point.Location = new System.Drawing.Point(130, 60);
             this.cbRA2Point.Name = "cbRA2Point";
             this.cbRA2Point.Size = new System.Drawing.Size(208, 38);

@@ -31,6 +31,7 @@ namespace GUI
         private void FormManual_Load(object sender, EventArgs e)
         {
             RouteControl.Instance.TaskJob.Remove("FormManual");
+            RouteControl.Instance.TaskJob.Remove("FormManual-1");
             Initialize();
             Update_Manual_Status();
             //20181030 隱藏EFEM 用不到的頁面
@@ -463,7 +464,7 @@ namespace GUI
                     break;
             }
             TaskJobManagment.CurrentProceedTask Task;
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName, param);
+            RouteControl.Instance.TaskJob.Excute("FormManual-1", out Message, out Task, TaskName, param);
             ManualPortStatusUpdate.LockUI(false);
             //SetFormEnable(true);
             //Node node = NodeManagement.Get(nodeName);

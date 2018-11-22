@@ -442,7 +442,8 @@ namespace Adam.Menu.WaferMapping
                     Port_gv.Enabled = false;
                     DestPort_gv.Enabled = false;
                     DestPort_btn.Enabled = false;
-                    XfeCrossZone.Start();
+                    
+                    FormMain.xfe.Start(port.Name);
                 }
             }
             else

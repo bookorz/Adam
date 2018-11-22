@@ -190,7 +190,7 @@ namespace Adam.Menu.SystemSetting
 
                 UpdateNodeList();
                 //改設定後套用
-                CommandScriptManagement.LoadConfig();
+                //CommandScriptManagement.LoadConfig();
             }
             catch (Exception ex)
             {
