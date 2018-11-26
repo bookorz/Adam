@@ -1252,8 +1252,10 @@ namespace Adam
 
         public void On_Transfer_Complete(XfeCrossZone xfe)
         {
-            XfeCrossZone.Stop();
 
+            XfeCrossZone.Stop();
+            double wph = (xfe.ProcessCount / xfe.ProcessTime) * 3600.0*1000.0;
+            MonitoringUpdate.UpdateWPH(wph.ToString("F3"));
             //Reverse Foup
             string startPort = "";
             foreach (Job each in JobManagement.GetJobList())
