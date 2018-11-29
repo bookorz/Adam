@@ -30,8 +30,8 @@ namespace Adam
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer13 = new System.Windows.Forms.SplitContainer();
             this.groupBox54 = new System.Windows.Forms.GroupBox();
             this.Mode_btn = new System.Windows.Forms.Button();
@@ -48,11 +48,6 @@ namespace Adam
             this.DoorSwitch_Signal = new System.Windows.Forms.Button();
             this.CurrentState_btn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.Conn_gv = new System.Windows.Forms.DataGridView();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.Mute_chk = new System.Windows.Forms.CheckBox();
-            this.BUZZER2_Signal = new System.Windows.Forms.Button();
-            this.BUZZER1_Signal = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lbl_login_date = new System.Windows.Forms.Label();
             this.lbl_login_group = new System.Windows.Forms.Label();
@@ -62,6 +57,11 @@ namespace Adam
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.Conn_gv = new System.Windows.Forms.DataGridView();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.Mute_chk = new System.Windows.Forms.CheckBox();
+            this.BUZZER2_Signal = new System.Windows.Forms.Button();
+            this.BUZZER1_Signal = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -74,7 +74,6 @@ namespace Adam
             this.tabComm = new System.Windows.Forms.TabPage();
             this.tabMapping = new System.Windows.Forms.TabPage();
             this.tabStatus = new System.Windows.Forms.TabPage();
-            this.tabOCR = new System.Windows.Forms.TabPage();
             this.TestMode = new System.Windows.Forms.TabPage();
             this.Wafer = new System.Windows.Forms.TabPage();
             this.tabSetting = new System.Windows.Forms.TabPage();
@@ -117,9 +116,9 @@ namespace Adam
             this.groupBox19.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Conn_gv)).BeginInit();
             this.groupBox4.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tbcMian.SuspendLayout();
@@ -269,67 +268,6 @@ namespace Adam
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
-            // Conn_gv
-            // 
-            this.Conn_gv.AllowUserToAddRows = false;
-            this.Conn_gv.AllowUserToDeleteRows = false;
-            this.Conn_gv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.Conn_gv.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.Conn_gv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.Conn_gv.ColumnHeadersVisible = false;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("微軟正黑體", 12F);
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.Conn_gv.DefaultCellStyle = dataGridViewCellStyle11;
-            resources.ApplyResources(this.Conn_gv, "Conn_gv");
-            this.Conn_gv.MultiSelect = false;
-            this.Conn_gv.Name = "Conn_gv";
-            this.Conn_gv.ReadOnly = true;
-            this.Conn_gv.RowHeadersVisible = false;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("新細明體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.Conn_gv.RowsDefaultCellStyle = dataGridViewCellStyle12;
-            this.Conn_gv.RowTemplate.Height = 24;
-            this.Conn_gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.Conn_gv.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.Conn_gv_CellFormatting);
-            this.Conn_gv.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.Conn_gv_RowEnter);
-            // 
-            // groupBox4
-            // 
-            resources.ApplyResources(this.groupBox4, "groupBox4");
-            this.groupBox4.Controls.Add(this.Mute_chk);
-            this.groupBox4.Controls.Add(this.BUZZER2_Signal);
-            this.groupBox4.Controls.Add(this.BUZZER1_Signal);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.TabStop = false;
-            // 
-            // Mute_chk
-            // 
-            resources.ApplyResources(this.Mute_chk, "Mute_chk");
-            this.Mute_chk.Checked = true;
-            this.Mute_chk.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.Mute_chk.Name = "Mute_chk";
-            this.Mute_chk.UseVisualStyleBackColor = true;
-            // 
-            // BUZZER2_Signal
-            // 
-            this.BUZZER2_Signal.BackColor = System.Drawing.Color.Gray;
-            resources.ApplyResources(this.BUZZER2_Signal, "BUZZER2_Signal");
-            this.BUZZER2_Signal.Name = "BUZZER2_Signal";
-            this.BUZZER2_Signal.UseVisualStyleBackColor = false;
-            this.BUZZER2_Signal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Signal_MouseClick);
-            // 
-            // BUZZER1_Signal
-            // 
-            this.BUZZER1_Signal.BackColor = System.Drawing.Color.Gray;
-            resources.ApplyResources(this.BUZZER1_Signal, "BUZZER1_Signal");
-            this.BUZZER1_Signal.Name = "BUZZER1_Signal";
-            this.BUZZER1_Signal.UseVisualStyleBackColor = false;
-            this.BUZZER1_Signal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Signal_MouseClick);
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.lbl_login_date);
@@ -387,6 +325,67 @@ namespace Adam
             // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
+            // 
+            // Conn_gv
+            // 
+            this.Conn_gv.AllowUserToAddRows = false;
+            this.Conn_gv.AllowUserToDeleteRows = false;
+            this.Conn_gv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.Conn_gv.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.Conn_gv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.Conn_gv.ColumnHeadersVisible = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微軟正黑體", 12F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.Conn_gv.DefaultCellStyle = dataGridViewCellStyle1;
+            resources.ApplyResources(this.Conn_gv, "Conn_gv");
+            this.Conn_gv.MultiSelect = false;
+            this.Conn_gv.Name = "Conn_gv";
+            this.Conn_gv.ReadOnly = true;
+            this.Conn_gv.RowHeadersVisible = false;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("新細明體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Conn_gv.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            this.Conn_gv.RowTemplate.Height = 24;
+            this.Conn_gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.Conn_gv.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.Conn_gv_CellFormatting);
+            this.Conn_gv.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.Conn_gv_RowEnter);
+            // 
+            // groupBox4
+            // 
+            resources.ApplyResources(this.groupBox4, "groupBox4");
+            this.groupBox4.Controls.Add(this.Mute_chk);
+            this.groupBox4.Controls.Add(this.BUZZER2_Signal);
+            this.groupBox4.Controls.Add(this.BUZZER1_Signal);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.TabStop = false;
+            // 
+            // Mute_chk
+            // 
+            resources.ApplyResources(this.Mute_chk, "Mute_chk");
+            this.Mute_chk.Checked = true;
+            this.Mute_chk.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.Mute_chk.Name = "Mute_chk";
+            this.Mute_chk.UseVisualStyleBackColor = true;
+            // 
+            // BUZZER2_Signal
+            // 
+            this.BUZZER2_Signal.BackColor = System.Drawing.Color.Gray;
+            resources.ApplyResources(this.BUZZER2_Signal, "BUZZER2_Signal");
+            this.BUZZER2_Signal.Name = "BUZZER2_Signal";
+            this.BUZZER2_Signal.UseVisualStyleBackColor = false;
+            this.BUZZER2_Signal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Signal_MouseClick);
+            // 
+            // BUZZER1_Signal
+            // 
+            this.BUZZER1_Signal.BackColor = System.Drawing.Color.Gray;
+            resources.ApplyResources(this.BUZZER1_Signal, "BUZZER1_Signal");
+            this.BUZZER1_Signal.Name = "BUZZER1_Signal";
+            this.BUZZER1_Signal.UseVisualStyleBackColor = false;
+            this.BUZZER1_Signal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Signal_MouseClick);
             // 
             // label1
             // 
@@ -447,7 +446,6 @@ namespace Adam
             this.tbcMian.Controls.Add(this.tabComm);
             this.tbcMian.Controls.Add(this.tabMapping);
             this.tbcMian.Controls.Add(this.tabStatus);
-            this.tbcMian.Controls.Add(this.tabOCR);
             this.tbcMian.Controls.Add(this.TestMode);
             this.tbcMian.Controls.Add(this.Wafer);
             this.tbcMian.Controls.Add(this.tabSetting);
@@ -485,13 +483,6 @@ namespace Adam
             this.tabStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             resources.ApplyResources(this.tabStatus, "tabStatus");
             this.tabStatus.Name = "tabStatus";
-            // 
-            // tabOCR
-            // 
-            this.tabOCR.BackColor = System.Drawing.SystemColors.Control;
-            this.tabOCR.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            resources.ApplyResources(this.tabOCR, "tabOCR");
-            this.tabOCR.Name = "tabOCR";
             // 
             // TestMode
             // 
@@ -797,11 +788,11 @@ namespace Adam
             this.groupBox5.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Conn_gv)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.tbcMian.ResumeLayout(false);
@@ -828,7 +819,6 @@ namespace Adam
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TabPage tabMapping;
-        private System.Windows.Forms.TabPage tabOCR;
         private System.Windows.Forms.TabPage tabSetting;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button btnHelp;

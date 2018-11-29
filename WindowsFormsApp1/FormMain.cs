@@ -26,12 +26,14 @@ using Adam.UI_Update.Communications;
 using System.Security.Cryptography;
 using System.Text;
 using SANWA.Utility.Config;
+using SECSInterface;
 
 namespace Adam
 {
-    public partial class FormMain : Form, IUserInterfaceReport, IXfeStateReport
+    public partial class FormMain : Form, IUserInterfaceReport, IXfeStateReport,IUIReport
     {
         public static RouteControl RouteCtrl;
+        public static SECSGEM HostControl;
 
         public static AlarmMapping AlmMapping;
         private static readonly ILog logger = LogManager.GetLogger(typeof(FormMain));
@@ -43,12 +45,13 @@ namespace Adam
         private Menu.Communications.FormCommunications formCommunications = new Menu.Communications.FormCommunications();
         private Menu.WaferMapping.FormWaferMapping formWafer = new Menu.WaferMapping.FormWaferMapping();
         private Menu.Status.FormStatus formStatus = new Menu.Status.FormStatus();
-        private Menu.OCR.FormOCR formOCR = new Menu.OCR.FormOCR();
+        //private Menu.OCR.FormOCR formOCR = new Menu.OCR.FormOCR();
+        //private Menu.SystemSetting.FormSECSSet formSecs = new Menu.SystemSetting.FormSECSSet();
         private Menu.SystemSetting.FormSystemSetting formSystem = new Menu.SystemSetting.FormSystemSetting();
         private Menu.RunningScreen.FormRunningScreen formTestMode = new Menu.RunningScreen.FormRunningScreen();
         private Menu.Wafer.FormWafer WaferForm = new Menu.Wafer.FormWafer();
         public static GUI.FormManual formManual = null;
-        public static XfeCrossZone xfe ;
+        public static XfeCrossZone xfe;
 
         public FormMain()
         {
@@ -56,7 +59,10 @@ namespace Adam
             XmlConfigurator.Configure();
             Initialize();
 
-           
+            //HostControl = new SECSGEM(this);
+            //RouteCtrl = new RouteControl(this, HostControl);
+
+            
             RouteCtrl = new RouteControl(this, null);
             AlmMapping = new AlarmMapping();
 
@@ -97,7 +103,7 @@ namespace Adam
             this.Width = 1;
             this.Height = 1;
 
-            Control[] ctrlForm = new Control[] { formMonitoring, formCommunications, formWafer, formStatus, formOCR, formTestMode, WaferForm, formSystem };
+            Control[] ctrlForm = new Control[] { formMonitoring, formCommunications, formWafer, formStatus, formTestMode, WaferForm, formSystem };
 
             try
             {
@@ -137,14 +143,13 @@ namespace Adam
             this.WindowState = FormWindowState.Maximized;
 
             RouteCtrl.ConnectAll();
-            AuthorityUpdate.UpdateFuncGroupEnable("INIT");//init 權限
+            //AuthorityUpdate.UpdateFuncGroupEnable("INIT");//init 權限
             //RouteCtrl.ConnectAll();
 
             this.Width = oldWidth;
             this.Height = oldHeight;
             this.WindowState = FormWindowState.Maximized;
 
-            
         }
 
         private void LoadPort01_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -335,7 +340,7 @@ namespace Adam
                 AlarmUpdate.UpdateAlarmList(AlarmManagement.GetAll());
             }
 
-            
+
 
             switch (Node.Type)
             {
@@ -439,7 +444,7 @@ namespace Adam
                             {
                                 if (Txn.Method.Equals(Transaction.Command.LoadPortType.Reset))
                                 {
-                                   // ManualPortStatusUpdate.LockUI(false);
+                                    // ManualPortStatusUpdate.LockUI(false);
                                 }
                             }
                             ManualPortStatusUpdate.UpdateLog(Node.Name, Msg.Command + " Excuted");
@@ -477,7 +482,7 @@ namespace Adam
                                 case Transaction.Command.RobotType.Mode:
                                 case Transaction.Command.RobotType.Reset:
                                 case Transaction.Command.RobotType.Servo:
-                                    
+
                                     ManualRobotStatusUpdate.UpdateGUI(Txn, Node.Name, Msg.Value);//update 手動功能畫面 
                                     break;
                                 case Transaction.Command.RobotType.GetSpeed:
@@ -523,7 +528,7 @@ namespace Adam
 
                     }
                     break;
-               
+
                 default:
 
                     break;
@@ -532,7 +537,7 @@ namespace Adam
 
         public void On_Command_Error(Node Node, Transaction Txn, ReturnMessage Msg)
         {
-            
+
             logger.Debug("On_Command_Error");
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = Node.Name;
@@ -564,7 +569,7 @@ namespace Adam
 
             AlarmUpdate.UpdateAlarmList(AlarmManagement.GetAll());
             AlarmUpdate.UpdateAlarmHistory(AlarmManagement.GetHistory());
-    
+
         }
 
         public void On_Command_Finished(Node Node, Transaction Txn, ReturnMessage Msg)
@@ -688,7 +693,28 @@ namespace Adam
                 switch (Node.Type)
                 {
                     case "LOADPORT":
-                        
+                        switch (Msg.Command)
+                        {
+                            case "MANSW":
+
+                                break;
+                            case "MANOF":
+
+                                break;
+                            case "SMTON":
+
+                                break;
+                            case "PODOF":
+
+                                break;
+                            case "PODON":
+                                //Foup Arrived
+                                
+                                break;
+                            case "ABNST":
+
+                                break;
+                        }
                         break;
                 }
             }
@@ -719,7 +745,7 @@ namespace Adam
         public void On_Eqp_State_Changed(string OldStatus, string NewStatus)
         {
             NodeStatusUpdate.UpdateCurrentState(NewStatus);
-            StateRecord.EqpStateUpdate("Sorter", OldStatus, NewStatus);
+            //StateRecord.EqpStateUpdate("Sorter", OldStatus, NewStatus);
         }
 
         public void On_Controller_State_Changed(string Device_ID, string Status)
@@ -761,9 +787,9 @@ namespace Adam
         public void On_Port_Begin(string PortName, string FormName)
         {
             logger.Debug("On_Port_Begin");
-            
 
-           
+
+
         }
 
         public void On_Port_Finished(string PortName, string FormName)
@@ -771,7 +797,7 @@ namespace Adam
             logger.Debug("On_Port_Finished");
             try
             {
-                
+
             }
             catch (Exception e)
             {
@@ -779,29 +805,7 @@ namespace Adam
             }
         }
 
-        public void On_Task_Finished(string FormName, string LapsedTime, int LapsedWfCount, int LapsedLotCount)
-        {
-            logger.Debug("On_Task_Finished");
-            //NodeStatusUpdate.UpdateCurrentState("Idle");
-            try
-            {
-                RunningUpdate.UpdateRunningInfo("LapsedTime", LapsedTime);
-                RunningUpdate.UpdateRunningInfo("TransCount", "+1");
-                RunningUpdate.UpdateRunningInfo("LapsedWfCount", LapsedWfCount.ToString());
-                RunningUpdate.UpdateRunningInfo("LapsedLotCount", LapsedLotCount.ToString());
-                RunningUpdate.UpdateRunningInfo("WPH", (LapsedWfCount / Convert.ToDouble(LapsedTime) * 3600).ToString());
-                MonitoringUpdate.UpdateWPH(Math.Round((LapsedWfCount / Convert.ToDouble(LapsedTime) * 3600), 1).ToString());
-                foreach (Node port in NodeManagement.GetLoadPortList())
-                {
-                    WaferAssignUpdate.ResetAssignCM(port.Name, true);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.StackTrace);
-            }
-
-        }
+      
 
         public void On_Mode_Changed(string Mode)
         {
@@ -829,7 +833,7 @@ namespace Adam
 
         }
 
-        
+
 
 
 
@@ -853,7 +857,7 @@ namespace Adam
                 case "ARM_NOT_EXTEND_BF1":
                 case "ARM_NOT_EXTEND_BF2":
                     DIOUpdate.UpdateInterLock(Parameter, Value);
-                    break;                
+                    break;
                 default:
                     DIOUpdate.UpdateDIOStatus(Parameter, Value);
                     break;
@@ -864,7 +868,7 @@ namespace Adam
 
         public void On_Alarm_Happen(string DIOName, string ErrorCode)
         {
-            
+
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = DIOName;
             CurrentAlarm.AlarmCode = ErrorCode;
@@ -880,7 +884,7 @@ namespace Adam
                 CurrentAlarm.Type = Detail.Code_Type;
                 CurrentAlarm.IsStop = Detail.IsStop;
 
-                
+
                 if (CurrentAlarm.IsStop)
                 {
                     //RouteCtrl.Stop();
@@ -917,7 +921,7 @@ namespace Adam
                 CurrentAlarm.IsStop = Detail.IsStop;
                 if (CurrentAlarm.IsStop)
                 {
-                   // RouteCtrl.Stop();
+                    // RouteCtrl.Stop();
                 }
             }
             catch (Exception e)
@@ -1031,17 +1035,17 @@ namespace Adam
         private void Connection_btn_Click(object sender, EventArgs e)
         {
 
-            //if (Connection_btn.Tag.ToString() == "Offline")
-            //{
-            //    RouteCtrl.ConnectAll();
+            if (Connection_btn.Tag.ToString() == "Offline")
+            {
+                HostControl.OnlieReq();
 
-            //    ConnectionStatusUpdate.UpdateOnlineStatus("Connecting");
-            //}
-            //else
-            //{
-            //    RouteCtrl.DisconnectAll();
-            //    ConnectionStatusUpdate.UpdateOnlineStatus("Offline");
-            //}
+                ConnectionStatusUpdate.UpdateOnlineStatus("Connecting");
+            }
+            else
+            {
+                HostControl.OffLine();
+                ConnectionStatusUpdate.UpdateOnlineStatus("Offline");
+            }
 
         }
 
@@ -1050,7 +1054,7 @@ namespace Adam
 
             if (Mode_btn.Text.Equals("Manual-Mode"))
             {
-                
+
                 Mode_btn.Text = "Online-Mode";
                 Mode_btn.BackColor = Color.Green;
                 btnManual.Enabled = false;
@@ -1073,7 +1077,7 @@ namespace Adam
                 string config_password = SystemConfig.Get().AdminPassword;
                 if (md5_result.Equals(config_password))
                 {
-                   
+
                     Mode_btn.Text = "Manual-Mode";
                     Mode_btn.BackColor = Color.Orange;
                     btnManual.Enabled = true;
@@ -1102,7 +1106,7 @@ namespace Adam
                 StartPosition = FormStartPosition.CenterScreen
             };
             Label lblUser = new Label() { Left = 30, Top = 20, Text = "User", Width = 200 };
-            TextBox tbUser = new TextBox() { Left = 30, Top = 50, Width = 350 , Text = "Administrator"};
+            TextBox tbUser = new TextBox() { Left = 30, Top = 50, Width = 350, Text = "Administrator" };
             Label lblPassword = new Label() { Left = 30, Top = 90, Text = "Password", Width = 200 };
             TextBox tbPassword = new TextBox() { Left = 30, Top = 120, Width = 350 };
             tbPassword.PasswordChar = '*';
@@ -1185,11 +1189,11 @@ namespace Adam
 
         }
 
-        
 
-        public void On_TaskJob_Aborted(string TaskID, string NodeName, string ReportType, string Message)
+
+        public void On_TaskJob_Aborted(TaskJobManagment.CurrentProceedTask Task, string NodeName, string ReportType, string Message)
         {
-            if (TaskID.IndexOf("FormManual")!=-1)
+            if (Task.Id.IndexOf("FormManual") != -1)
             {
                 ManualPortStatusUpdate.LockUI(false);
             }
@@ -1225,13 +1229,13 @@ namespace Adam
                 CurrentAlarm.Desc = "未定義";
                 logger.Error("(GetAlarmMessage)" + e.Message + "\n" + e.StackTrace);
             }
-           
+
 
         }
 
-        public void On_TaskJob_Finished(string TaskID)
+        public void On_TaskJob_Finished(TaskJobManagment.CurrentProceedTask Task)
         {
-            if (TaskID.IndexOf("FormManual")!=-1)
+            if (Task.Id.IndexOf("FormManual") != -1)
             {
                 ManualPortStatusUpdate.LockUI(false);
             }
@@ -1254,7 +1258,7 @@ namespace Adam
         {
 
             XfeCrossZone.Stop();
-            double wph = (xfe.ProcessCount / xfe.ProcessTime) * 3600.0*1000.0;
+            double wph = (xfe.ProcessCount / xfe.ProcessTime) * 3600.0 * 1000.0;
             MonitoringUpdate.UpdateWPH(wph.ToString("F3"));
             //Reverse Foup
             string startPort = "";
@@ -1265,10 +1269,17 @@ namespace Adam
                 string fromSlot = each.FromPortSlot;
                 each.FromPort = each.Destination;
                 each.FromPortSlot = each.DestinationSlot;
-                each.AssignPort(from,fromSlot);
+                each.AssignPort(from, fromSlot);
                 each.NeedProcess = true;
             }
             xfe.Start(startPort);
+        }
+
+       
+
+        public void On_Message(string msg)
+        {
+            
         }
     }
 }

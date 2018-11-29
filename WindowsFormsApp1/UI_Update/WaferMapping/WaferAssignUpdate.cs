@@ -128,7 +128,7 @@ namespace Adam.UI_Update.WaferMapping
                     Port_gv.Columns["DefaultOCR"].Visible = false;
                     Port_gv.Columns["RecipeID"].Visible = false;
                     Port_gv.Columns["ErrPosition"].Visible = false;
-
+                    Port_gv.Columns["InProcess"].Visible = false;
                     //MonitoringUpdate.UpdateNodesJob(PortName);
 
                 }
@@ -278,7 +278,7 @@ namespace Adam.UI_Update.WaferMapping
                     Port_gv.Columns["DefaultOCR"].Visible = false;
                     Port_gv.Columns["RecipeID"].Visible = false;
                     Port_gv.Columns["ErrPosition"].Visible = false;
-
+                    Port_gv.Columns["InProcess"].Visible = false;
 
 
                     MonitoringUpdate.UpdateNodesJob(PortName);

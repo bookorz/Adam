@@ -56,6 +56,20 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AxInterop.QGACTIVEXLib">
+      <HintPath>..\..\SECSInterface\SECSInterface\lib\AxInterop.QGACTIVEXLib.dll</HintPath>
+    </Reference>
+    <Reference Include="AxInterop.QSACTIVEXLib">
+      <HintPath>..\..\SECSInterface\SECSInterface\lib\AxInterop.QSACTIVEXLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.QGACTIVEXLib">
+      <HintPath>..\..\SECSInterface\SECSInterface\lib\Interop.QGACTIVEXLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.QSACTIVEXLib">
+      <HintPath>..\..\SECSInterface\SECSInterface\lib\Interop.QSACTIVEXLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>lib\Ionic.Zip.dll</HintPath>
     </Reference>
@@ -282,12 +296,6 @@
     <Compile Include="Menu\SystemSetting\FormOnlineSettings.Designer.cs">
       <DependentUpon>FormOnlineSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Menu\SystemSetting\FormSECSSet.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Menu\SystemSetting\FormSECSSet.Designer.cs">
-      <DependentUpon>FormSECSSet.cs</DependentUpon>
-    </Compile>
     <Compile Include="Menu\SystemSetting\FormSystemSetting.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -328,6 +336,7 @@
     <Compile Include="UI_Update\Terminal\TerminalUpdate.cs" />
     <Compile Include="UI_Update\WaferMapping\WaferAssignUpdate.cs" />
     <Compile Include="Util\IXfeStateReport.cs" />
+    <Compile Include="Util\UIHandle.cs" />
     <Compile Include="Util\XfeCrossZone.cs" />
     <Compile Include="Util\OCRResult.cs" />
     <Compile Include="Util\SanwaUtil.cs" />
@@ -415,9 +424,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Menu\SystemSetting\FormOnlineSettings.resx">
       <DependentUpon>FormOnlineSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Menu\SystemSetting\FormSECSSet.resx">
-      <DependentUpon>FormSECSSet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menu\SystemSetting\FormSettingFram.resx">
       <DependentUpon>FormSettingFram.cs</DependentUpon>
@@ -553,6 +559,10 @@
     <ProjectReference Include="..\..\SANWAFunction\SANWA\SANWA\SANWA.csproj">
       <Project>{4eed2ed4-a72e-4f24-8d80-ef2f0b24fcf1}</Project>
       <Name>SANWA</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SECSInterface\SECSInterface\SECSInterface.csproj">
+      <Project>{3c15fc8b-f9f5-4d02-af5f-591d93b8f5fa}</Project>
+      <Name>SECSInterface</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TransferControl\TransferControl\TransferControl.csproj">
       <Project>{316ccd27-c53f-42f2-ad5e-5ca897dd9ab8}</Project>

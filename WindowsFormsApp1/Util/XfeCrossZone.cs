@@ -15,15 +15,14 @@ namespace Adam.Util
     {
         private ILog logger = LogManager.GetLogger(typeof(XfeCrossZone));
         public static bool Running = false;
-        public bool IsInitialize = false;
         public string LDRobot = "";
         public string LDRobot_Arm = "";
         public string ULDRobot = "";
         public string ULDRobot_Arm = "";
         public string LD = "";
-        //public string ULD = "";
+
         public double ProcessTime = 0;
-        public double ProcessCount = 0; 
+        public double ProcessCount = 0;
         System.Diagnostics.Stopwatch watch;
 
         IXfeStateReport _Report;
@@ -50,25 +49,21 @@ namespace Adam.Util
             }
             LDRobot = "";
             LDRobot_Arm = "";
-            //ULDRobot = "";
+
             ULDRobot_Arm = "";
             LD = "";
-            //ULD = "";
-            //找到LD & ULD
+
+            //找到LD
             Node nodeLD = NodeManagement.Get(LDPort);
             Node LROB = NodeManagement.Get(nodeLD.Associated_Node);
             LDRobot = LROB.Name;
-            //if ((nodeLD = FindAvailableLoadport("ROBOT01")) != null)
-            //{
 
-            //ULDRobot = "ROBOT02";
             LD = nodeLD.Name;
             var AvailableSlots = from eachSlot in nodeLD.JobList.Values.ToList()
                                  where eachSlot.NeedProcess
                                  select eachSlot;
             ProcessCount = AvailableSlots.Count();
-            //ULD = nodeLD.DestPort;
-            //LROB = NodeManagement.Get("ROBOT01");
+
             Node.ActionRequest request = new Node.ActionRequest();
             request.TaskName = "TRANSFER_GET_LOADPORT";
             lock (LROB.RequestQueue)
@@ -115,13 +110,36 @@ namespace Adam.Util
             return a || b;
         }
 
+        private bool CheckWIP(Node Robot)
+        {
+            bool result = false;
+            //找到所有被取出FOUP的WAFER
+            var ProcessList = from Job in JobManagement.GetJobList()
+                              where Job.InProcess
+                              select Job;
+
+            foreach (Job each in ProcessList)
+            {
+                Node dest = NodeManagement.Get(each.Destination);
+                //找尋到達目的地需要此ROBOT搬運的WAFER
+                //同時也不在此ROBOT手上
+                if (dest.Associated_Node.ToUpper().Equals(Robot.Name.ToUpper()) && !each.Position.ToUpper().Equals(Robot.Name.ToUpper()))
+                {
+                    result = true;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
 
         private void Engine(object NodeName)
         {
             try
             {
                 Node Target = NodeManagement.Get(NodeName.ToString());
-                if(Target == null)
+                if (Target == null)
                 {
                     return;
                 }
@@ -192,17 +210,19 @@ namespace Adam.Util
                                                 if (!Target.JobList.ContainsKey("1") && Target.RArmActive)//R沒片且R為可用狀態
                                                 {
                                                     req.Arm = "1";
+
                                                 }
                                                 else if (!Target.JobList.ContainsKey("2") && Target.LArmActive)//L沒片且L為可用狀態
                                                 {
                                                     req.Arm = "2";
+
                                                 }
                                                 else
                                                 {
                                                     //無法再取片
                                                     if (Target.JobList.Count() != 0)
                                                     {//開始放片至Aligner
-
+                                                        Target.RequestQueue.Clear();
                                                         int Aidx = 1;
                                                         foreach (Job wafer in Target.JobList.Values)
                                                         {
@@ -272,7 +292,7 @@ namespace Adam.Util
                                                         //無法再取片
                                                         if (Target.JobList.Count() != 0)
                                                         {//開始放片至Aligner
-
+                                                            Target.RequestQueue.Clear();
                                                             int Aidx = 1;
                                                             foreach (Job wafer in Target.JobList.Values)
                                                             {
@@ -315,6 +335,7 @@ namespace Adam.Util
                                             {
 
                                                 int Aidx = 1;
+                                                Target.RequestQueue.Clear();
                                                 foreach (Job wafer in Target.JobList.Values)
                                                 {
                                                     foreach (Node Aligner in NodeManagement.GetAlignerList())
@@ -454,10 +475,10 @@ namespace Adam.Util
                                     case "TRANSFER_PUT_UNLOADPORT":
                                         //檢查目前狀態是否要去放
 
-                                        Node nodeLDRobot = NodeManagement.Get(LDRobot);
-                                        if (Target.JobList.Count != 2 && nodeLDRobot.JobList.Count != 0)
+
+                                        if (CheckWIP(Target) && Target.JobList.Count != 2)
                                         {
-                                            //還有片要處裡
+                                            //還有片要處理
                                             Target.LockOn = "";
                                             continue;
                                         }
@@ -528,7 +549,7 @@ namespace Adam.Util
                                         {
                                             if (!LDRbt.RequestQueue.ContainsKey(request.TaskName))
                                             {
-                                                LDRbt.RequestQueue.Add(request.TaskName, request);                             
+                                                LDRbt.RequestQueue.Add(request.TaskName, request);
                                                 break;
                                             }
                                         }

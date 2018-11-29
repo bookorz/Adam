@@ -15,7 +15,7 @@ namespace Adam.Menu.SystemSetting
         private FormCommandScript configuration = new FormCommandScript();
         private FormDeviceManager deviceManager = new FormDeviceManager();
         private FormOnlineSettings onlineSettings = new FormOnlineSettings();
-        private FormSECSSet sECSSet = new FormSECSSet();
+        //private FormSECSSet sECSSet = new FormSECSSet();
         private FormCodeSetting codeSetting = new FormCodeSetting();
         private FormSignalTower formSignalTower = new FormSignalTower();
         private FormDIOSetting formDIOSetting = new FormDIOSetting();
@@ -72,7 +72,7 @@ namespace Adam.Menu.SystemSetting
                 configuration.TopLevel = false;
                 deviceManager.TopLevel = false;
                 onlineSettings.TopLevel = false;
-                sECSSet.TopLevel = false;
+                //sECSSet.TopLevel = false;
                 codeSetting.TopLevel = false;
                 formSignalTower.TopLevel = false;
                 formDIOSetting.TopLevel = false;
@@ -82,7 +82,7 @@ namespace Adam.Menu.SystemSetting
                 tbpCommandScript.Controls.Add(configuration);
                 tbpDeviceManager.Controls.Add(deviceManager);
                 tbpOnlineSettings.Controls.Add(onlineSettings);
-                tbpSECSSetting.Controls.Add(sECSSet);
+                //tbpSECSSetting.Controls.Add(sECSSet);
                 tbpCodeSetting.Controls.Add(codeSetting);
                 tbpSignalTtower.Controls.Add(formSignalTower);
                 tbpDIOSetting.Controls.Add(formDIOSetting);
@@ -92,7 +92,7 @@ namespace Adam.Menu.SystemSetting
                 configuration.Show();
                 deviceManager.Show();
                 onlineSettings.Show();
-                sECSSet.Show();
+                //sECSSet.Show();
                 codeSetting.Show();
                 formSignalTower.Show();
                 formDIOSetting.Show();

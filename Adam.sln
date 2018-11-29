@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SANWA", "..\SANWAFunction\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIOControl", "..\DIOControl\DIOControl\DIOControl.csproj", "{21ADFCFC-11C7-4982-AF57-09002ED8E961}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SECSInterface", "..\SECSInterface\SECSInterface\SECSInterface.csproj", "{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,14 @@ Global
 		{21ADFCFC-11C7-4982-AF57-09002ED8E961}.Release|Any CPU.Build.0 = Release|Any CPU
 		{21ADFCFC-11C7-4982-AF57-09002ED8E961}.Release|x64.ActiveCfg = Release|Any CPU
 		{21ADFCFC-11C7-4982-AF57-09002ED8E961}.Release|x64.Build.0 = Release|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Debug|x64.Build.0 = Debug|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C15FC8B-F9F5-4D02-AF5F-591D93B8F5FA}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
