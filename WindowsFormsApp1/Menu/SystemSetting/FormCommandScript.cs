@@ -127,7 +127,7 @@ namespace Adam.Menu.SystemSetting
             Dictionary<string, object> keyValues = new Dictionary<string, object>();
             DBUtil dBUtil = new DBUtil();
             DataTable dtTemp = new DataTable();
-            DataRow[] drsTemp;
+            //DataRow[] drsTemp;
 
             try
             {

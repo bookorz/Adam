@@ -60,7 +60,7 @@ namespace Adam.UI_Update.Layout
             }
             catch (Exception e)
             {
-                logger.Error("UpdateInterLock: Update fail.");
+                logger.Error("UpdateInterLock: Update fail. err:"+e.StackTrace);
             }
         }
 

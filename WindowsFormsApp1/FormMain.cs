@@ -30,7 +30,7 @@ using SECSInterface;
 
 namespace Adam
 {
-    public partial class FormMain : Form, IUserInterfaceReport, IXfeStateReport,IUIReport
+    public partial class FormMain : Form, IUserInterfaceReport, IXfeStateReport, IUIReport
     {
         public static RouteControl RouteCtrl;
         public static SECSGEM HostControl;
@@ -62,7 +62,7 @@ namespace Adam
             //HostControl = new SECSGEM(this);
             //RouteCtrl = new RouteControl(this, HostControl);
 
-            
+
             RouteCtrl = new RouteControl(this, null);
             AlmMapping = new AlarmMapping();
 
@@ -195,7 +195,7 @@ namespace Adam
             {
                 foreach (Node each in NodeManagement.GetList())
                 {
-                    string Message = "";
+                    //string Message = "";
                     switch (each.Type)
                     {
                         case "ALIGNER":
@@ -218,7 +218,7 @@ namespace Adam
             {
                 each.InitialComplete = false;
                 each.CheckStatus = false;
-                string Message = "";
+                //string Message = "";
                 switch (each.Type.ToUpper())
                 {
                     case "ROBOT":
@@ -331,7 +331,7 @@ namespace Adam
         public void On_Command_Excuted(Node Node, Transaction Txn, ReturnMessage Msg)
         {
             logger.Debug("On_Command_Excuted");
-            string Message = "";
+            //string Message = "";
 
             Transaction SendTxn = new Transaction();
 
@@ -709,7 +709,7 @@ namespace Adam
                                 break;
                             case "PODON":
                                 //Foup Arrived
-                                
+
                                 break;
                             case "ABNST":
 
@@ -805,7 +805,7 @@ namespace Adam
             }
         }
 
-      
+
 
         public void On_Mode_Changed(string Mode)
         {
@@ -1265,7 +1265,22 @@ namespace Adam
             foreach (Job each in JobManagement.GetJobList())
             {
                 startPort = each.Destination;
-                string from = each.FromPort;
+                //string from = each.FromPort;
+
+                var p = from port in NodeManagement.GetLoadPortList()
+                        where port.IsMapping && !port.Name.Equals(each.Destination) && !port.Name.Equals(each.FromPort)
+                        select port;
+                string from = "";
+                if (p.Count() != 0)
+                {
+                    from = p.First().Name;
+                }
+                else
+                {
+                    from = each.FromPort;
+                }
+
+
                 string fromSlot = each.FromPortSlot;
                 each.FromPort = each.Destination;
                 each.FromPortSlot = each.DestinationSlot;
@@ -1275,11 +1290,11 @@ namespace Adam
             xfe.Start(startPort);
         }
 
-       
+
 
         public void On_Message(string msg)
         {
-            
+
         }
     }
 }

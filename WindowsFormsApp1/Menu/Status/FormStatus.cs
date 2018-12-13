@@ -19,7 +19,7 @@ namespace Adam.Menu.Status
     {
 
         private static readonly ILog logger = LogManager.GetLogger(typeof(FormStatus));
-        private static System.Timers.Timer aTimer;
+        //private static System.Timers.Timer aTimer;
         private Boolean isRefresh = false;
 
 

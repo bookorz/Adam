@@ -85,14 +85,14 @@ namespace Adam.Util
 
         private bool CheckQueue(Node Target)
         {
-            if (Target.Name.Equals("ROBOT02"))
-            {
-                string ttt = "";
-            }
-            if (Target.Name.Equals("ROBOT01"))
-            {
-                string ttt = "";
-            }
+            //if (Target.Name.Equals("ROBOT02"))
+            //{
+            //    string ttt = "";
+            //}
+            //if (Target.Name.Equals("ROBOT01"))
+            //{
+            //    string ttt = "";
+            //}
             if (Target.LockOn == null)
             {
                 Target.LockOn = "";
@@ -110,9 +110,11 @@ namespace Adam.Util
             return a || b;
         }
 
-        private bool CheckWIP(Node Robot)
+        private bool CheckWIPForLoad(Node Robot)
         {
             bool result = false;
+            bool a = false;
+            bool b = false;
             //找到所有被取出FOUP的WAFER
             var ProcessList = from Job in JobManagement.GetJobList()
                               where Job.InProcess
@@ -125,11 +127,45 @@ namespace Adam.Util
                 //同時也不在此ROBOT手上
                 if (dest.Associated_Node.ToUpper().Equals(Robot.Name.ToUpper()) && !each.Position.ToUpper().Equals(Robot.Name.ToUpper()))
                 {
-                    result = true;
+                    a = true;
                     break;
                 }
             }
 
+            b = true;
+
+            result = a && b;
+
+            return result;
+        }
+
+        private bool CheckWIPForUnload(Node Robot)
+        {
+            bool result = false;
+            bool a = false;
+            bool b = false;
+            //找到所有被取出FOUP的WAFER
+            var ProcessList = from Job in JobManagement.GetJobList()
+                              where Job.InProcess
+                              select Job;
+
+            foreach (Job each in ProcessList)
+            {
+                Node dest = NodeManagement.Get(each.Destination);
+                //找尋到達目的地需要此ROBOT搬運的WAFER
+                //同時也不在此ROBOT手上
+                if (dest.Associated_Node.ToUpper().Equals(Robot.Name.ToUpper()) && !each.Position.ToUpper().Equals(Robot.Name.ToUpper()))
+                {
+                    a = true;
+                    break;
+                }
+            }
+
+            if (Robot.JobList.Count != 2)
+            {
+                b = true;
+            }
+            result = a && b;
             return result;
         }
 
@@ -167,7 +203,7 @@ namespace Adam.Util
                             {//當ROBOT正在存取某個，必須收回手臂才能對另一台動作
                                 logger.Debug(NodeName + " LockOn:" + Target.LockOn);
                                 var find = from Request in RequestQueue
-                                           where Request.Position.Equals(Target.LockOn)
+                                           where Request.Position.Equals(Target.LockOn) && (!Request.TaskName.Equals("TRANSFER_GETW_ALIGNER01") && !Request.TaskName.Equals("TRANSFER_GETW_ALIGNER02"))
                                            select Request;
                                 RequestQueue = find.ToList();
                             }
@@ -176,6 +212,19 @@ namespace Adam.Util
                             if (RequestQueue.Count == 0)
                             {
                                 continue;
+                            }
+                            if (Target.LockOn.Equals(""))
+                            {
+                                //當混和模式時，放回ULD要在LD取片之前
+                                var find = from Request in RequestQueue
+                                           where Request.TaskName.Equals("TRANSFER_PUT_UNLOADPORT") || Request.TaskName.Equals("TRANSFER_PUT_UNLOADPORT_2ARM")
+                                           select Request;
+
+                                if (find.Count() != 0)
+                                {
+                                    RequestQueue = find.ToList();
+
+                                }
                             }
                             req = RequestQueue.First();
                             Target.RequestQueue.Remove(req.TaskName);
@@ -189,7 +238,12 @@ namespace Adam.Util
                                 switch (req.TaskName)
                                 {
                                     case "TRANSFER_GET_LOADPORT":
-
+                                        if (CheckWIPForLoad(Target))//混和模式
+                                        {
+                                            //還有片要處理
+                                            Target.LockOn = "";
+                                            continue;
+                                        }
                                         logger.Debug(NodeName + " 找到可用Loadport");
                                         nodeLD = NodeManagement.Get(LD);
                                         Target.LockOn = nodeLD.Name;//鎖定PORT
@@ -403,17 +457,21 @@ namespace Adam.Util
                                         //決定要放R或L
                                         if (LDRobot_Arm.Equals(""))
                                         {
-                                            if (Target.JobList.Count == 0)
+                                            var Available = from each in Target.JobList.Values
+                                                            where each.NeedProcess
+                                                            select each;
+
+                                            if (Available.Count() == 0)
                                             {//當只有一台ALIGNER，被觸發放第二片但沒有時，略過此命令
                                                 continue;
                                             }
-                                            List<Job> tmpForSort = Target.JobList.Values.ToList();
+                                            List<Job> tmpForSort = Available.ToList();
                                             tmpForSort.Sort((x, y) => { return -Convert.ToInt32(x.DestinationSlot).CompareTo(Convert.ToInt32(y.DestinationSlot)); });
                                             //先放目的地Slot位置比較高的，讓取片Robot先放在R軸，確保可以做雙ARM放片
                                             foreach (Job wafer in tmpForSort)
                                             {
                                                 LDRobot_Arm = wafer.Slot;
-
+                                                wafer.NeedProcess = false;
                                                 break;
                                             }
                                         }
@@ -476,7 +534,7 @@ namespace Adam.Util
                                         //檢查目前狀態是否要去放
 
 
-                                        if (CheckWIP(Target) && Target.JobList.Count != 2)
+                                        if (CheckWIPForUnload(Target))
                                         {
                                             //還有片要處理
                                             Target.LockOn = "";
