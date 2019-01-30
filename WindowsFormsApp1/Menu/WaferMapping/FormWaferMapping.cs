@@ -499,5 +499,10 @@ namespace Adam.Menu.WaferMapping
                 MessageBox.Show("Port " + PortName + " not found.");
             }
         }
+
+        public void On_Transfer_Complete(XfeCrossZone xfe)
+        {
+            
+        }
     }
 }

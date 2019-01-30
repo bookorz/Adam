@@ -18,6 +18,36 @@ namespace Adam.UI_Update.Monitoring
         delegate void UpdatePortUsed(string PortName, bool Used);
         delegate void UpdateNode(string JobId);
 
+        public static void DisableUpdate(string Name, bool Checked)
+        {
+            try
+            {
+                Form form = Application.OpenForms["FormMonitoring"];
+                CheckBox W;
+                if (form == null)
+                    return;
+
+                W = form.Controls.Find(Name + "_ck", true).FirstOrDefault() as CheckBox;
+                if (W == null)
+                    return;
+
+                if (W.InvokeRequired)
+                {
+                    UpdatePortUsed ph = new UpdatePortUsed(DisableUpdate);
+                    W.BeginInvoke(ph, Name, Checked);
+                }
+                else
+                {
+                    W.Checked = Checked;
+
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
         public static void UpdateWPH(string WPH)
         {
             try
@@ -93,28 +123,28 @@ namespace Adam.UI_Update.Monitoring
             try
             {
                 Form form = Application.OpenForms["FormMonitoring"];
-                TextBox tb;
+                Label Mode;
 
                 if (form == null)
                     return;
 
-                tb = form.Controls.Find("LoadPort01_State", true).FirstOrDefault() as TextBox;
+                Mode = form.Controls.Find(NodeName+"_Mode", true).FirstOrDefault() as Label;
 
-                if (tb == null)
+                if (Mode == null)
                     return;
 
-                if (tb.InvokeRequired)
+                if (Mode.InvokeRequired)
                 {
                     UpdateNode ph = new UpdateNode(UpdateNodesJob);
-                    tb.BeginInvoke(ph, NodeName);
+                    Mode.BeginInvoke(ph, NodeName);
                 }
                 else
                 {
                     Node node = NodeManagement.Get(NodeName);
-                    Label Mode = form.Controls.Find(NodeName + "_Mode", true).FirstOrDefault() as Label;
+                   
                     Mode.Text = node.Mode;
-                    if (node.IsMapping)
-                    {
+                    //if (node.IsMapping)
+                    //{
                         for (int i = 1; i <= Tools.GetSlotCount(node.Type); i++)
                         {
                             Label present = form.Controls.Find(node.Name + "_Slot_" + i.ToString(), true).FirstOrDefault() as Label;
@@ -151,7 +181,7 @@ namespace Adam.UI_Update.Monitoring
                                 }
                             }
                         }
-                    }
+                    //}
                 }
 
 
@@ -167,12 +197,12 @@ namespace Adam.UI_Update.Monitoring
             try
             {
                 Form form = Application.OpenForms["FormMonitoring"];
-                TextBox tb;
+                Label tb;
 
                 if (form == null)
                     return;
 
-                tb = form.Controls.Find("LoadPort01_State", true).FirstOrDefault() as TextBox;
+                tb = form.Controls.Find("LoadPort01_Mode", true).FirstOrDefault() as Label;
 
                 if (tb == null)
                     return;

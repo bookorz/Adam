@@ -7,7 +7,7 @@
   "OCR1ImgSourcePath": "C:/ProgramData/e-Reader1/e-Reader/AllImage",
   "OCR1ImgToJpgPath": "D:/OCR01/JPG",
   "OCR1ExePath": "C:/Program Files (x86)/Cognex/In-Sight/In-Sight Explorer Wafer 4.5.0/WaferID.exe",
-  "MappingData": "1100000000000000000000001",
+  "MappingData": "111111111111111111111111",
   "AdminPassword": "0192023A7BBD73250516F069DF18B500",
   "SaftyCheckByPass": true
 }

@@ -28,7 +28,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -344,8 +344,6 @@
     <Compile Include="Util\Tools.cs" />
     <Compile Include="Util\TransferJob.cs" />
     <Compile Include="Util\TransferState.cs" />
-    <Compile Include="Util\XfeExchangeZone.cs" />
-    <Compile Include="Util\XfeSingleZone.cs" />
     <Compile Include="Util\XmlObjectSerializer.cs" />
     <EmbeddedResource Include="FormAlarm.resx">
       <DependentUpon>FormAlarm.cs</DependentUpon>

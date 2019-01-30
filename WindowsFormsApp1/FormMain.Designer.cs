@@ -39,6 +39,8 @@ namespace Adam
             this.Connection_btn = new System.Windows.Forms.Button();
             this.button27 = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.ALL_Reset_btn = new System.Windows.Forms.Button();
+            this.ALL_ORG_btn = new System.Windows.Forms.Button();
             this.DifferentialPressureAlarm2_Signal = new System.Windows.Forms.Button();
             this.DifferentialPressureAlarm1_Signal = new System.Windows.Forms.Button();
             this.SafetyRelay_Signal = new System.Windows.Forms.Button();
@@ -188,6 +190,8 @@ namespace Adam
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.ALL_Reset_btn);
+            this.groupBox5.Controls.Add(this.ALL_ORG_btn);
             this.groupBox5.Controls.Add(this.DifferentialPressureAlarm2_Signal);
             this.groupBox5.Controls.Add(this.DifferentialPressureAlarm1_Signal);
             this.groupBox5.Controls.Add(this.SafetyRelay_Signal);
@@ -199,6 +203,22 @@ namespace Adam
             resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.TabStop = false;
+            // 
+            // ALL_Reset_btn
+            // 
+            resources.ApplyResources(this.ALL_Reset_btn, "ALL_Reset_btn");
+            this.ALL_Reset_btn.BackColor = System.Drawing.Color.YellowGreen;
+            this.ALL_Reset_btn.Name = "ALL_Reset_btn";
+            this.ALL_Reset_btn.UseVisualStyleBackColor = false;
+            this.ALL_Reset_btn.Click += new System.EventHandler(this.ALL_Reset_btn_Click);
+            // 
+            // ALL_ORG_btn
+            // 
+            resources.ApplyResources(this.ALL_ORG_btn, "ALL_ORG_btn");
+            this.ALL_ORG_btn.BackColor = System.Drawing.Color.YellowGreen;
+            this.ALL_ORG_btn.Name = "ALL_ORG_btn";
+            this.ALL_ORG_btn.UseVisualStyleBackColor = false;
+            this.ALL_ORG_btn.Click += new System.EventHandler(this.ALL_ORG_btn_Click);
             // 
             // DifferentialPressureAlarm2_Signal
             // 
@@ -887,6 +907,8 @@ namespace Adam
         private System.Windows.Forms.DataGridView Conn_gv;
         private System.Windows.Forms.TabPage Wafer;
         private System.Windows.Forms.Button btnManual;
+        private System.Windows.Forms.Button ALL_ORG_btn;
+        private System.Windows.Forms.Button ALL_Reset_btn;
     }
 }
 

@@ -15,14 +15,17 @@ namespace Adam.Util
     {
         private ILog logger = LogManager.GetLogger(typeof(XfeCrossZone));
         public static bool Running = false;
+
         public string LDRobot = "";
         public string LDRobot_Arm = "";
         public string ULDRobot = "";
         public string ULDRobot_Arm = "";
         public string LD = "";
-
+        public List<string> ULD_List = new List<string>();
         public double ProcessTime = 0;
         public double ProcessCount = 0;
+        public bool SingleAligner = false;
+        private string RunID = "";
         System.Diagnostics.Stopwatch watch;
 
         IXfeStateReport _Report;
@@ -30,16 +33,15 @@ namespace Adam.Util
         public XfeCrossZone(IXfeStateReport Report)
         {
             _Report = Report;
+            RunID = Guid.NewGuid().ToString();
             ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT01");
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT02");
             ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER01");
             ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER02");
-            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR01");
-            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "OCR02");
         }
 
         public bool Start(string LDPort)
         {
+
             watch = System.Diagnostics.Stopwatch.StartNew();
             //開始前先重設
             foreach (Node each in NodeManagement.GetList())
@@ -52,17 +54,53 @@ namespace Adam.Util
 
             ULDRobot_Arm = "";
             LD = "";
-
+            ULD_List.Clear();
             //找到LD
             Node nodeLD = NodeManagement.Get(LDPort);
             Node LROB = NodeManagement.Get(nodeLD.Associated_Node);
             LDRobot = LROB.Name;
 
             LD = nodeLD.Name;
+
+
+
             var AvailableSlots = from eachSlot in nodeLD.JobList.Values.ToList()
                                  where eachSlot.NeedProcess
                                  select eachSlot;
             ProcessCount = AvailableSlots.Count();
+
+            //var crossRunSlots = from eachSlot in nodeLD.JobList.Values.ToList()
+            //                    where !NodeManagement.Get(eachSlot.Destination).Equals(LDRobot)
+            //                    select eachSlot;
+            //if (crossRunSlots.Count() == 0)
+            //{//只會用到第一支ROBOT
+            //    if (usedList.ContainsKey(LDRobot) || usedList.ContainsKey(LROB.Associated_Node))
+            //    {//資源取得失敗
+            //        return false;
+            //    }
+            //    usedList.Add(LDRobot, RunID);
+            //    usedList.Add(LROB.Associated_Node, RunID);
+            //    ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), LDRobot);
+            //    ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), LROB.Associated_Node);
+            //}
+            //else
+            //{//兩隻ROBOT都會用到
+            //   if(usedList.ContainsKey("ROBOT01") || usedList.ContainsKey("ROBOT02") || usedList.ContainsKey("ALIGNER01") || usedList.ContainsKey("ALIGNER02"))
+            //    {//資源取得失敗
+            //        return false;
+            //    }
+
+            //    usedList.Add("ROBOT01", RunID);
+            //    usedList.Add("ROBOT02", RunID);
+            //    usedList.Add("ALIGNER01", RunID);
+            //    usedList.Add("ALIGNER02", RunID);
+            //    ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT01");
+            //    ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT02");
+            //    ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER01");
+            //    ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER02");
+            //}
+
+            
 
             Node.ActionRequest request = new Node.ActionRequest();
             request.TaskName = "TRANSFER_GET_LOADPORT";
@@ -75,12 +113,14 @@ namespace Adam.Util
             }
             Running = true;
 
+
             return Running;
         }
 
         public static void Stop()
         {
             Running = false;
+
         }
 
         private bool CheckQueue(Node Target)
@@ -282,7 +322,10 @@ namespace Adam.Util
                                                         {
                                                             foreach (Node Aligner in NodeManagement.GetAlignerList())
                                                             {
-
+                                                                if (SingleAligner && !Aligner.Name.Equals(Target.Associated_Node))
+                                                                {
+                                                                    continue;
+                                                                }
                                                                 //佇列裡面沒有才加
                                                                 Node.ActionRequest request = new Node.ActionRequest();
                                                                 request.TaskName = "TRANSFER_PUTW_" + Aligner.Name;
@@ -352,7 +395,10 @@ namespace Adam.Util
                                                             {
                                                                 foreach (Node Aligner in NodeManagement.GetAlignerList())
                                                                 {
-
+                                                                    if (SingleAligner && !Aligner.Name.Equals(Target.Associated_Node))
+                                                                    {
+                                                                        continue;
+                                                                    }
                                                                     //佇列裡面沒有才加
                                                                     Node.ActionRequest request = new Node.ActionRequest();
                                                                     request.TaskName = "TRANSFER_PUTW_" + Aligner.Name;
@@ -394,7 +440,10 @@ namespace Adam.Util
                                                 {
                                                     foreach (Node Aligner in NodeManagement.GetAlignerList())
                                                     {
-
+                                                        if (SingleAligner && !Aligner.Name.Equals(Target.Associated_Node))
+                                                        {
+                                                            continue;
+                                                        }
                                                         //佇列裡面沒有才加
                                                         Node.ActionRequest request = new Node.ActionRequest();
                                                         request.TaskName = "TRANSFER_PUTW_" + Aligner.Name;
@@ -425,6 +474,11 @@ namespace Adam.Util
                                             {
                                                 logger.Debug(NodeName + " Loadport沒有片可處理");
                                                 nodeLD.Fetchable = false;
+                                                watch.Stop();
+                                                ProcessTime = watch.ElapsedMilliseconds;
+                                                logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
+
+                                                _Report.On_Transfer_Complete(this);
                                                 //結束工作
                                                 continue;
                                             }
@@ -581,6 +635,14 @@ namespace Adam.Util
 
                                         }
                                         Target.LockOn = req.Position;
+
+                                        var Match = from each in ULD_List
+                                                      where each.Equals(req.Position)
+                                                        select each;
+                                        if (Match.Count() == 0)
+                                        {
+                                            ULD_List.Add(req.Position);
+                                        }
                                         break;
                                 }
                                 break;
@@ -652,7 +714,7 @@ namespace Adam.Util
                                         watch.Stop();
                                         ProcessTime = watch.ElapsedMilliseconds;
                                         logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
-
+                                       
                                         _Report.On_Transfer_Complete(this);
                                     }
                                     break;
