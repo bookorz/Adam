@@ -609,6 +609,7 @@ namespace GUI
                     param.Add("@Target", nodeName);
                     param.Add("@Position", cbRA2Point.Text);
                     param.Add("@Slot", cbRA2Slot.Text.PadLeft(2, '0'));
+                    param.Add("@Arm", SanwaUtil.GetArmID(cbRA2Arm.Text));
                     break;
                 case "btnRRetract":
                     TaskName = "ROBOT_RETRACT";

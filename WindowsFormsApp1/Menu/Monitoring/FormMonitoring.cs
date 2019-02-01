@@ -200,12 +200,67 @@ namespace Adam.Menu.Monitoring
             ocr2.SendCommand(t, out Message);
         }
 
+        private void Ocr1_lb_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            string Message = "";
+            Transaction t = new Transaction();
+            Node ocr1 = NodeManagement.Get("OCR01");
+            t.Method = Transaction.Command.OCRType.Read;
+
+            ocr1.SendCommand(t, out Message);
+        }
+
         private void Node_Disable_Click(object sender, EventArgs e)
         {
             string NodeName = (sender as CheckBox).Name.Replace("_disable_ck", "");
             Node node = NodeManagement.Get(NodeName);
             node.SetEnable(!((sender as CheckBox).Checked));
 
+        }
+        
+        private void Cycle_btn_Click(object sender, EventArgs e)
+        {
+            FormMain.cycleRun = true;
+            Node LD = null;
+            Node ULD = null;
+            foreach(Node port in NodeManagement.GetLoadPortList())
+            {
+                if (LD == null)
+                {
+                    if (port.Enable)
+                    {
+                        LD = port;
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (port.Enable)
+                    {
+                        ULD = port;
+                        break;
+                    }
+                }
+            }
+            if (LD != null && ULD != null)
+            {
+                foreach (Job wafer in LD.JobList.Values)
+                {
+                    if (wafer.MapFlag && !wafer.ErrPosition)
+                    {
+                        wafer.NeedProcess = true;
+                        wafer.ProcessFlag = false;
+                        wafer.AssignPort(ULD.Name, wafer.Slot);
+                    }
+                }
+                FormMain.xfe.tmpULD = ULD.Name;
+                FormMain.xfe.Start(LD.Name);
+            }
+        }
+
+        private void Stop_btn_Click(object sender, EventArgs e)
+        {
+            FormMain.cycleRun = false;
         }
     }
 }

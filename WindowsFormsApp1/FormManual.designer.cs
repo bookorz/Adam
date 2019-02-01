@@ -730,7 +730,9 @@
             // 
             this.cbRA1Arm.FormattingEnabled = true;
             this.cbRA1Arm.Items.AddRange(new object[] {
-            "Upper"});
+            "Upper",
+            "Lower",
+            "Both"});
             this.cbRA1Arm.Location = new System.Drawing.Point(129, 200);
             this.cbRA1Arm.Name = "cbRA1Arm";
             this.cbRA1Arm.Size = new System.Drawing.Size(208, 38);
@@ -810,7 +812,6 @@
             this.btnRMoveUp.TabIndex = 46;
             this.btnRMoveUp.Text = "Move Stage Up(PUT)";
             this.btnRMoveUp.UseVisualStyleBackColor = false;
-            this.btnRMoveUp.Visible = false;
             this.btnRMoveUp.Click += new System.EventHandler(this.RobotFunction_Click);
             // 
             // label51

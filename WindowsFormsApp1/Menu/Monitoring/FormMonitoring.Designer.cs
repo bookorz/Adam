@@ -29,6 +29,20 @@
         private void InitializeComponent()
         {
             this.Aligner01_tb = new System.Windows.Forms.GroupBox();
+            this.Robot02_disable_ck = new System.Windows.Forms.CheckBox();
+            this.Robot01_disable_ck = new System.Windows.Forms.CheckBox();
+            this.Aligner02_disable_ck = new System.Windows.Forms.CheckBox();
+            this.Aligner01_disable_ck = new System.Windows.Forms.CheckBox();
+            this.OCR02_disable_ck = new System.Windows.Forms.CheckBox();
+            this.OCR01_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort08_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort07_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort06_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort05_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort03_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort04_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort02_disable_ck = new System.Windows.Forms.CheckBox();
+            this.LoadPort01_disable_ck = new System.Windows.Forms.CheckBox();
             this.LoadPort08_IDState = new System.Windows.Forms.Label();
             this.label70 = new System.Windows.Forms.Label();
             this.LoadPort07_IDState = new System.Windows.Forms.Label();
@@ -64,7 +78,7 @@
             this.label26 = new System.Windows.Forms.Label();
             this.LoadPort01_Mode = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.Ocr1_lb = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.OCR01ReadT7_Tb = new System.Windows.Forms.TextBox();
             this.OCR01_Pic = new System.Windows.Forms.PictureBox();
@@ -530,20 +544,8 @@
             this.Aligner01_State = new System.Windows.Forms.TextBox();
             this.LoadPort01_FID = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.LoadPort01_disable_ck = new System.Windows.Forms.CheckBox();
-            this.LoadPort02_disable_ck = new System.Windows.Forms.CheckBox();
-            this.LoadPort04_disable_ck = new System.Windows.Forms.CheckBox();
-            this.LoadPort03_disable_ck = new System.Windows.Forms.CheckBox();
-            this.LoadPort05_disable_ck = new System.Windows.Forms.CheckBox();
-            this.LoadPort06_disable_ck = new System.Windows.Forms.CheckBox();
-            this.LoadPort07_disable_ck = new System.Windows.Forms.CheckBox();
-            this.LoadPort08_disable_ck = new System.Windows.Forms.CheckBox();
-            this.OCR01_disable_ck = new System.Windows.Forms.CheckBox();
-            this.OCR02_disable_ck = new System.Windows.Forms.CheckBox();
-            this.Aligner01_disable_ck = new System.Windows.Forms.CheckBox();
-            this.Aligner02_disable_ck = new System.Windows.Forms.CheckBox();
-            this.Robot01_disable_ck = new System.Windows.Forms.CheckBox();
-            this.Robot02_disable_ck = new System.Windows.Forms.CheckBox();
+            this.Cycle_btn = new System.Windows.Forms.Button();
+            this.Stop_btn = new System.Windows.Forms.Button();
             this.Aligner01_tb.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -567,6 +569,8 @@
             // Aligner01_tb
             // 
             this.Aligner01_tb.BackColor = System.Drawing.SystemColors.Control;
+            this.Aligner01_tb.Controls.Add(this.Stop_btn);
+            this.Aligner01_tb.Controls.Add(this.Cycle_btn);
             this.Aligner01_tb.Controls.Add(this.Robot02_disable_ck);
             this.Aligner01_tb.Controls.Add(this.Robot01_disable_ck);
             this.Aligner01_tb.Controls.Add(this.Aligner02_disable_ck);
@@ -614,7 +618,7 @@
             this.Aligner01_tb.Controls.Add(this.label26);
             this.Aligner01_tb.Controls.Add(this.LoadPort01_Mode);
             this.Aligner01_tb.Controls.Add(this.label16);
-            this.Aligner01_tb.Controls.Add(this.label1);
+            this.Aligner01_tb.Controls.Add(this.Ocr1_lb);
             this.Aligner01_tb.Controls.Add(this.panel2);
             this.Aligner01_tb.Controls.Add(this.Ocr2_lb);
             this.Aligner01_tb.Controls.Add(this.panel1);
@@ -671,6 +675,160 @@
             this.Aligner01_tb.TabIndex = 1;
             this.Aligner01_tb.TabStop = false;
             this.Aligner01_tb.Text = "Device Information";
+            // 
+            // Robot02_disable_ck
+            // 
+            this.Robot02_disable_ck.AutoSize = true;
+            this.Robot02_disable_ck.Location = new System.Drawing.Point(1422, 679);
+            this.Robot02_disable_ck.Name = "Robot02_disable_ck";
+            this.Robot02_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.Robot02_disable_ck.TabIndex = 200;
+            this.Robot02_disable_ck.Text = "Disable";
+            this.Robot02_disable_ck.UseVisualStyleBackColor = true;
+            this.Robot02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // Robot01_disable_ck
+            // 
+            this.Robot01_disable_ck.AutoSize = true;
+            this.Robot01_disable_ck.Location = new System.Drawing.Point(1422, 589);
+            this.Robot01_disable_ck.Name = "Robot01_disable_ck";
+            this.Robot01_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.Robot01_disable_ck.TabIndex = 199;
+            this.Robot01_disable_ck.Text = "Disable";
+            this.Robot01_disable_ck.UseVisualStyleBackColor = true;
+            this.Robot01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // Aligner02_disable_ck
+            // 
+            this.Aligner02_disable_ck.AutoSize = true;
+            this.Aligner02_disable_ck.Location = new System.Drawing.Point(1422, 493);
+            this.Aligner02_disable_ck.Name = "Aligner02_disable_ck";
+            this.Aligner02_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.Aligner02_disable_ck.TabIndex = 198;
+            this.Aligner02_disable_ck.Text = "Disable";
+            this.Aligner02_disable_ck.UseVisualStyleBackColor = true;
+            this.Aligner02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // Aligner01_disable_ck
+            // 
+            this.Aligner01_disable_ck.AutoSize = true;
+            this.Aligner01_disable_ck.Location = new System.Drawing.Point(1422, 423);
+            this.Aligner01_disable_ck.Name = "Aligner01_disable_ck";
+            this.Aligner01_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.Aligner01_disable_ck.TabIndex = 197;
+            this.Aligner01_disable_ck.Text = "Disable";
+            this.Aligner01_disable_ck.UseVisualStyleBackColor = true;
+            this.Aligner01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // OCR02_disable_ck
+            // 
+            this.OCR02_disable_ck.AutoSize = true;
+            this.OCR02_disable_ck.Location = new System.Drawing.Point(1500, 205);
+            this.OCR02_disable_ck.Name = "OCR02_disable_ck";
+            this.OCR02_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.OCR02_disable_ck.TabIndex = 196;
+            this.OCR02_disable_ck.Text = "Disable";
+            this.OCR02_disable_ck.UseVisualStyleBackColor = true;
+            this.OCR02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // OCR01_disable_ck
+            // 
+            this.OCR01_disable_ck.AutoSize = true;
+            this.OCR01_disable_ck.Location = new System.Drawing.Point(1500, 24);
+            this.OCR01_disable_ck.Name = "OCR01_disable_ck";
+            this.OCR01_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.OCR01_disable_ck.TabIndex = 195;
+            this.OCR01_disable_ck.Text = "Disable";
+            this.OCR01_disable_ck.UseVisualStyleBackColor = true;
+            this.OCR01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort08_disable_ck
+            // 
+            this.LoadPort08_disable_ck.AutoSize = true;
+            this.LoadPort08_disable_ck.Location = new System.Drawing.Point(1162, 15);
+            this.LoadPort08_disable_ck.Name = "LoadPort08_disable_ck";
+            this.LoadPort08_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort08_disable_ck.TabIndex = 194;
+            this.LoadPort08_disable_ck.Text = "Disable";
+            this.LoadPort08_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort08_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort07_disable_ck
+            // 
+            this.LoadPort07_disable_ck.AutoSize = true;
+            this.LoadPort07_disable_ck.Location = new System.Drawing.Point(998, 15);
+            this.LoadPort07_disable_ck.Name = "LoadPort07_disable_ck";
+            this.LoadPort07_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort07_disable_ck.TabIndex = 193;
+            this.LoadPort07_disable_ck.Text = "Disable";
+            this.LoadPort07_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort07_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort06_disable_ck
+            // 
+            this.LoadPort06_disable_ck.AutoSize = true;
+            this.LoadPort06_disable_ck.Location = new System.Drawing.Point(835, 15);
+            this.LoadPort06_disable_ck.Name = "LoadPort06_disable_ck";
+            this.LoadPort06_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort06_disable_ck.TabIndex = 192;
+            this.LoadPort06_disable_ck.Text = "Disable";
+            this.LoadPort06_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort06_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort05_disable_ck
+            // 
+            this.LoadPort05_disable_ck.AutoSize = true;
+            this.LoadPort05_disable_ck.Location = new System.Drawing.Point(670, 15);
+            this.LoadPort05_disable_ck.Name = "LoadPort05_disable_ck";
+            this.LoadPort05_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort05_disable_ck.TabIndex = 191;
+            this.LoadPort05_disable_ck.Text = "Disable";
+            this.LoadPort05_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort05_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort03_disable_ck
+            // 
+            this.LoadPort03_disable_ck.AutoSize = true;
+            this.LoadPort03_disable_ck.Location = new System.Drawing.Point(342, 15);
+            this.LoadPort03_disable_ck.Name = "LoadPort03_disable_ck";
+            this.LoadPort03_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort03_disable_ck.TabIndex = 190;
+            this.LoadPort03_disable_ck.Text = "Disable";
+            this.LoadPort03_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort03_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort04_disable_ck
+            // 
+            this.LoadPort04_disable_ck.AutoSize = true;
+            this.LoadPort04_disable_ck.Location = new System.Drawing.Point(506, 15);
+            this.LoadPort04_disable_ck.Name = "LoadPort04_disable_ck";
+            this.LoadPort04_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort04_disable_ck.TabIndex = 189;
+            this.LoadPort04_disable_ck.Text = "Disable";
+            this.LoadPort04_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort04_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort02_disable_ck
+            // 
+            this.LoadPort02_disable_ck.AutoSize = true;
+            this.LoadPort02_disable_ck.Location = new System.Drawing.Point(177, 15);
+            this.LoadPort02_disable_ck.Name = "LoadPort02_disable_ck";
+            this.LoadPort02_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort02_disable_ck.TabIndex = 188;
+            this.LoadPort02_disable_ck.Text = "Disable";
+            this.LoadPort02_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            // 
+            // LoadPort01_disable_ck
+            // 
+            this.LoadPort01_disable_ck.AutoSize = true;
+            this.LoadPort01_disable_ck.Location = new System.Drawing.Point(14, 15);
+            this.LoadPort01_disable_ck.Name = "LoadPort01_disable_ck";
+            this.LoadPort01_disable_ck.Size = new System.Drawing.Size(75, 19);
+            this.LoadPort01_disable_ck.TabIndex = 187;
+            this.LoadPort01_disable_ck.Text = "Disable";
+            this.LoadPort01_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
             // 
             // LoadPort08_IDState
             // 
@@ -1210,16 +1368,17 @@
             this.label16.Text = "Mode";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label1
+            // Ocr1_lb
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(1366, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 19);
-            this.label1.TabIndex = 153;
-            this.label1.Text = "OCR1";
+            this.Ocr1_lb.AutoSize = true;
+            this.Ocr1_lb.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Ocr1_lb.ForeColor = System.Drawing.Color.Black;
+            this.Ocr1_lb.Location = new System.Drawing.Point(1366, 22);
+            this.Ocr1_lb.Name = "Ocr1_lb";
+            this.Ocr1_lb.Size = new System.Drawing.Size(45, 19);
+            this.Ocr1_lb.TabIndex = 153;
+            this.Ocr1_lb.Text = "OCR1";
+            this.Ocr1_lb.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Ocr1_lb_MouseDoubleClick);
             // 
             // panel2
             // 
@@ -9516,159 +9675,25 @@
             this.label9.Text = "LoadPort01";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // LoadPort01_disable_ck
+            // Cycle_btn
             // 
-            this.LoadPort01_disable_ck.AutoSize = true;
-            this.LoadPort01_disable_ck.Location = new System.Drawing.Point(14, 15);
-            this.LoadPort01_disable_ck.Name = "LoadPort01_disable_ck";
-            this.LoadPort01_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort01_disable_ck.TabIndex = 187;
-            this.LoadPort01_disable_ck.Text = "Disable";
-            this.LoadPort01_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            this.Cycle_btn.Location = new System.Drawing.Point(1346, 701);
+            this.Cycle_btn.Name = "Cycle_btn";
+            this.Cycle_btn.Size = new System.Drawing.Size(59, 23);
+            this.Cycle_btn.TabIndex = 201;
+            this.Cycle_btn.Text = "Cycle";
+            this.Cycle_btn.UseVisualStyleBackColor = true;
+            this.Cycle_btn.Click += new System.EventHandler(this.Cycle_btn_Click);
             // 
-            // LoadPort02_disable_ck
+            // Stop_btn
             // 
-            this.LoadPort02_disable_ck.AutoSize = true;
-            this.LoadPort02_disable_ck.Location = new System.Drawing.Point(177, 15);
-            this.LoadPort02_disable_ck.Name = "LoadPort02_disable_ck";
-            this.LoadPort02_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort02_disable_ck.TabIndex = 188;
-            this.LoadPort02_disable_ck.Text = "Disable";
-            this.LoadPort02_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // LoadPort04_disable_ck
-            // 
-            this.LoadPort04_disable_ck.AutoSize = true;
-            this.LoadPort04_disable_ck.Location = new System.Drawing.Point(506, 15);
-            this.LoadPort04_disable_ck.Name = "LoadPort04_disable_ck";
-            this.LoadPort04_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort04_disable_ck.TabIndex = 189;
-            this.LoadPort04_disable_ck.Text = "Disable";
-            this.LoadPort04_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort04_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // LoadPort03_disable_ck
-            // 
-            this.LoadPort03_disable_ck.AutoSize = true;
-            this.LoadPort03_disable_ck.Location = new System.Drawing.Point(342, 15);
-            this.LoadPort03_disable_ck.Name = "LoadPort03_disable_ck";
-            this.LoadPort03_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort03_disable_ck.TabIndex = 190;
-            this.LoadPort03_disable_ck.Text = "Disable";
-            this.LoadPort03_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort03_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // LoadPort05_disable_ck
-            // 
-            this.LoadPort05_disable_ck.AutoSize = true;
-            this.LoadPort05_disable_ck.Location = new System.Drawing.Point(670, 15);
-            this.LoadPort05_disable_ck.Name = "LoadPort05_disable_ck";
-            this.LoadPort05_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort05_disable_ck.TabIndex = 191;
-            this.LoadPort05_disable_ck.Text = "Disable";
-            this.LoadPort05_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort05_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // LoadPort06_disable_ck
-            // 
-            this.LoadPort06_disable_ck.AutoSize = true;
-            this.LoadPort06_disable_ck.Location = new System.Drawing.Point(835, 15);
-            this.LoadPort06_disable_ck.Name = "LoadPort06_disable_ck";
-            this.LoadPort06_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort06_disable_ck.TabIndex = 192;
-            this.LoadPort06_disable_ck.Text = "Disable";
-            this.LoadPort06_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort06_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // LoadPort07_disable_ck
-            // 
-            this.LoadPort07_disable_ck.AutoSize = true;
-            this.LoadPort07_disable_ck.Location = new System.Drawing.Point(998, 15);
-            this.LoadPort07_disable_ck.Name = "LoadPort07_disable_ck";
-            this.LoadPort07_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort07_disable_ck.TabIndex = 193;
-            this.LoadPort07_disable_ck.Text = "Disable";
-            this.LoadPort07_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort07_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // LoadPort08_disable_ck
-            // 
-            this.LoadPort08_disable_ck.AutoSize = true;
-            this.LoadPort08_disable_ck.Location = new System.Drawing.Point(1162, 15);
-            this.LoadPort08_disable_ck.Name = "LoadPort08_disable_ck";
-            this.LoadPort08_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.LoadPort08_disable_ck.TabIndex = 194;
-            this.LoadPort08_disable_ck.Text = "Disable";
-            this.LoadPort08_disable_ck.UseVisualStyleBackColor = true;
-            this.LoadPort08_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // OCR01_disable_ck
-            // 
-            this.OCR01_disable_ck.AutoSize = true;
-            this.OCR01_disable_ck.Location = new System.Drawing.Point(1500, 24);
-            this.OCR01_disable_ck.Name = "OCR01_disable_ck";
-            this.OCR01_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.OCR01_disable_ck.TabIndex = 195;
-            this.OCR01_disable_ck.Text = "Disable";
-            this.OCR01_disable_ck.UseVisualStyleBackColor = true;
-            this.OCR01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // OCR02_disable_ck
-            // 
-            this.OCR02_disable_ck.AutoSize = true;
-            this.OCR02_disable_ck.Location = new System.Drawing.Point(1500, 205);
-            this.OCR02_disable_ck.Name = "OCR02_disable_ck";
-            this.OCR02_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.OCR02_disable_ck.TabIndex = 196;
-            this.OCR02_disable_ck.Text = "Disable";
-            this.OCR02_disable_ck.UseVisualStyleBackColor = true;
-            this.OCR02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // Aligner01_disable_ck
-            // 
-            this.Aligner01_disable_ck.AutoSize = true;
-            this.Aligner01_disable_ck.Location = new System.Drawing.Point(1422, 423);
-            this.Aligner01_disable_ck.Name = "Aligner01_disable_ck";
-            this.Aligner01_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.Aligner01_disable_ck.TabIndex = 197;
-            this.Aligner01_disable_ck.Text = "Disable";
-            this.Aligner01_disable_ck.UseVisualStyleBackColor = true;
-            this.Aligner01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // Aligner02_disable_ck
-            // 
-            this.Aligner02_disable_ck.AutoSize = true;
-            this.Aligner02_disable_ck.Location = new System.Drawing.Point(1422, 493);
-            this.Aligner02_disable_ck.Name = "Aligner02_disable_ck";
-            this.Aligner02_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.Aligner02_disable_ck.TabIndex = 198;
-            this.Aligner02_disable_ck.Text = "Disable";
-            this.Aligner02_disable_ck.UseVisualStyleBackColor = true;
-            this.Aligner02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // Robot01_disable_ck
-            // 
-            this.Robot01_disable_ck.AutoSize = true;
-            this.Robot01_disable_ck.Location = new System.Drawing.Point(1422, 589);
-            this.Robot01_disable_ck.Name = "Robot01_disable_ck";
-            this.Robot01_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.Robot01_disable_ck.TabIndex = 199;
-            this.Robot01_disable_ck.Text = "Disable";
-            this.Robot01_disable_ck.UseVisualStyleBackColor = true;
-            this.Robot01_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
-            // 
-            // Robot02_disable_ck
-            // 
-            this.Robot02_disable_ck.AutoSize = true;
-            this.Robot02_disable_ck.Location = new System.Drawing.Point(1422, 679);
-            this.Robot02_disable_ck.Name = "Robot02_disable_ck";
-            this.Robot02_disable_ck.Size = new System.Drawing.Size(75, 19);
-            this.Robot02_disable_ck.TabIndex = 200;
-            this.Robot02_disable_ck.Text = "Disable";
-            this.Robot02_disable_ck.UseVisualStyleBackColor = true;
-            this.Robot02_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
+            this.Stop_btn.Location = new System.Drawing.Point(1347, 726);
+            this.Stop_btn.Name = "Stop_btn";
+            this.Stop_btn.Size = new System.Drawing.Size(59, 23);
+            this.Stop_btn.TabIndex = 202;
+            this.Stop_btn.Text = "Stop";
+            this.Stop_btn.UseVisualStyleBackColor = true;
+            this.Stop_btn.Click += new System.EventHandler(this.Stop_btn_Click);
             // 
             // FormMonitoring
             // 
@@ -10169,7 +10194,7 @@
         private System.Windows.Forms.GroupBox Aligner01_tb;
         private System.Windows.Forms.Label Ocr2_lb;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label Ocr1_lb;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.PictureBox OCR01_Pic;
         private System.Windows.Forms.TextBox OCR01Read_Tb;
@@ -10226,5 +10251,7 @@
         private System.Windows.Forms.CheckBox LoadPort04_disable_ck;
         private System.Windows.Forms.CheckBox LoadPort02_disable_ck;
         private System.Windows.Forms.CheckBox LoadPort01_disable_ck;
+        private System.Windows.Forms.Button Stop_btn;
+        private System.Windows.Forms.Button Cycle_btn;
     }
 }

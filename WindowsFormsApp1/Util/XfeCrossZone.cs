@@ -22,6 +22,7 @@ namespace Adam.Util
         public string ULDRobot_Arm = "";
         public string LD = "";
         public List<string> ULD_List = new List<string>();
+        public string tmpULD = "";
         public double ProcessTime = 0;
         public double ProcessCount = 0;
         public bool SingleAligner = false;

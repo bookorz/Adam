@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel22 = new System.Windows.Forms.TableLayoutPanel();
@@ -243,8 +243,8 @@
             this.LoadPort06Assign_Gv.Name = "LoadPort06Assign_Gv";
             this.LoadPort06Assign_Gv.ReadOnly = true;
             this.LoadPort06Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort06Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort06Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.LoadPort06Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort06Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort06Assign_Gv.Size = new System.Drawing.Size(189, 555);
@@ -327,6 +327,7 @@
             this.LoadPort06_OCR_ck.TabIndex = 3;
             this.LoadPort06_OCR_ck.Text = "OCR";
             this.LoadPort06_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort06_OCR_ck.Visible = false;
             this.LoadPort06_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort06_Align_ck
@@ -339,6 +340,7 @@
             this.LoadPort06_Align_ck.TabIndex = 2;
             this.LoadPort06_Align_ck.Text = "Align";
             this.LoadPort06_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort06_Align_ck.Visible = false;
             this.LoadPort06_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // tableLayoutPanel21
@@ -384,8 +386,8 @@
             this.LoadPort05Assign_Gv.Name = "LoadPort05Assign_Gv";
             this.LoadPort05Assign_Gv.ReadOnly = true;
             this.LoadPort05Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle19.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort05Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort05Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle11;
             this.LoadPort05Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort05Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort05Assign_Gv.Size = new System.Drawing.Size(189, 555);
@@ -468,6 +470,7 @@
             this.LoadPort05_OCR_ck.TabIndex = 3;
             this.LoadPort05_OCR_ck.Text = "OCR";
             this.LoadPort05_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort05_OCR_ck.Visible = false;
             this.LoadPort05_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort05_Align_ck
@@ -480,6 +483,7 @@
             this.LoadPort05_Align_ck.TabIndex = 2;
             this.LoadPort05_Align_ck.Text = "Align";
             this.LoadPort05_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort05_Align_ck.Visible = false;
             this.LoadPort05_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // tableLayoutPanel20
@@ -525,8 +529,8 @@
             this.LoadPort08Assign_Gv.Name = "LoadPort08Assign_Gv";
             this.LoadPort08Assign_Gv.ReadOnly = true;
             this.LoadPort08Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle20.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort08Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort08Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle12;
             this.LoadPort08Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort08Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort08Assign_Gv.Size = new System.Drawing.Size(195, 555);
@@ -609,6 +613,7 @@
             this.LoadPort08_OCR_ck.TabIndex = 3;
             this.LoadPort08_OCR_ck.Text = "OCR";
             this.LoadPort08_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort08_OCR_ck.Visible = false;
             this.LoadPort08_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort08_Align_ck
@@ -621,6 +626,7 @@
             this.LoadPort08_Align_ck.TabIndex = 2;
             this.LoadPort08_Align_ck.Text = "Align";
             this.LoadPort08_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort08_Align_ck.Visible = false;
             this.LoadPort08_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // tableLayoutPanel19
@@ -666,8 +672,8 @@
             this.LoadPort07Assign_Gv.Name = "LoadPort07Assign_Gv";
             this.LoadPort07Assign_Gv.ReadOnly = true;
             this.LoadPort07Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle21.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort07Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort07Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle13;
             this.LoadPort07Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort07Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort07Assign_Gv.Size = new System.Drawing.Size(189, 555);
@@ -750,6 +756,7 @@
             this.LoadPort07_OCR_ck.TabIndex = 3;
             this.LoadPort07_OCR_ck.Text = "OCR";
             this.LoadPort07_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort07_OCR_ck.Visible = false;
             this.LoadPort07_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort07_Align_ck
@@ -762,6 +769,7 @@
             this.LoadPort07_Align_ck.TabIndex = 2;
             this.LoadPort07_Align_ck.Text = "Align";
             this.LoadPort07_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort07_Align_ck.Visible = false;
             this.LoadPort07_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // tableLayoutPanel18
@@ -807,8 +815,8 @@
             this.LoadPort02Assign_Gv.Name = "LoadPort02Assign_Gv";
             this.LoadPort02Assign_Gv.ReadOnly = true;
             this.LoadPort02Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle22.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort02Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort02Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle9;
             this.LoadPort02Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort02Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort02Assign_Gv.Size = new System.Drawing.Size(189, 555);
@@ -891,6 +899,7 @@
             this.LoadPort02_OCR_ck.TabIndex = 3;
             this.LoadPort02_OCR_ck.Text = "OCR";
             this.LoadPort02_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort02_OCR_ck.Visible = false;
             this.LoadPort02_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort02_Align_ck
@@ -903,6 +912,7 @@
             this.LoadPort02_Align_ck.TabIndex = 2;
             this.LoadPort02_Align_ck.Text = "Align";
             this.LoadPort02_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort02_Align_ck.Visible = false;
             this.LoadPort02_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // tableLayoutPanel17
@@ -938,8 +948,8 @@
             this.LoadPort01Assign_Gv.Name = "LoadPort01Assign_Gv";
             this.LoadPort01Assign_Gv.ReadOnly = true;
             this.LoadPort01Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle23.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort01Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort01Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle14;
             this.LoadPort01Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort01Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort01Assign_Gv.Size = new System.Drawing.Size(188, 552);
@@ -1022,6 +1032,7 @@
             this.LoadPort01_OCR_ck.TabIndex = 1;
             this.LoadPort01_OCR_ck.Text = "OCR";
             this.LoadPort01_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort01_OCR_ck.Visible = false;
             this.LoadPort01_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort01_Align_ck
@@ -1034,6 +1045,7 @@
             this.LoadPort01_Align_ck.TabIndex = 0;
             this.LoadPort01_Align_ck.Text = "Align";
             this.LoadPort01_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort01_Align_ck.Visible = false;
             this.LoadPort01_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // LoadPort01_ASCM
@@ -1091,8 +1103,8 @@
             this.LoadPort04Assign_Gv.Name = "LoadPort04Assign_Gv";
             this.LoadPort04Assign_Gv.ReadOnly = true;
             this.LoadPort04Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle24.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort04Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort04Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle15;
             this.LoadPort04Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort04Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort04Assign_Gv.Size = new System.Drawing.Size(189, 555);
@@ -1175,6 +1187,7 @@
             this.LoadPort04_OCR_ck.TabIndex = 3;
             this.LoadPort04_OCR_ck.Text = "OCR";
             this.LoadPort04_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort04_OCR_ck.Visible = false;
             this.LoadPort04_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort04_Align_ck
@@ -1187,6 +1200,7 @@
             this.LoadPort04_Align_ck.TabIndex = 2;
             this.LoadPort04_Align_ck.Text = "Align";
             this.LoadPort04_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort04_Align_ck.Visible = false;
             this.LoadPort04_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // tableLayoutPanel15
@@ -1233,8 +1247,8 @@
             this.LoadPort03Assign_Gv.Name = "LoadPort03Assign_Gv";
             this.LoadPort03Assign_Gv.ReadOnly = true;
             this.LoadPort03Assign_Gv.RowHeadersVisible = false;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.LoadPort03Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle16.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.LoadPort03Assign_Gv.RowsDefaultCellStyle = dataGridViewCellStyle16;
             this.LoadPort03Assign_Gv.RowTemplate.Height = 21;
             this.LoadPort03Assign_Gv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.LoadPort03Assign_Gv.Size = new System.Drawing.Size(189, 555);
@@ -1317,6 +1331,7 @@
             this.LoadPort03_OCR_ck.TabIndex = 3;
             this.LoadPort03_OCR_ck.Text = "OCR";
             this.LoadPort03_OCR_ck.UseVisualStyleBackColor = true;
+            this.LoadPort03_OCR_ck.Visible = false;
             this.LoadPort03_OCR_ck.CheckedChanged += new System.EventHandler(this.LoadPort_OCR_ck_CheckedChanged);
             // 
             // LoadPort03_Align_ck
@@ -1329,6 +1344,7 @@
             this.LoadPort03_Align_ck.TabIndex = 2;
             this.LoadPort03_Align_ck.Text = "Align";
             this.LoadPort03_Align_ck.UseVisualStyleBackColor = true;
+            this.LoadPort03_Align_ck.Visible = false;
             this.LoadPort03_Align_ck.CheckedChanged += new System.EventHandler(this.LoadPort_Align_ck_CheckedChanged);
             // 
             // FormWaferMapping

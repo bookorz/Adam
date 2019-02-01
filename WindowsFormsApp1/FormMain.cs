@@ -51,7 +51,7 @@ namespace Adam
         private Menu.RunningScreen.FormRunningScreen formTestMode = new Menu.RunningScreen.FormRunningScreen();
         private Menu.Wafer.FormWafer WaferForm = new Menu.Wafer.FormWafer();
         public static GUI.FormManual formManual = null;
-        
+
 
         public FormMain()
         {
@@ -154,7 +154,7 @@ namespace Adam
 
         private void UpdateCheckBox(object input)
         {
-           
+
 
             //DIOUpdate.UpdateDIOStatus("RED", "False");
             //DIOUpdate.UpdateDIOStatus("ORANGE", "False");
@@ -167,13 +167,8 @@ namespace Adam
             {
                 MonitoringUpdate.DisableUpdate(node.Name + "_disable", !node.Enable);
             }
-            SpinWait.SpinUntil(() => false, 1000);
-            string TaskName = "ALL_INIT";
-            string Message = "";
-            TaskJobManagment.CurrentProceedTask Task;
-            
-            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName);
-            
+
+
         }
 
         private void LoadPort01_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -579,7 +574,7 @@ namespace Adam
                 CurrentAlarm.IsStop = Detail.IsStop;
                 if (CurrentAlarm.IsStop)
                 {
-                   
+
                 }
             }
             catch (Exception e)
@@ -672,7 +667,7 @@ namespace Adam
                     }
                     break;
             }
-            
+
         }
 
         public void On_Command_TimeOut(Node Node, Transaction Txn)
@@ -713,7 +708,7 @@ namespace Adam
             logger.Debug("On_Event_Trigger");
             string TaskName = "";
             string Message = "";
-            
+
             TaskJobManagment.CurrentProceedTask Task;
             try
             {
@@ -727,11 +722,11 @@ namespace Adam
                                 if (Node.OPACCESS)
                                 {
                                     Node.OPACCESS = false;
-                                     TaskName = "LOADPORT_OPEN";
-                                     Message = "";
+                                    TaskName = "LOADPORT_OPEN";
+                                    Message = "";
                                     Dictionary<string, string> param = new Dictionary<string, string>();
                                     param.Add("@Target", Node.Name);
-                              
+
                                     RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task, TaskName, param);
                                 }
                                 break;
@@ -1090,7 +1085,7 @@ namespace Adam
 
             if (Connection_btn.Tag.ToString() == "Offline")
             {
-               // HostControl.OnlieReq();
+                // HostControl.OnlieReq();
 
                 ConnectionStatusUpdate.UpdateOnlineStatus("Connecting");
             }
@@ -1290,7 +1285,7 @@ namespace Adam
         {
             string TaskName = "";
             string Message = "";
-            
+            Task.Finished2 = true;
             TaskJobManagment.CurrentProceedTask tmpTask;
             if (Task.Id.IndexOf("FormManual") != -1)
             {
@@ -1299,11 +1294,11 @@ namespace Adam
             switch (Task.ProceedTask.TaskName)
             {
                 case "ALL_ORGSH":
-                    foreach(Node port in NodeManagement.GetLoadPortList())
+                    foreach (Node port in NodeManagement.GetLoadPortList())
                     {
-                        if(port.Enable && !port.Foup_Presence)
+                        if (port.Enable && !port.Foup_Presence)
                         {
-                            
+
                             TaskName = "LOADPORT_READYTOLOAD";
                             Message = "";
                             Dictionary<string, string> param = new Dictionary<string, string>();
@@ -1313,8 +1308,9 @@ namespace Adam
                         }
                     }
                     break;
+                    
             }
-            
+
         }
 
         private void btnManual_Click(object sender, EventArgs e)
@@ -1332,13 +1328,13 @@ namespace Adam
 
         public void On_SECS_Message(string msg)
         {
-            
+
         }
 
         public void On_SECS_StatusChange(string type, string id, string content)
         {
-            
-        }      
+
+        }
 
         private void ALL_ORG_btn_Click(object sender, EventArgs e)
         {
@@ -1346,7 +1342,7 @@ namespace Adam
             string Message = "";
             TaskJobManagment.CurrentProceedTask Task;
             RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName);
-            if(Task == null)
+            if (Task == null)
             {
                 MessageBox.Show("上一個動作執行中!");
             }
@@ -1364,16 +1360,144 @@ namespace Adam
             }
 
         }
-
+        private bool checkTask(TaskJobManagment.CurrentProceedTask Task1, TaskJobManagment.CurrentProceedTask Task2)
+        {
+            return Task1.Finished && Task2.Finished;
+        }
+        public static bool cycleRun = false;
         public void On_Transfer_Complete(XfeCrossZone xfe)
         {
+
             WaferAssignUpdate.RefreshMapping(xfe.LD);
             foreach (string ULD in xfe.ULD_List)
             {
+                NodeManagement.Get(ULD).ReserveList.Clear();
+                foreach (Job job in NodeManagement.Get(ULD).JobList.Values)
+                {
+                    job.UnAssignPort();
+                }
                 WaferAssignUpdate.RefreshMapping(ULD);
                 WaferAssignUpdate.ResetAssignCM(ULD, true);
             }
-            WaferAssignUpdate.ResetAssignCM(xfe.LD,true);
+            WaferAssignUpdate.ResetAssignCM(xfe.LD, true);
+            MonitoringUpdate.UpdateWPH((xfe.ProcessCount / (xfe.ProcessTime / 1000.0 / 60.0 / 60.0)).ToString("f1"));
+            if (xfe.ULD_List.Count != 0)
+            {
+                string TaskName = "LOADPORT_CLOSE_NOMAP_TMP";
+                string Message = "";
+                Dictionary<string, string> param1 = new Dictionary<string, string>();
+                Dictionary<string, string> param2 = new Dictionary<string, string>();
+                param1.Add("@Target", xfe.LD);
+                TaskJobManagment.CurrentProceedTask Task1;
+                TaskJobManagment.CurrentProceedTask Task2;
+                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task1, TaskName, param1);
+
+
+
+
+                TaskName = "LOADPORT_CLOSE_NOMAP_TMP";
+                Message = "";
+
+                param2.Add("@Target", xfe.tmpULD);
+
+                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task2, TaskName, param2);
+                SpinWait.SpinUntil(() => checkTask(Task1, Task2), 99999999);
+               
+
+                TaskName = "LOADPORT_OPEN_TMP";
+                Message = "";
+                param1 = new Dictionary<string, string>();
+                param1.Add("@Target", xfe.LD);
+
+                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task1, TaskName, param1);
+
+
+                TaskName = "LOADPORT_OPEN_TMP";
+                Message = "";
+                param2 = new Dictionary<string, string>();
+                param2.Add("@Target", xfe.tmpULD);
+
+                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task2, TaskName, param2);
+                SpinWait.SpinUntil(() => checkTask(Task1, Task2), 99999999);
+
+                TaskName = "LOADPORT_GET_MAPDT_TMP";
+                Message = "";
+                param1 = new Dictionary<string, string>();
+                param1.Add("@Target", xfe.LD);
+
+                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task1, TaskName, param1);
+
+
+                TaskName = "LOADPORT_GET_MAPDT_TMP";
+                Message = "";
+                param2 = new Dictionary<string, string>();
+                param2.Add("@Target", xfe.tmpULD);
+
+                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task2, TaskName, param2);
+                SpinWait.SpinUntil(() => checkTask(Task1, Task2), 99999999);
+
+            }
+            if (cycleRun)
+            {
+
+                Node LD = NodeManagement.Get(xfe.tmpULD);
+                Node ULD = null;
+                bool isFindLD = false;
+                foreach (Node port in NodeManagement.GetLoadPortList())
+                {
+                    if (port.Name.Equals(LD.Name))
+                    {
+                        isFindLD = true;
+                        continue;
+                    }
+                    if (isFindLD)
+                    {
+                        if (port.Enable)
+                        {
+                            ULD = port;
+                            break;
+                        }
+                    }
+
+                }
+                if (LD != null || ULD != null)
+                {
+                    foreach (Node port in NodeManagement.GetLoadPortList())
+                    {
+                        if (port.Enable && !port.Name.Equals(LD.Name))
+                        {
+                            ULD = port;
+                            break;
+                        }
+                    }
+                }
+                if (LD != null && ULD != null)
+                {
+                    foreach (Job wafer in LD.JobList.Values)
+                    {
+                        if (wafer.MapFlag && !wafer.ErrPosition)
+                        {
+                            wafer.NeedProcess = true;
+                            wafer.ProcessFlag = false;
+                            wafer.AssignPort(ULD.Name, wafer.Slot);
+                        }
+                    }
+                    FormMain.xfe.tmpULD = ULD.Name;
+                    FormMain.xfe.Start(LD.Name);
+                }
+            }
+        }
+
+        private void ALL_INIT_btn_Click(object sender, EventArgs e)
+        {
+            string TaskName = "ALL_INIT";
+            string Message = "";
+            TaskJobManagment.CurrentProceedTask Task;
+            RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName);
+            if (Task == null)
+            {
+                MessageBox.Show("上一個動作執行中!");
+            }
         }
     }
 }
