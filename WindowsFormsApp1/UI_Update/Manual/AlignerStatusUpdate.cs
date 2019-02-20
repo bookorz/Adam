@@ -272,5 +272,29 @@ namespace Adam.UI_Update.Manual
                 
         }
 
+        public static void UpdateAlignerConnection(string name, string status)
+        {
+            Form manual = Application.OpenForms["FormManual"];
+
+            if (manual == null)
+                return;
+
+            TextBox tb = manual.Controls.Find(name + "Connection_tb", true).FirstOrDefault() as TextBox;
+            if (tb == null)
+                return;
+
+            if (tb.InvokeRequired)
+            {
+                UpdateAlignerStatus_D ph = new UpdateAlignerStatus_D(UpdateAlignerConnection);
+                tb.BeginInvoke(ph, name, status);
+            }
+            else
+            {
+                tb.Text = status;
+
+            }
+
+        }
+
     }
 }

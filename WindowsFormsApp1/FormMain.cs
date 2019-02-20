@@ -796,40 +796,26 @@ namespace Adam
             //StateRecord.EqpStateUpdate("Sorter", OldStatus, NewStatus);
         }
 
-        public void On_Controller_State_Changed(string Device_ID, string Status)
+        public void On_Node_Connection_Changed(string NodeName, string Status)
         {
 
-            ConnectionStatusUpdate.UpdateControllerStatus(Device_ID, Status);
+            ConnectionStatusUpdate.UpdateControllerStatus(NodeName, Status);
 
-            //if (Status.Equals("Connected"))
-            //{
-            //    //當Loadport連線成功，檢查狀態，進行燈號顯示
-            //    // var findPort = from port in NodeManagement.GetLoadPortList()
-            //    //               where port.Controller.Equals(Device_ID) && !port.ByPass && port.Type.Equals("LOADPORT")
-            //    //               select port;
 
-            //    //foreach (Node port in findPort)
-            //    //{
-            //    //    port.ExcuteScript("LoadPortFoupOut", "LoadPortFoup", "", true);
-            //    //}
-            //    CommunicationsUpdate.UpdateConnection(Device_ID, true);
-            //}
-            //else
-            //{
-            //    CommunicationsUpdate.UpdateConnection(Device_ID, false);
-            //}
-            switch (Status)
+            switch (NodeName.ToUpper())
             {
-                case "Connected":
-
+                case "ROBOT01":
+                case "ROBOT02":
+                    ManualRobotStatusUpdate.UpdateRobotConnection(NodeName, Status);//update 手動功能畫面
                     break;
-                case "Connection_Error":
-
+                case "ALIGNER01":
+                case "ALIGNER02":
+                    ManualAlignerStatusUpdate.UpdateAlignerConnection(NodeName, Status);//update 手動功能畫面
                     break;
             }
 
 
-            logger.Debug("On_Controller_State_Changed");
+            logger.Debug("On_Node_Connection_Changed");
         }
 
         public void On_Port_Begin(string PortName, string FormName)
@@ -1460,7 +1446,7 @@ namespace Adam
                     }
 
                 }
-                if (LD != null || ULD != null)
+                if (ULD == null)
                 {
                     foreach (Node port in NodeManagement.GetLoadPortList())
                     {

@@ -1072,12 +1072,15 @@ namespace GUI
                 case "ROBOT01":
                 case "ROBOT02":
                     tbStatus = tbRStatus;
+                    RobotConnection_tb.Text = node.ConnectionStatus;
                     break;
                 case "ALIGNER01":
                     tbStatus = tbA1Status;
+                    Aligner01Connection_tb.Text = node.ConnectionStatus;
                     break;
                 case "ALIGNER02":
                     tbStatus = tbA2Status;
+                    Aligner02Connection_tb.Text = node.ConnectionStatus;
                     break;
             }
             if (tbStatus == null)
@@ -1327,6 +1330,35 @@ namespace GUI
         private void FormManual_FormClosed(object sender, FormClosedEventArgs e)
         {
             FormMain.formManual = null;
+        }
+
+        private void RobotConnect_btn_Click(object sender, EventArgs e)
+        {
+            string nodeName = rbR1.Checked ? "ROBOT01" : "ROBOT02";
+            Node node = NodeManagement.Get(nodeName);
+            if (node == null)
+                return;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(node.GetController().Start));
+            
+        }
+
+        private void Aligner01Connect_btn_Click(object sender, EventArgs e)
+        {
+            Node node = NodeManagement.Get("ALIGNER01");
+            if (node == null)
+                return;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(node.GetController().Start));
+        }
+
+        private void Aligner02Connect_btn_Click(object sender, EventArgs e)
+        {
+            Node node = NodeManagement.Get("ALIGNER02");
+            if (node == null)
+                return;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(node.GetController().Start));
         }
     }
 }

@@ -266,5 +266,32 @@ namespace Adam.UI_Update.Manual
             }
                 
         }
+
+        public static void UpdateRobotConnection(string name, string status)
+        {
+            Form manual = Application.OpenForms["FormManual"];
+
+            if (manual == null)
+                return;
+
+            TextBox tb = manual.Controls.Find("RobotConnection_tb", true).FirstOrDefault() as TextBox;
+            if (tb == null)
+                return;
+
+            if (tb.InvokeRequired)
+            {
+                UpdateRobotStatus_D ph = new UpdateRobotStatus_D(UpdateRobotConnection);
+                tb.BeginInvoke(ph, name, status);
+            }
+            else
+            {
+                tb.Text = status;
+               
+            }
+
+        }
+
+        
+        
     }
 }

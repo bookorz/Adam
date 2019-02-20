@@ -39,6 +39,7 @@ namespace Adam
             this.Connection_btn = new System.Windows.Forms.Button();
             this.button27 = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.ALL_INIT_btn = new System.Windows.Forms.Button();
             this.ALL_Reset_btn = new System.Windows.Forms.Button();
             this.ALL_ORG_btn = new System.Windows.Forms.Button();
             this.DifferentialPressureAlarm2_Signal = new System.Windows.Forms.Button();
@@ -110,7 +111,6 @@ namespace Adam
             this.transTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.terminalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
-            this.ALL_INIT_btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer13)).BeginInit();
             this.splitContainer13.Panel1.SuspendLayout();
             this.splitContainer13.Panel2.SuspendLayout();
@@ -205,6 +205,14 @@ namespace Adam
             resources.ApplyResources(this.groupBox5, "groupBox5");
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.TabStop = false;
+            // 
+            // ALL_INIT_btn
+            // 
+            resources.ApplyResources(this.ALL_INIT_btn, "ALL_INIT_btn");
+            this.ALL_INIT_btn.BackColor = System.Drawing.Color.YellowGreen;
+            this.ALL_INIT_btn.Name = "ALL_INIT_btn";
+            this.ALL_INIT_btn.UseVisualStyleBackColor = false;
+            this.ALL_INIT_btn.Click += new System.EventHandler(this.ALL_INIT_btn_Click);
             // 
             // ALL_Reset_btn
             // 
@@ -791,14 +799,6 @@ namespace Adam
             this.directorySearcher1.ClientTimeout = System.TimeSpan.Parse("-00:00:01");
             this.directorySearcher1.ServerPageTimeLimit = System.TimeSpan.Parse("-00:00:01");
             this.directorySearcher1.ServerTimeLimit = System.TimeSpan.Parse("-00:00:01");
-            // 
-            // ALL_INIT_btn
-            // 
-            resources.ApplyResources(this.ALL_INIT_btn, "ALL_INIT_btn");
-            this.ALL_INIT_btn.BackColor = System.Drawing.Color.YellowGreen;
-            this.ALL_INIT_btn.Name = "ALL_INIT_btn";
-            this.ALL_INIT_btn.UseVisualStyleBackColor = false;
-            this.ALL_INIT_btn.Click += new System.EventHandler(this.ALL_INIT_btn_Click);
             // 
             // FormMain
             // 
