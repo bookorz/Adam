@@ -556,7 +556,7 @@ namespace Adam
 
         public void On_Command_Error(Node Node, Transaction Txn, ReturnMessage Msg)
         {
-
+            XfeCrossZone.Stop();
             logger.Debug("On_Command_Error");
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = Node.Name;
@@ -1227,9 +1227,12 @@ namespace Adam
 
         public void On_TaskJob_Aborted(TaskJobManagment.CurrentProceedTask Task, string NodeName, string ReportType, string Message)
         {
-            if (Task.Id.IndexOf("FormManual") != -1)
+            if (Task != null)
             {
-                ManualPortStatusUpdate.LockUI(false);
+                if (Task.Id.IndexOf("FormManual") != -1)
+                {
+                    ManualPortStatusUpdate.LockUI(false);
+                }
             }
             AlarmInfo CurrentAlarm = new AlarmInfo();
             CurrentAlarm.NodeName = "SYSTEM";
@@ -1266,7 +1269,9 @@ namespace Adam
 
 
         }
-
+        string Demo_LoadPortName = "";
+        string Demo_UnLoadPortName = "";
+        object Demo_Lock = new object();
         public void On_TaskJob_Finished(TaskJobManagment.CurrentProceedTask Task)
         {
             string TaskName = "";
@@ -1277,9 +1282,140 @@ namespace Adam
             {
                 ManualPortStatusUpdate.LockUI(false);
             }
+            switch (Task.Id)
+            {
+                case "DEMO_LD":
+                    lock (Demo_Lock)
+                    {
+                        Demo_LoadPortName = Task.Params["@Target"];
+                        if (!Demo_UnLoadPortName.Equals(""))
+                        {
+                            Node LoadPort = NodeManagement.Get(Demo_LoadPortName);
+                            Node UnloadPort = NodeManagement.Get(Demo_UnLoadPortName);
+                           
+
+                            var AvailableSlots = from eachSlot in LoadPort.JobList.Values.ToList()
+                                                 where eachSlot.MapFlag && !eachSlot.ErrPosition
+                                                 select eachSlot;
+                            if (AvailableSlots.Count() == 0)
+                            {
+                                AvailableSlots = from eachSlot in UnloadPort.JobList.Values.ToList()
+                                                 where eachSlot.MapFlag && !eachSlot.ErrPosition
+                                                 select eachSlot;
+                                if (AvailableSlots.Count() == 0)
+                                {
+                                    return;
+                                }
+                                else
+                                {
+                                    LoadPort = NodeManagement.Get(Demo_UnLoadPortName);
+                                    UnloadPort = NodeManagement.Get(Demo_LoadPortName);
+                                }
+                            }
+
+                            List<Job> LD_Jobs = LoadPort.JobList.Values.ToList();
+                            LD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+
+                            List<Job> ULD_Jobs = UnloadPort.JobList.Values.ToList();
+                            ULD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+
+                            foreach (Job wafer in LD_Jobs)
+                            {
+                                if (!wafer.MapFlag || wafer.ErrPosition)
+                                {
+                                    continue;
+                                }
+                                bool isAssign = false;
+                                foreach (Job Slot in ULD_Jobs)
+                                {
+                                    if (!Slot.MapFlag && !Slot.ErrPosition && !Slot.IsAssigned)
+                                    {
+                                        wafer.NeedProcess = true;
+                                        wafer.ProcessFlag = false;
+                                        wafer.AssignPort(UnloadPort.Name, Slot.Slot);
+                                        isAssign = true;
+                                        Slot.IsAssigned = true;
+                                        break;
+                                    }
+                                }
+                                if (!isAssign)
+                                {
+                                    break;
+                                }
+                            }
+
+                            xfe.Start(LoadPort.Name);
+                        }
+                    }
+                    break;
+                case "DEMO_ULD":
+                    lock (Demo_Lock)
+                    {
+                        Demo_UnLoadPortName = Task.Params["@Target"];
+                        if (!Demo_LoadPortName.Equals(""))
+                        {
+                            Node LoadPort = NodeManagement.Get(Demo_LoadPortName);
+                            Node UnloadPort = NodeManagement.Get(Demo_UnLoadPortName);
+
+
+                            var AvailableSlots = from eachSlot in LoadPort.JobList.Values.ToList()
+                                                 where eachSlot.MapFlag && !eachSlot.ErrPosition
+                                                 select eachSlot;
+                            if (AvailableSlots.Count() == 0)
+                            {
+                                AvailableSlots = from eachSlot in UnloadPort.JobList.Values.ToList()
+                                                 where eachSlot.MapFlag && !eachSlot.ErrPosition
+                                                 select eachSlot;
+                                if (AvailableSlots.Count() == 0)
+                                {
+                                    return;
+                                }
+                                else
+                                {
+                                    LoadPort = NodeManagement.Get(Demo_UnLoadPortName);
+                                    UnloadPort = NodeManagement.Get(Demo_LoadPortName);
+                                }
+                            }
+
+                            List<Job> LD_Jobs = LoadPort.JobList.Values.ToList();
+                            LD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+
+                            List<Job> ULD_Jobs = UnloadPort.JobList.Values.ToList();
+                            ULD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+
+                            foreach (Job wafer in LD_Jobs)
+                            {
+                                if (!wafer.MapFlag || wafer.ErrPosition)
+                                {
+                                    continue;
+                                }
+                                bool isAssign = false;
+                                foreach (Job Slot in ULD_Jobs)
+                                {
+                                    if (!Slot.MapFlag && !Slot.ErrPosition && !Slot.IsAssigned)
+                                    {
+                                        wafer.NeedProcess = true;
+                                        wafer.ProcessFlag = false;
+                                        wafer.AssignPort(UnloadPort.Name, Slot.Slot);
+                                        isAssign = true;
+                                        Slot.IsAssigned = true;
+                                        break;
+                                    }
+                                }
+                                if (!isAssign)
+                                {
+                                    break;
+                                }
+                            }
+                            xfe.Start(LoadPort.Name);
+                        }
+                    }
+                    break;
+            }
+
             switch (Task.ProceedTask.TaskName)
             {
-                case "ALL_ORGSH":
+                case "SORTER_INIT":
                     foreach (Node port in NodeManagement.GetLoadPortList())
                     {
                         if (port.Enable && !port.Foup_Presence)
@@ -1294,7 +1430,8 @@ namespace Adam
                         }
                     }
                     break;
-                    
+
+
             }
 
         }
@@ -1353,137 +1490,82 @@ namespace Adam
         public static bool cycleRun = false;
         public void On_Transfer_Complete(XfeCrossZone xfe)
         {
+            NodeStatusUpdate.UpdateCurrentState("IDLE");
 
-            WaferAssignUpdate.RefreshMapping(xfe.LD);
-            foreach (string ULD in xfe.ULD_List)
-            {
-                NodeManagement.Get(ULD).ReserveList.Clear();
-                foreach (Job job in NodeManagement.Get(ULD).JobList.Values)
-                {
-                    job.UnAssignPort();
-                }
-                WaferAssignUpdate.RefreshMapping(ULD);
-                WaferAssignUpdate.ResetAssignCM(ULD, true);
-            }
-            WaferAssignUpdate.ResetAssignCM(xfe.LD, true);
             MonitoringUpdate.UpdateWPH((xfe.ProcessCount / (xfe.ProcessTime / 1000.0 / 60.0 / 60.0)).ToString("f1"));
-            if (xfe.ULD_List.Count != 0)
-            {
-                string TaskName = "LOADPORT_CLOSE_NOMAP_TMP";
-                string Message = "";
-                Dictionary<string, string> param1 = new Dictionary<string, string>();
-                Dictionary<string, string> param2 = new Dictionary<string, string>();
-                param1.Add("@Target", xfe.LD);
-                TaskJobManagment.CurrentProceedTask Task1;
-                TaskJobManagment.CurrentProceedTask Task2;
-                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task1, TaskName, param1);
 
-
-
-
-                TaskName = "LOADPORT_CLOSE_NOMAP_TMP";
-                Message = "";
-
-                param2.Add("@Target", xfe.tmpULD);
-
-                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task2, TaskName, param2);
-                SpinWait.SpinUntil(() => checkTask(Task1, Task2), 99999999);
-               
-
-                TaskName = "LOADPORT_OPEN_TMP";
-                Message = "";
-                param1 = new Dictionary<string, string>();
-                param1.Add("@Target", xfe.LD);
-
-                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task1, TaskName, param1);
-
-
-                TaskName = "LOADPORT_OPEN_TMP";
-                Message = "";
-                param2 = new Dictionary<string, string>();
-                param2.Add("@Target", xfe.tmpULD);
-
-                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task2, TaskName, param2);
-                SpinWait.SpinUntil(() => checkTask(Task1, Task2), 99999999);
-
-                TaskName = "LOADPORT_GET_MAPDT_TMP";
-                Message = "";
-                param1 = new Dictionary<string, string>();
-                param1.Add("@Target", xfe.LD);
-
-                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task1, TaskName, param1);
-
-
-                TaskName = "LOADPORT_GET_MAPDT_TMP";
-                Message = "";
-                param2 = new Dictionary<string, string>();
-                param2.Add("@Target", xfe.tmpULD);
-
-                RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task2, TaskName, param2);
-                SpinWait.SpinUntil(() => checkTask(Task1, Task2), 99999999);
-
-            }
-            if (cycleRun)
-            {
-
-                Node LD = NodeManagement.Get(xfe.tmpULD);
-                Node ULD = null;
-                bool isFindLD = false;
-                foreach (Node port in NodeManagement.GetLoadPortList())
-                {
-                    if (port.Name.Equals(LD.Name))
-                    {
-                        isFindLD = true;
-                        continue;
-                    }
-                    if (isFindLD)
-                    {
-                        if (port.Enable)
-                        {
-                            ULD = port;
-                            break;
-                        }
-                    }
-
-                }
-                if (ULD == null)
-                {
-                    foreach (Node port in NodeManagement.GetLoadPortList())
-                    {
-                        if (port.Enable && !port.Name.Equals(LD.Name))
-                        {
-                            ULD = port;
-                            break;
-                        }
-                    }
-                }
-                if (LD != null && ULD != null)
-                {
-                    foreach (Job wafer in LD.JobList.Values)
-                    {
-                        if (wafer.MapFlag && !wafer.ErrPosition)
-                        {
-                            wafer.NeedProcess = true;
-                            wafer.ProcessFlag = false;
-                            wafer.AssignPort(ULD.Name, wafer.Slot);
-                        }
-                    }
-                    FormMain.xfe.tmpULD = ULD.Name;
-                    FormMain.xfe.Start(LD.Name);
-                }
-            }
         }
 
+        public void On_LoadPort_Complete(string PortName)
+        {
+
+        }
+
+        public void On_UnLoadPort_Complete(string PortName)
+        {
+            bool isFind = false;
+            Node LoadPort = NodeManagement.Get(PortName);
+            Node UnloadPort = null;
+
+            if (LoadPort == null)
+            {
+                logger.Info("On_UnLoadPort_Complete " + PortName + "is not found!");
+                return;
+            }
+
+            foreach (Node port in NodeManagement.GetLoadPortList())
+            {
+                if (port.Enable)
+                {
+                    if (isFind)
+                    {
+                        UnloadPort = port;
+                        break;
+                    }
+                    else
+                    {
+                        if (port.Name.Equals(PortName))
+                        {
+                            isFind = true;
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            if (UnloadPort == null)
+            {
+                if (NodeManagement.GetLoadPortList().Count >= 2)
+                {
+                    UnloadPort = NodeManagement.GetLoadPortList()[0];
+                }
+                else
+                {
+                    logger.Info("On_UnLoadPort_Complete " + "Can not find UnLoadPort!");
+                    return;
+                }
+            }
+
+            string TaskName = "LOADPORT_OPEN";
+            string Message = "";
+            TaskJobManagment.CurrentProceedTask Task;
+            Dictionary<string, string> param1 = new Dictionary<string, string>();
+            param1.Add("@Target", LoadPort.Name);
+            RouteControl.Instance.TaskJob.Excute("DEMO_LD", out Message, out Task, TaskName, param1);
+            SpinWait.SpinUntil(() => false, 500);
+            Dictionary<string, string> param2 = new Dictionary<string, string>();
+            param2.Add("@Target", UnloadPort.Name);
+            RouteControl.Instance.TaskJob.Excute("DEMO_ULD", out Message, out Task, TaskName, param2);
+
+
+        }
         private void ALL_INIT_btn_Click(object sender, EventArgs e)
         {
-            string TaskName = "ALL_INIT";
+            string TaskName = "SORTER_INIT";
             string Message = "";
             TaskJobManagment.CurrentProceedTask Task;
             RouteControl.Instance.TaskJob.Excute("FormManual", out Message, out Task, TaskName);
-            if (Task == null)
-            {
-                MessageBox.Show("上一個動作執行中!");
-            }
+
         }
     }
 }

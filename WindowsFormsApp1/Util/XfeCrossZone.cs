@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Adam.UI_Update.Monitoring;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,20 +36,52 @@ namespace Adam.Util
         {
             _Report = Report;
             RunID = Guid.NewGuid().ToString();
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT01");
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER01");
-            ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER02");
+
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT01");
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ROBOT02");
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER01");
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER02");
+            foreach (Node node in NodeManagement.GetList())
+            {
+                if (node.Type.ToUpper().Equals("ROBOT") || node.Type.ToUpper().Equals("ALIGNER") || node.Type.ToUpper().Equals("LOADPORT"))
+                {
+                    if (node.Enable)
+                    {
+                        ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), node.Name.ToUpper());
+                    }
+                }
+            }
+
+        }
+
+        public void Initial()
+        {
+            Running = false;
+
+            LDRobot = "";
+            LDRobot_Arm = "";
+            ULDRobot = "";
+            ULDRobot_Arm = "";
+            LD = "";
+            ULD_List = new List<string>();
+            tmpULD = "";
+            ProcessTime = 0;
+            ProcessCount = 0;
+            SingleAligner = false;
+            RunID = "";
         }
 
         public bool Start(string LDPort)
         {
-
+            Initial();
             watch = System.Diagnostics.Stopwatch.StartNew();
             //開始前先重設
             foreach (Node each in NodeManagement.GetList())
             {
                 each.RequestQueue.Clear();
                 each.LockOn = "";
+                each.ReadyForGet = true;
+                each.ReadyForPut = true;
             }
             LDRobot = "";
             LDRobot_Arm = "";
@@ -101,7 +134,7 @@ namespace Adam.Util
             //    ThreadPool.QueueUserWorkItem(new WaitCallback(Engine), "ALIGNER02");
             //}
 
-            
+
 
             Node.ActionRequest request = new Node.ActionRequest();
             request.TaskName = "TRANSFER_GET_LOADPORT";
@@ -114,14 +147,17 @@ namespace Adam.Util
             }
             Running = true;
 
-
+            NodeStatusUpdate.UpdateCurrentState("RUN");
             return Running;
         }
 
         public static void Stop()
         {
+            string Message = "";
             Running = false;
-
+            TaskJobManagment.CurrentProceedTask Task;
+            RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out Task, "STOP", null);
+            NodeStatusUpdate.UpdateCurrentState("IDLE");
         }
 
         private bool CheckQueue(Node Target)
@@ -185,6 +221,7 @@ namespace Adam.Util
             bool result = false;
             bool a = false;
             bool b = false;
+            bool c = false;
             //找到所有被取出FOUP的WAFER
             var ProcessList = from Job in JobManagement.GetJobList()
                               where Job.InProcess
@@ -202,30 +239,41 @@ namespace Adam.Util
                 }
             }
 
-            if (Robot.JobList.Count != 2)
+            //if (Robot.JobList.Count != 2)
+            //{
+            //    b = true;
+            //}
+
+            ProcessList = from Job in JobManagement.GetJobList()
+                          where Job.InProcess && Job.NeedProcess
+                          select Job;
+
+            if (ProcessList.Count() != 0)
             {
-                b = true;
+                c = true;
             }
-            result = a && b;
+
+            result = a || b || c;
             return result;
         }
 
 
         private void Engine(object NodeName)
         {
-            try
-            {
-                Node Target = NodeManagement.Get(NodeName.ToString());
-                if (Target == null)
-                {
-                    return;
-                }
-                if (!Target.Enable)
-                {
-                    return;
-                }
 
-                while (true)
+            Node Target = NodeManagement.Get(NodeName.ToString());
+            if (Target == null)
+            {
+                return;
+            }
+            if (!Target.Enable)
+            {
+                return;
+            }
+
+            while (true)
+            {
+                try
                 {
                     while (!CheckQueue(Target) && Running)
                     {
@@ -474,13 +522,22 @@ namespace Adam.Util
                                             else
                                             {
                                                 logger.Debug(NodeName + " Loadport沒有片可處理");
-                                                nodeLD.Fetchable = false;
-                                                watch.Stop();
-                                                ProcessTime = watch.ElapsedMilliseconds;
-                                                logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
 
-                                                _Report.On_Transfer_Complete(this);
-                                                //結束工作
+                                                nodeLD.Fetchable = false;
+                                                //檢查是不是搬完了
+
+                                                //var Available = from each in JobManagement.GetJobList()
+                                                //                where each.NeedProcess && !each.Destination.Equals(each.Position)
+                                                //                select each;
+                                                //if (Available.Count() == 0)
+                                                //{
+                                                //    watch.Stop();
+                                                //    ProcessTime = watch.ElapsedMilliseconds;
+                                                //    logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
+
+                                                //    _Report.On_Transfer_Complete(this);
+                                                //    //結束工作
+                                                //}
                                                 continue;
                                             }
                                         }
@@ -527,6 +584,7 @@ namespace Adam.Util
                                             {
                                                 LDRobot_Arm = wafer.Slot;
                                                 wafer.NeedProcess = false;
+
                                                 break;
                                             }
                                         }
@@ -567,6 +625,25 @@ namespace Adam.Util
                                     case "TRANSFER_GET_ALIGNER02_2":
                                         Target.LockOn = "";
                                         ULDRobot_Arm = "";
+
+                                        if (NodeManagement.GetAlignerList().Count == 1)
+                                        {
+                                            //當只有一台ALIGNER使用邏輯
+                                            //觸發放第二片                                   
+                                            Node.ActionRequest request = new Node.ActionRequest();
+                                            request.TaskName = "TRANSFER_PUTW_" + req.Position;
+                                            request.Position = req.Position;
+                                            //request.Arm = wafer.Slot;
+                                            Node LDRbt = NodeManagement.Get(LDRobot);
+                                            lock (LDRbt.RequestQueue)
+                                            {
+                                                if (!LDRbt.RequestQueue.ContainsKey(request.TaskName))
+                                                {
+                                                    LDRbt.RequestQueue.Add(request.TaskName, request);
+                                                    break;
+                                                }
+                                            }
+                                        }
                                         break;
                                     case "TRANSFER_GETW_ALIGNER01":
                                     case "TRANSFER_GETW_ALIGNER02":
@@ -638,8 +715,8 @@ namespace Adam.Util
                                         Target.LockOn = req.Position;
 
                                         var Match = from each in ULD_List
-                                                      where each.Equals(req.Position)
-                                                        select each;
+                                                    where each.Equals(req.Position)
+                                                    select each;
                                         if (Match.Count() == 0)
                                         {
                                             ULD_List.Add(req.Position);
@@ -659,26 +736,52 @@ namespace Adam.Util
                                         //找到回送ULD的ROBOT
                                         ULDRobot = NodeManagement.Get(Target.JobList["1"].Destination).Associated_Node;
 
-                                        //當只有一台ALIGNER使用邏輯
-                                        //觸發放第二片
-                                        Node.ActionRequest request = new Node.ActionRequest();
-                                        request.TaskName = "TRANSFER_PUTW_" + Target.Name;
-                                        request.Position = Target.Name;
-                                        //request.Arm = wafer.Slot;
-                                        Node LDRbt = NodeManagement.Get(LDRobot);
-                                        lock (LDRbt.RequestQueue)
-                                        {
-                                            if (!LDRbt.RequestQueue.ContainsKey(request.TaskName))
-                                            {
-                                                LDRbt.RequestQueue.Add(request.TaskName, request);
-                                                break;
-                                            }
-                                        }
+
+                                        break;
+
+                                    case "TRANSFER_ALIGNER_ALIGN":
+
+
+
                                         break;
                                 }
                                 break;
                             case "OCR":
 
+                                break;
+                            case "LOADPORT":
+                                switch (req.TaskName)
+                                {
+                                    case "TRANSFER_LOADPORT_CLOSE":
+                                        nodeLD = NodeManagement.Get(LD);
+                                        var AvailableSlots = from eachSlot in nodeLD.JobList.Values.ToList()
+                                                             where eachSlot.NeedProcess
+                                                             select eachSlot;
+                                        if (AvailableSlots.Count() != 0)
+                                        {
+                                            //還沒取完片就取消動作
+                                            continue;
+                                        }
+                                        break;
+                                    case "TRANSFER_UNLOADPORT_CLOSE":
+                                        var Available = from each in JobManagement.GetJobList()
+                                                        where each.NeedProcess || (each.InProcess && !each.Destination.Equals(each.Position))
+                                                        select each;
+                                        if (Available.Count() != 0)
+                                        {
+                                            //還沒放完片就取消動作
+                                            continue;
+                                        }
+                                        break;
+                                    case "TRANSFER_LOADPORT_CLOSE_FINISHED":
+                                        _Report.On_LoadPort_Complete(NodeName.ToString());
+                                        continue;
+
+                                    case "TRANSFER_UNLOADPORT_CLOSE_FINISHED":
+                                        _Report.On_UnLoadPort_Complete(NodeName.ToString());
+                                        continue;
+
+                                }
                                 break;
                         }
                         Dictionary<string, string> param = new Dictionary<string, string>();
@@ -715,7 +818,7 @@ namespace Adam.Util
                                         watch.Stop();
                                         ProcessTime = watch.ElapsedMilliseconds;
                                         logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
-                                       
+
                                         _Report.On_Transfer_Complete(this);
                                     }
                                     break;
@@ -737,11 +840,12 @@ namespace Adam.Util
                         logger.Debug(NodeName + " 開始監控RequestQueue");
                     }
                 }
+                catch (Exception e)
+                {
+                    logger.Error(e.StackTrace);
+                }
             }
-            catch (Exception e)
-            {
-                logger.Error(e.StackTrace);
-            }
+
         }
     }
 }

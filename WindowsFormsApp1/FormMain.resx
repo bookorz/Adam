@@ -307,7 +307,7 @@
     <value>15</value>
   </data>
   <data name="ALL_INIT_btn.Text" xml:space="preserve">
-    <value>ALL INIT</value>
+    <value>Initialize</value>
   </data>
   <data name="&gt;&gt;ALL_INIT_btn.Name" xml:space="preserve">
     <value>ALL_INIT_btn</value>
@@ -320,66 +320,6 @@
   </data>
   <data name="&gt;&gt;ALL_INIT_btn.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="ALL_Reset_btn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="ALL_Reset_btn.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="ALL_Reset_btn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 108</value>
-  </data>
-  <data name="ALL_Reset_btn.Size" type="System.Drawing.Size, System.Drawing">
-    <value>230, 35</value>
-  </data>
-  <data name="ALL_Reset_btn.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="ALL_Reset_btn.Text" xml:space="preserve">
-    <value>ALL RESET</value>
-  </data>
-  <data name="&gt;&gt;ALL_Reset_btn.Name" xml:space="preserve">
-    <value>ALL_Reset_btn</value>
-  </data>
-  <data name="&gt;&gt;ALL_Reset_btn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ALL_Reset_btn.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;ALL_Reset_btn.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="ALL_ORG_btn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="ALL_ORG_btn.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="ALL_ORG_btn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 190</value>
-  </data>
-  <data name="ALL_ORG_btn.Size" type="System.Drawing.Size, System.Drawing">
-    <value>230, 35</value>
-  </data>
-  <data name="ALL_ORG_btn.TabIndex" type="System.Int32, mscorlib">
-    <value>13</value>
-  </data>
-  <data name="ALL_ORG_btn.Text" xml:space="preserve">
-    <value>ALL ORG</value>
-  </data>
-  <data name="&gt;&gt;ALL_ORG_btn.Name" xml:space="preserve">
-    <value>ALL_ORG_btn</value>
-  </data>
-  <data name="&gt;&gt;ALL_ORG_btn.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ALL_ORG_btn.Parent" xml:space="preserve">
-    <value>groupBox5</value>
-  </data>
-  <data name="&gt;&gt;ALL_ORG_btn.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <data name="DifferentialPressureAlarm2_Signal.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -412,7 +352,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;DifferentialPressureAlarm2_Signal.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>1</value>
   </data>
   <data name="DifferentialPressureAlarm1_Signal.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -445,7 +385,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;DifferentialPressureAlarm1_Signal.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>2</value>
   </data>
   <data name="SafetyRelay_Signal.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -481,7 +421,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;SafetyRelay_Signal.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>3</value>
   </data>
   <data name="IonizerAlarm_Signal.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -514,7 +454,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;IonizerAlarm_Signal.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>4</value>
   </data>
   <data name="FFUAlarm_Signal.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -547,7 +487,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;FFUAlarm_Signal.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>5</value>
   </data>
   <data name="CDAAlarm_Signal.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -580,7 +520,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;CDAAlarm_Signal.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>6</value>
   </data>
   <data name="DoorSwitch_Signal.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -613,7 +553,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;DoorSwitch_Signal.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>7</value>
   </data>
   <data name="CurrentState_btn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -649,7 +589,7 @@
     <value>groupBox5</value>
   </data>
   <data name="&gt;&gt;CurrentState_btn.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>8</value>
   </data>
   <data name="groupBox5.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>

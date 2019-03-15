@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using TransferControl.Management;
+using System.Linq;
 
 namespace Adam.Menu.Monitoring
 {
@@ -244,16 +245,57 @@ namespace Adam.Menu.Monitoring
             }
             if (LD != null && ULD != null)
             {
-                foreach (Job wafer in LD.JobList.Values)
+                var AvailableSlots = from eachSlot in LD.JobList.Values.ToList()
+                                     where eachSlot.MapFlag && !eachSlot.ErrPosition
+                                     select eachSlot;
+                if (AvailableSlots.Count() == 0)
                 {
-                    if (wafer.MapFlag && !wafer.ErrPosition)
+                    AvailableSlots = from eachSlot in ULD.JobList.Values.ToList()
+                                     where eachSlot.MapFlag && !eachSlot.ErrPosition
+                                     select eachSlot;
+                    if (AvailableSlots.Count() == 0)
                     {
-                        wafer.NeedProcess = true;
-                        wafer.ProcessFlag = false;
-                        wafer.AssignPort(ULD.Name, wafer.Slot);
+                        return;
+                    }
+                    else
+                    {
+                        string ULDName = LD.Name;
+                        LD = NodeManagement.Get(ULD.Name);
+                        ULD = NodeManagement.Get(ULDName);
                     }
                 }
-                FormMain.xfe.tmpULD = ULD.Name;
+
+                List<Job> LD_Jobs = LD.JobList.Values.ToList();
+                LD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+
+                List<Job> ULD_Jobs = ULD.JobList.Values.ToList();
+                ULD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+
+                foreach (Job wafer in LD_Jobs)
+                {
+                    if (!wafer.MapFlag || wafer.ErrPosition)
+                    {
+                        continue;
+                    }
+                    bool isAssign = false;
+                    foreach (Job Slot in ULD_Jobs)
+                    {
+                        if (!Slot.MapFlag && !Slot.ErrPosition && !Slot.IsAssigned)
+                        {
+                            wafer.NeedProcess = true;
+                            wafer.ProcessFlag = false;
+                            wafer.AssignPort(ULD.Name, Slot.Slot);
+                            isAssign = true;
+                            Slot.IsAssigned = true;
+                            break;
+                        }
+                    }
+                    if (!isAssign)
+                    {
+                        break;
+                    }
+                }
+
                 FormMain.xfe.Start(LD.Name);
             }
         }
