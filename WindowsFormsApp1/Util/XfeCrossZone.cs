@@ -232,7 +232,7 @@ namespace Adam.Util
                 Node dest = NodeManagement.Get(each.Destination);
                 //找尋到達目的地需要此ROBOT搬運的WAFER
                 //同時也不在此ROBOT手上
-                if (dest.Associated_Node.ToUpper().Equals(Robot.Name.ToUpper()) && !each.Position.ToUpper().Equals(Robot.Name.ToUpper()))
+                if ((dest.Associated_Node.ToUpper().Equals(Robot.Name.ToUpper()) && !each.Position.ToUpper().Equals(Robot.Name.ToUpper())) )
                 {
                     a = true;
                     break;
@@ -253,7 +253,7 @@ namespace Adam.Util
                 c = true;
             }
 
-            result = a || b || c;
+            result = (a || b || c) && Robot.JobList.Count != 2;
             return result;
         }
 
@@ -740,8 +740,11 @@ namespace Adam.Util
                                         break;
 
                                     case "TRANSFER_ALIGNER_ALIGN":
-
-
+                                        ULDRobot = NodeManagement.Get(Target.JobList["1"].Destination).Associated_Node;
+                                        //放進UnloadPort補償角度
+                                        RobotPoint point = PointManagement.GetPoint(ULDRobot, Target.Name, "300MM");
+                                        Target.JobList["1"].Offset += point.Offset;
+                                        req.Value = (Target.JobList["1"].Offset+0).ToString();
 
                                         break;
                                 }

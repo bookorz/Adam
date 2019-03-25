@@ -1343,7 +1343,8 @@ namespace Adam
                                     break;
                                 }
                             }
-
+                            Demo_UnLoadPortName = "";
+                            Demo_LoadPortName = "";
                             xfe.Start(LoadPort.Name);
                         }
                     }
@@ -1407,6 +1408,8 @@ namespace Adam
                                     break;
                                 }
                             }
+                            Demo_UnLoadPortName = "";
+                            Demo_LoadPortName = "";
                             xfe.Start(LoadPort.Name);
                         }
                     }

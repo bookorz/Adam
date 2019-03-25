@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.Aligner01_tb = new System.Windows.Forms.GroupBox();
+            this.Stop_btn = new System.Windows.Forms.Button();
+            this.Cycle_btn = new System.Windows.Forms.Button();
             this.Robot02_disable_ck = new System.Windows.Forms.CheckBox();
             this.Robot01_disable_ck = new System.Windows.Forms.CheckBox();
             this.Aligner02_disable_ck = new System.Windows.Forms.CheckBox();
@@ -544,8 +546,6 @@
             this.Aligner01_State = new System.Windows.Forms.TextBox();
             this.LoadPort01_FID = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.Cycle_btn = new System.Windows.Forms.Button();
-            this.Stop_btn = new System.Windows.Forms.Button();
             this.Aligner01_tb.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -676,6 +676,26 @@
             this.Aligner01_tb.TabStop = false;
             this.Aligner01_tb.Text = "Device Information";
             // 
+            // Stop_btn
+            // 
+            this.Stop_btn.Location = new System.Drawing.Point(1347, 726);
+            this.Stop_btn.Name = "Stop_btn";
+            this.Stop_btn.Size = new System.Drawing.Size(59, 23);
+            this.Stop_btn.TabIndex = 202;
+            this.Stop_btn.Text = "Stop";
+            this.Stop_btn.UseVisualStyleBackColor = true;
+            this.Stop_btn.Click += new System.EventHandler(this.Stop_btn_Click);
+            // 
+            // Cycle_btn
+            // 
+            this.Cycle_btn.Location = new System.Drawing.Point(1346, 701);
+            this.Cycle_btn.Name = "Cycle_btn";
+            this.Cycle_btn.Size = new System.Drawing.Size(59, 23);
+            this.Cycle_btn.TabIndex = 201;
+            this.Cycle_btn.Text = "Cycle";
+            this.Cycle_btn.UseVisualStyleBackColor = true;
+            this.Cycle_btn.Click += new System.EventHandler(this.Cycle_btn_Click);
+            // 
             // Robot02_disable_ck
             // 
             this.Robot02_disable_ck.AutoSize = true;
@@ -751,6 +771,7 @@
             this.LoadPort08_disable_ck.TabIndex = 194;
             this.LoadPort08_disable_ck.Text = "Disable";
             this.LoadPort08_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort08_disable_ck.Visible = false;
             this.LoadPort08_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
             // 
             // LoadPort07_disable_ck
@@ -762,6 +783,7 @@
             this.LoadPort07_disable_ck.TabIndex = 193;
             this.LoadPort07_disable_ck.Text = "Disable";
             this.LoadPort07_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort07_disable_ck.Visible = false;
             this.LoadPort07_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
             // 
             // LoadPort06_disable_ck
@@ -773,6 +795,7 @@
             this.LoadPort06_disable_ck.TabIndex = 192;
             this.LoadPort06_disable_ck.Text = "Disable";
             this.LoadPort06_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort06_disable_ck.Visible = false;
             this.LoadPort06_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
             // 
             // LoadPort05_disable_ck
@@ -784,6 +807,7 @@
             this.LoadPort05_disable_ck.TabIndex = 191;
             this.LoadPort05_disable_ck.Text = "Disable";
             this.LoadPort05_disable_ck.UseVisualStyleBackColor = true;
+            this.LoadPort05_disable_ck.Visible = false;
             this.LoadPort05_disable_ck.Click += new System.EventHandler(this.Node_Disable_Click);
             // 
             // LoadPort03_disable_ck
@@ -844,6 +868,7 @@
             this.LoadPort08_IDState.TabIndex = 186;
             this.LoadPort08_IDState.Tag = "1";
             this.LoadPort08_IDState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort08_IDState.Visible = false;
             // 
             // label70
             // 
@@ -860,6 +885,7 @@
             this.label70.Tag = "1";
             this.label70.Text = "State";
             this.label70.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label70.Visible = false;
             // 
             // LoadPort07_IDState
             // 
@@ -875,6 +901,7 @@
             this.LoadPort07_IDState.TabIndex = 184;
             this.LoadPort07_IDState.Tag = "1";
             this.LoadPort07_IDState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort07_IDState.Visible = false;
             // 
             // label66
             // 
@@ -891,6 +918,7 @@
             this.label66.Tag = "1";
             this.label66.Text = "State";
             this.label66.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label66.Visible = false;
             // 
             // LoadPort06_IDState
             // 
@@ -906,6 +934,7 @@
             this.LoadPort06_IDState.TabIndex = 182;
             this.LoadPort06_IDState.Tag = "1";
             this.LoadPort06_IDState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort06_IDState.Visible = false;
             // 
             // label62
             // 
@@ -922,6 +951,7 @@
             this.label62.Tag = "1";
             this.label62.Text = "State";
             this.label62.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label62.Visible = false;
             // 
             // LoadPort05_IDState
             // 
@@ -937,6 +967,7 @@
             this.LoadPort05_IDState.TabIndex = 180;
             this.LoadPort05_IDState.Tag = "1";
             this.LoadPort05_IDState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort05_IDState.Visible = false;
             // 
             // label58
             // 
@@ -953,6 +984,7 @@
             this.label58.Tag = "1";
             this.label58.Text = "State";
             this.label58.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label58.Visible = false;
             // 
             // LoadPort04_IDState
             // 
@@ -1134,6 +1166,7 @@
             this.LoadPort08_Mode.TabIndex = 169;
             this.LoadPort08_Mode.Tag = "1";
             this.LoadPort08_Mode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort08_Mode.Visible = false;
             // 
             // label54
             // 
@@ -1150,6 +1183,7 @@
             this.label54.Tag = "1";
             this.label54.Text = "Mode";
             this.label54.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label54.Visible = false;
             // 
             // LoadPort07_Mode
             // 
@@ -1165,6 +1199,7 @@
             this.LoadPort07_Mode.TabIndex = 167;
             this.LoadPort07_Mode.Tag = "1";
             this.LoadPort07_Mode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort07_Mode.Visible = false;
             // 
             // label50
             // 
@@ -1181,6 +1216,7 @@
             this.label50.Tag = "1";
             this.label50.Text = "Mode";
             this.label50.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label50.Visible = false;
             // 
             // LoadPort06_Mode
             // 
@@ -1196,6 +1232,7 @@
             this.LoadPort06_Mode.TabIndex = 165;
             this.LoadPort06_Mode.Tag = "1";
             this.LoadPort06_Mode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort06_Mode.Visible = false;
             // 
             // label46
             // 
@@ -1212,6 +1249,7 @@
             this.label46.Tag = "1";
             this.label46.Text = "Mode";
             this.label46.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label46.Visible = false;
             // 
             // LoadPort05_Mode
             // 
@@ -1227,6 +1265,7 @@
             this.LoadPort05_Mode.TabIndex = 163;
             this.LoadPort05_Mode.Tag = "1";
             this.LoadPort05_Mode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LoadPort05_Mode.Visible = false;
             // 
             // label42
             // 
@@ -1243,6 +1282,7 @@
             this.label42.Tag = "1";
             this.label42.Text = "Mode";
             this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label42.Visible = false;
             // 
             // LoadPort04_Mode
             // 
@@ -1837,6 +1877,7 @@
             this.tableLayoutPanel7.Size = new System.Drawing.Size(159, 576);
             this.tableLayoutPanel7.TabIndex = 142;
             this.tableLayoutPanel7.Tag = "1";
+            this.tableLayoutPanel7.Visible = false;
             // 
             // LoadPort08_Slot_1
             // 
@@ -2778,6 +2819,7 @@
             this.tableLayoutPanel6.Size = new System.Drawing.Size(159, 576);
             this.tableLayoutPanel6.TabIndex = 141;
             this.tableLayoutPanel6.Tag = "1";
+            this.tableLayoutPanel6.Visible = false;
             // 
             // LoadPort07_Slot_1
             // 
@@ -3718,6 +3760,7 @@
             this.tableLayoutPanel5.Size = new System.Drawing.Size(159, 576);
             this.tableLayoutPanel5.TabIndex = 140;
             this.tableLayoutPanel5.Tag = "1";
+            this.tableLayoutPanel5.Visible = false;
             // 
             // LoadPort06_Slot_1
             // 
@@ -4658,6 +4701,7 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(159, 576);
             this.tableLayoutPanel4.TabIndex = 139;
             this.tableLayoutPanel4.Tag = "1";
+            this.tableLayoutPanel4.Visible = false;
             // 
             // LoadPort05_Slot_1
             // 
@@ -9299,6 +9343,7 @@
             this.LoadPort08_TransferState.TabIndex = 134;
             this.LoadPort08_TransferState.Text = "TransferState";
             this.LoadPort08_TransferState.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort08_TransferState.Visible = false;
             // 
             // LoadPort07_TransferState
             // 
@@ -9313,6 +9358,7 @@
             this.LoadPort07_TransferState.TabIndex = 133;
             this.LoadPort07_TransferState.Text = "TransferState";
             this.LoadPort07_TransferState.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort07_TransferState.Visible = false;
             // 
             // LoadPort06_TransferState
             // 
@@ -9327,6 +9373,7 @@
             this.LoadPort06_TransferState.TabIndex = 132;
             this.LoadPort06_TransferState.Text = "TransferState";
             this.LoadPort06_TransferState.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort06_TransferState.Visible = false;
             // 
             // LoadPort05_TransferState
             // 
@@ -9341,6 +9388,7 @@
             this.LoadPort05_TransferState.TabIndex = 131;
             this.LoadPort05_TransferState.Text = "TransferState";
             this.LoadPort05_TransferState.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort05_TransferState.Visible = false;
             // 
             // LoadPort04_TransferState
             // 
@@ -9411,6 +9459,7 @@
             this.LoadPort08_FID.TabIndex = 126;
             this.LoadPort08_FID.Text = "Foup ID";
             this.LoadPort08_FID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort08_FID.Visible = false;
             // 
             // label14
             // 
@@ -9426,6 +9475,7 @@
             this.label14.TabIndex = 125;
             this.label14.Text = "LoadPort08";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label14.Visible = false;
             // 
             // LoadPort07_FID
             // 
@@ -9439,6 +9489,7 @@
             this.LoadPort07_FID.TabIndex = 123;
             this.LoadPort07_FID.Text = "Foup ID";
             this.LoadPort07_FID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort07_FID.Visible = false;
             // 
             // label11
             // 
@@ -9454,6 +9505,7 @@
             this.label11.TabIndex = 122;
             this.label11.Text = "LoadPort07";
             this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label11.Visible = false;
             // 
             // LoadPort06_FID
             // 
@@ -9467,6 +9519,7 @@
             this.LoadPort06_FID.TabIndex = 120;
             this.LoadPort06_FID.Text = "Foup ID";
             this.LoadPort06_FID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort06_FID.Visible = false;
             // 
             // label10
             // 
@@ -9482,6 +9535,7 @@
             this.label10.TabIndex = 119;
             this.label10.Text = "LoadPort06";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label10.Visible = false;
             // 
             // LoadPort05_FID
             // 
@@ -9495,6 +9549,7 @@
             this.LoadPort05_FID.TabIndex = 117;
             this.LoadPort05_FID.Text = "Foup ID";
             this.LoadPort05_FID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.LoadPort05_FID.Visible = false;
             // 
             // label7
             // 
@@ -9510,6 +9565,7 @@
             this.label7.TabIndex = 116;
             this.label7.Text = "LoadPort05";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label7.Visible = false;
             // 
             // LoadPort04_FID
             // 
@@ -9674,26 +9730,6 @@
             this.label9.TabIndex = 53;
             this.label9.Text = "LoadPort01";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // Cycle_btn
-            // 
-            this.Cycle_btn.Location = new System.Drawing.Point(1346, 701);
-            this.Cycle_btn.Name = "Cycle_btn";
-            this.Cycle_btn.Size = new System.Drawing.Size(59, 23);
-            this.Cycle_btn.TabIndex = 201;
-            this.Cycle_btn.Text = "Cycle";
-            this.Cycle_btn.UseVisualStyleBackColor = true;
-            this.Cycle_btn.Click += new System.EventHandler(this.Cycle_btn_Click);
-            // 
-            // Stop_btn
-            // 
-            this.Stop_btn.Location = new System.Drawing.Point(1347, 726);
-            this.Stop_btn.Name = "Stop_btn";
-            this.Stop_btn.Size = new System.Drawing.Size(59, 23);
-            this.Stop_btn.TabIndex = 202;
-            this.Stop_btn.Text = "Stop";
-            this.Stop_btn.UseVisualStyleBackColor = true;
-            this.Stop_btn.Click += new System.EventHandler(this.Stop_btn_Click);
             // 
             // FormMonitoring
             // 
