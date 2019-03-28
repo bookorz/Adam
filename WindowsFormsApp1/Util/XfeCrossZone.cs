@@ -73,6 +73,10 @@ namespace Adam.Util
 
         public bool Start(string LDPort)
         {
+            if (Running)
+            {
+                return false;
+            }
             Initial();
             watch = System.Diagnostics.Stopwatch.StartNew();
             //開始前先重設
@@ -100,6 +104,7 @@ namespace Adam.Util
 
             var AvailableSlots = from eachSlot in nodeLD.JobList.Values.ToList()
                                  where eachSlot.NeedProcess
+
                                  select eachSlot;
             ProcessCount = AvailableSlots.Count();
 
@@ -339,7 +344,7 @@ namespace Adam.Util
                                         req.Position = nodeLD.Name;
 
                                         var AvailableSlots = from eachSlot in nodeLD.JobList.Values.ToList()
-                                                             where eachSlot.NeedProcess
+                                                             where eachSlot.NeedProcess && eachSlot.MapFlag && !eachSlot.ErrPosition
                                                              select eachSlot;
                                         if (AvailableSlots.Count() != 0)
                                         {
@@ -781,6 +786,7 @@ namespace Adam.Util
                                         continue;
 
                                     case "TRANSFER_UNLOADPORT_CLOSE_FINISHED":
+                                        Running = false;
                                         _Report.On_UnLoadPort_Complete(NodeName.ToString());
                                         continue;
 
@@ -821,7 +827,7 @@ namespace Adam.Util
                                         watch.Stop();
                                         ProcessTime = watch.ElapsedMilliseconds;
                                         logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
-
+                                        
                                         _Report.On_Transfer_Complete(this);
                                     }
                                     break;

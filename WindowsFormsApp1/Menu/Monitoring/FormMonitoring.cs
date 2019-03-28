@@ -269,7 +269,7 @@ namespace Adam.Menu.Monitoring
                 LD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
 
                 List<Job> ULD_Jobs = ULD.JobList.Values.ToList();
-                ULD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+                ULD_Jobs.Sort((x, y) => { return Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
 
                 foreach (Job wafer in LD_Jobs)
                 {

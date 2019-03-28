@@ -1317,7 +1317,7 @@ namespace Adam
                             LD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
 
                             List<Job> ULD_Jobs = UnloadPort.JobList.Values.ToList();
-                            ULD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+                            ULD_Jobs.Sort((x, y) => { return Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
 
                             foreach (Job wafer in LD_Jobs)
                             {
@@ -1345,7 +1345,10 @@ namespace Adam
                             }
                             Demo_UnLoadPortName = "";
                             Demo_LoadPortName = "";
-                            xfe.Start(LoadPort.Name);
+                            if (!xfe.Start(LoadPort.Name))
+                            {
+                                MessageBox.Show("xfe.Start fail!");
+                            }
                         }
                     }
                     break;
@@ -1382,7 +1385,7 @@ namespace Adam
                             LD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
 
                             List<Job> ULD_Jobs = UnloadPort.JobList.Values.ToList();
-                            ULD_Jobs.Sort((x, y) => { return -Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
+                            ULD_Jobs.Sort((x, y) => { return Convert.ToInt32(x.Slot).CompareTo(Convert.ToInt32(y.Slot)); });
 
                             foreach (Job wafer in LD_Jobs)
                             {
@@ -1410,7 +1413,10 @@ namespace Adam
                             }
                             Demo_UnLoadPortName = "";
                             Demo_LoadPortName = "";
-                            xfe.Start(LoadPort.Name);
+                            if (!xfe.Start(LoadPort.Name))
+                            {
+                                MessageBox.Show("xfe.Start fail!");
+                            }
                         }
                     }
                     break;
@@ -1515,11 +1521,12 @@ namespace Adam
                 logger.Info("On_UnLoadPort_Complete " + PortName + "is not found!");
                 return;
             }
-
-            foreach (Node port in NodeManagement.GetLoadPortList())
+            var AvailablePorts = from eachPort in NodeManagement.GetLoadPortList()
+                                 where eachPort.Enable
+                                 select eachPort;
+            foreach (Node port in AvailablePorts)
             {
-                if (port.Enable)
-                {
+                
                     if (isFind)
                     {
                         UnloadPort = port;
@@ -1533,14 +1540,14 @@ namespace Adam
                             continue;
                         }
                     }
-                }
+                
             }
 
             if (UnloadPort == null)
             {
-                if (NodeManagement.GetLoadPortList().Count >= 2)
+                if (AvailablePorts.Count() >= 2)
                 {
-                    UnloadPort = NodeManagement.GetLoadPortList()[0];
+                    UnloadPort = AvailablePorts.ToList()[0];
                 }
                 else
                 {
