@@ -72,6 +72,7 @@
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.panel13 = new System.Windows.Forms.Panel();
             this.pnlRobotStatus = new System.Windows.Forms.Panel();
+            this.TEST = new System.Windows.Forms.Button();
             this.RobotConnect_btn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.RobotConnection_tb = new System.Windows.Forms.TextBox();
@@ -1107,6 +1108,7 @@
             // pnlRobotStatus
             // 
             this.pnlRobotStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pnlRobotStatus.Controls.Add(this.TEST);
             this.pnlRobotStatus.Controls.Add(this.RobotConnect_btn);
             this.pnlRobotStatus.Controls.Add(this.label3);
             this.pnlRobotStatus.Controls.Add(this.RobotConnection_tb);
@@ -1143,6 +1145,22 @@
             this.pnlRobotStatus.Name = "pnlRobotStatus";
             this.pnlRobotStatus.Size = new System.Drawing.Size(629, 715);
             this.pnlRobotStatus.TabIndex = 18;
+            // 
+            // TEST
+            // 
+            this.TEST.BackColor = System.Drawing.Color.DarkGray;
+            this.TEST.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.TEST.FlatAppearance.BorderSize = 2;
+            this.TEST.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.TEST.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.TEST.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.TEST.Location = new System.Drawing.Point(488, 422);
+            this.TEST.Name = "TEST";
+            this.TEST.Size = new System.Drawing.Size(123, 50);
+            this.TEST.TabIndex = 120;
+            this.TEST.Text = "Presence Detect";
+            this.TEST.UseVisualStyleBackColor = false;
+            this.TEST.Click += new System.EventHandler(this.RobotFunction_Click);
             // 
             // RobotConnect_btn
             // 
@@ -6574,5 +6592,6 @@
         private System.Windows.Forms.Button Aligner01Connect_btn;
         private System.Windows.Forms.TextBox Aligner01Connection_tb;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button TEST;
     }
 }

@@ -780,6 +780,11 @@ namespace Adam.Util
                                             //還沒放完片就取消動作
                                             continue;
                                         }
+                                        watch.Stop();
+                                        ProcessTime = watch.ElapsedMilliseconds;
+                                        logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
+
+                                        _Report.On_Transfer_Complete(this);
                                         break;
                                     case "TRANSFER_LOADPORT_CLOSE_FINISHED":
                                         _Report.On_LoadPort_Complete(NodeName.ToString());
@@ -814,24 +819,7 @@ namespace Adam.Util
                         if (Running)
                         {
                             logger.Debug(NodeName + " Task完成");
-                            switch (req.TaskName)
-                            {
-                                case "TRANSFER_PUT_UNLOADPORT":
-                                    //檢查是不是搬完了
-                                    nodeLD = NodeManagement.Get(LD);
-                                    var Available = from each in JobManagement.GetJobList()
-                                                    where each.NeedProcess && !each.Destination.Equals(each.Position)
-                                                    select each;
-                                    if (Available.Count() == 0)
-                                    {
-                                        watch.Stop();
-                                        ProcessTime = watch.ElapsedMilliseconds;
-                                        logger.Debug("On_Transfer_Complete ProcessTime:" + ProcessTime.ToString());
-                                        
-                                        _Report.On_Transfer_Complete(this);
-                                    }
-                                    break;
-                            }
+                            
                         }
                         else
                         {

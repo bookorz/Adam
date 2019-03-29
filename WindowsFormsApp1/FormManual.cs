@@ -574,6 +574,10 @@ namespace GUI
 
             switch (btn.Name)
             {
+                case "TEST":
+                    TaskName = "ROBOT_PRESENCE_DETECT";
+                    param.Add("@Target", nodeName);
+                    break;
                 case "btnRInit":
                     TaskName = "ROBOT_Init";
                     param.Add("@Target", nodeName);

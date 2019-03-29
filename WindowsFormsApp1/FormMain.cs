@@ -650,10 +650,7 @@ namespace Adam
                         //}
                         //break;
                         case "LOADPORT":
-                            switch (Txn.Method)
-                            {
-
-                            }
+                           
                             break;
                         case "OCR":
                             switch (Txn.Method)
@@ -1227,8 +1224,10 @@ namespace Adam
 
         public void On_TaskJob_Aborted(TaskJobManagment.CurrentProceedTask Task, string NodeName, string ReportType, string Message)
         {
+
             if (Task != null)
             {
+                Task.Finished = true;
                 if (Task.Id.IndexOf("FormManual") != -1)
                 {
                     ManualPortStatusUpdate.LockUI(false);
@@ -1276,7 +1275,8 @@ namespace Adam
         {
             string TaskName = "";
             string Message = "";
-            Task.Finished2 = true;
+            Task.Finished = true;
+           
             TaskJobManagment.CurrentProceedTask tmpTask;
             if (Task.Id.IndexOf("FormManual") != -1)
             {
@@ -1492,10 +1492,7 @@ namespace Adam
             }
 
         }
-        private bool checkTask(TaskJobManagment.CurrentProceedTask Task1, TaskJobManagment.CurrentProceedTask Task2)
-        {
-            return Task1.Finished && Task2.Finished;
-        }
+      
         public static bool cycleRun = false;
         public void On_Transfer_Complete(XfeCrossZone xfe)
         {
