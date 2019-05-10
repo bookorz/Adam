@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using TransferControl.Management;
+using TransferControl.Operation;
 
 namespace Adam.Menu.WaferMapping
 {
@@ -500,9 +501,6 @@ namespace Adam.Menu.WaferMapping
             }
         }
 
-        public void On_Transfer_Complete(XfeCrossZone xfe)
-        {
-            
-        }
+       
     }
 }

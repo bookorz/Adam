@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using TransferControl.Engine;
 using TransferControl.Management;
-using TransferControl.Parser;
 using log4net.Config;
 using Adam.UI_Update.Monitoring;
 using log4net;
@@ -19,14 +18,13 @@ using Adam.UI_Update.Alarm;
 using GUI;
 using Adam.UI_Update.Running;
 using System.Linq;
-using System.Collections.Concurrent;
 using Adam.Util;
-using Adam.UI_Update.Communications;
 
 using System.Security.Cryptography;
 using System.Text;
 using SANWA.Utility.Config;
 using SECSInterface;
+using TransferControl.Operation;
 
 namespace Adam
 {
@@ -562,6 +560,11 @@ namespace Adam
             CurrentAlarm.NodeName = Node.Name;
             CurrentAlarm.AlarmCode = Msg.Value;
             CurrentAlarm.NeedReset = true;
+            //Aligner state pool stop
+            foreach (Node al in NodeManagement.GetAlignerList())
+            {
+                al.PoolStop();
+            }
             try
             {
 
@@ -674,6 +677,11 @@ namespace Adam
             CurrentAlarm.NodeName = Node.Name;
             CurrentAlarm.AlarmCode = "00200002";
             CurrentAlarm.NeedReset = false;
+            //Aligner state pool stop
+            foreach (Node al in NodeManagement.GetAlignerList())
+            {
+                al.PoolStop();
+            }
             try
             {
 
@@ -1438,11 +1446,16 @@ namespace Adam
                             RouteControl.Instance.TaskJob.Excute(Guid.NewGuid().ToString(), out Message, out tmpTask, TaskName, param);
                         }
                     }
+                    //Aligner state pool start
+                    foreach(Node node in NodeManagement.GetList())
+                    {
+                        if (node.Type.Equals("ALIGNER") || node.Type.Equals("ROBOT"))
+                        {
+                            node.PoolStart("GET_ALIGNER_STATUS");
+                        }
+                    }
                     break;
-
-
             }
-
         }
 
         private void btnManual_Click(object sender, EventArgs e)

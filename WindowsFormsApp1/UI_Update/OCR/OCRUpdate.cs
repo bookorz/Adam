@@ -115,7 +115,7 @@ namespace Adam.UI_Update.OCR
                                         info += " Score:0";
                                     }
                                     Tb_OCRRead.Text = info;
-                                    FTP ftp = new FTP("192.168.0.5","21","","admin","");
+                                    FTP ftp = new FTP(OCR.GetController().IPAdress, "21","","admin","");
                                     string imgPath = ftp.Get("image.jpg", FileName, save);
                                     PictureBox Pic_OCR = form.Controls.Find(OCRName + "_Pic", true).FirstOrDefault() as PictureBox;
                                     if (Pic_OCR == null)
